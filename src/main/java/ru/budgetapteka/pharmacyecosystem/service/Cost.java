@@ -2,7 +2,12 @@ package ru.budgetapteka.pharmacyecosystem.service;
 
 import ru.budgetapteka.pharmacyecosystem.exceptions.WrongInnException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Cost {
 
@@ -16,10 +21,22 @@ public class Cost {
             this.inn = inn;
             this.amount = amount;
             this.description = description;
+            this.forPharmacyNumber = parsePharmaciesFromDescription(description);
         } else
             throw new WrongInnException();
+    }
 
-
+    private List<Integer> parsePharmaciesFromDescription(String description) {
+        Pattern pattern = Pattern.compile("!!.+!!");
+        Matcher matcher = pattern.matcher(description);
+        if (matcher.find()) {
+            String[] pharmArr = description.substring(matcher.start() + 2, matcher.end() - 2).split(",");
+            return Arrays.stream(pharmArr)
+                    .map(String::strip)
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
