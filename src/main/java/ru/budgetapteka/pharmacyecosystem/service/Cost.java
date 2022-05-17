@@ -1,40 +1,49 @@
 package ru.budgetapteka.pharmacyecosystem.service;
 
+import ru.budgetapteka.pharmacyecosystem.exceptions.WrongInnException;
+
 import java.util.List;
 
 public class Cost {
 
-    private int inn;
-    private int amount;
-    private List<Integer> forPharmacyNum;
+    private String inn;
+    private double amount;
+    private String description;
+    private List<Integer> forPharmacyNumber; // для каких аптек учитывать расход
 
-    public Cost(int inn, int amount, List<Integer> forPharmacyNum) {
-        this.inn = inn;
-        this.amount = amount;
-        this.forPharmacyNum = forPharmacyNum;
+    public Cost(String inn, double amount, String description) throws WrongInnException {
+        if (!inn.isBlank()) {
+            this.inn = inn;
+            this.amount = amount;
+            this.description = description;
+        } else
+            throw new WrongInnException();
+
+
     }
 
-    public int getInn() {
+    @Override
+    public String toString() {
+        return "Cost{" +
+                "inn='" + inn + '\'' +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
+    public String getInn() {
         return inn;
     }
 
-    public void setInn(int inn) {
-        this.inn = inn;
-    }
-
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public String getDescription() {
+        return description;
     }
 
-    public List<Integer> getForPharmacyNum() {
-        return forPharmacyNum;
-    }
-
-    public void setForPharmacyNum(List<Integer> forPharmacyNum) {
-        this.forPharmacyNum = forPharmacyNum;
+    public List<Integer> getForPharmacyNumber() {
+        return forPharmacyNumber;
     }
 }
