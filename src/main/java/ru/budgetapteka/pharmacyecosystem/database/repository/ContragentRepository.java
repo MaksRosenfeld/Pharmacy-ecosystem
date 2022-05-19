@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 
 @Repository
-public interface ContragentRepository extends JpaRepository<ContragentNew, Integer> {
+public interface ContragentRepository extends JpaRepository<ContragentNew, Long> {
 }
