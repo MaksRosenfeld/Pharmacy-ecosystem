@@ -4,13 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.service.ContragentServiceImpl;
+import ru.budgetapteka.pharmacyecosystem.service.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.ExcelHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class WebController {
@@ -21,21 +25,28 @@ public class WebController {
     @Autowired
     private ExcelHandler excelHandler;
 
-    @GetMapping("/home")
-    public String showMainPage(Model model) {
-        model.addAttribute("costs", excelHandler.getAllCosts());
-        return "main-page";
+    @GetMapping("/")
+    public String showMainPage() {
+        return "home-page-dashboard";
     }
+
+    @ModelAttribute("missingInn")
+    public List<Cost> getMissingInn() {
+        return excelHandler.getMissingInn();
+    }
+
+    @ModelAttribute("allCosts")
+    public List<Cost> getCostList() {
+        return excelHandler.getCostList();
+    }
+
 
     @PostMapping("/upload")
-    public String uploadExcelFile(@RequestParam("excelfile") MultipartFile file) throws IOException {
+    public String uploadExcelFile(@RequestParam("excelfile") MultipartFile file, Model model) throws IOException {
+        System.out.println(file.getOriginalFilename());
         excelHandler.setFile(file.getInputStream());
-        return "redirect:/home";
-    }
-
-    @GetMapping("/")
-    public String uploadPage() {
-        return "upload-page";
+        excelHandler.getAllCosts();
+        return "redirect:/";
     }
 
 

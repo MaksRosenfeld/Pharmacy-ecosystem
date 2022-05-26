@@ -17,7 +17,7 @@ public class ExcelHandler {
 
     private InputStream file;
 
-//    @Value("C:\\JavaProjects\\Pharmacy-ecosystem\\src\\main\\resources\\excel_files\\Выписка_01.01.2022-31.01.2022_1543.xlsx")
+    @Value("C:\\JavaProjects\\Pharmacy-ecosystem\\src\\main\\resources\\excel_files\\Выписка_01.01.2022-31.01.2022_1543.xlsx")
     private String filePath;
     private final int debetColumn = 7; // № столбца с суммой расходов
     private final int costStart = 13; // строка начала расходов в листе
@@ -25,24 +25,15 @@ public class ExcelHandler {
     private final int descriptionColumn = 9; // № столбца с описанием
 
     private List<Cost> missingInn = new ArrayList<>();
-
+    private List<Cost> costList = new ArrayList<>();
 
     @Autowired
     private ContragentServiceImpl contragentService;
 
 
-
-    private Sheet getSheet() throws IOException {
-        try (Workbook workbook = new XSSFWorkbook(this.file)) {
-            return workbook.getSheetAt(0);
-        } catch (IOException e) {
-            System.out.println("Problem with file");
-            throw new IOException();
-        }
-    }
-
     public List<Cost> getAllCosts() {
-        List<Cost> costList = new ArrayList<>();
+        this.costList = new ArrayList<>();
+        this.missingInn = new ArrayList<>();
         Sheet excelPage;
         try {
             excelPage = getSheet();
@@ -54,7 +45,6 @@ public class ExcelHandler {
                     String description = row.getCell(this.descriptionColumn).getStringCellValue();
                     try {
                         Cost cost = new Cost(inn, amount, description);
-                        System.out.println(cost.getInn());
                         costList.add(cost);
                         if (!contragentService.isExistingContragent(cost)) {
                             System.out.println(cost.getInn());
@@ -66,7 +56,7 @@ public class ExcelHandler {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
         return costList;
     }
@@ -79,8 +69,21 @@ public class ExcelHandler {
         return file;
     }
 
+    public List<Cost> getCostList() {
+        return costList;
+    }
+
     public void setFile(InputStream file) {
         this.file = file;
+    }
+
+    private Sheet getSheet() throws IOException {
+        try (Workbook workbook = new XSSFWorkbook(file)) {
+            return workbook.getSheetAt(0);
+        } catch (IOException e) {
+            System.out.println("Problem with file");
+            throw new IOException();
+        }
     }
 
 

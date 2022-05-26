@@ -1,0 +1,12 @@
+.blue {
+    background-color: purple;
+}
+
+.myshadow {
+    -webkit-box-shadow: 0px 11px 11px 1px rgba(0,0,0,0.35);
+    box-shadow: 0px 11px 11px 1px rgba(0,0,0,0.35);
+}
+
+.purple-gradient {
+    background: linear-gradient(45deg, #37ecba, #72afd3);
+}
