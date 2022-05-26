@@ -25,46 +25,49 @@
     <div class="my-4 text-center">
         <h3>Данные контрагенты отсутсвуют в базе</h3>
     </div>
-    <form th:action="@{/success}" method="post">
+    <form id="addNewContragents" th:action="@{/success}" method="post">
         <div class="table-responsive">
-        <table class="table table-hover" th:object="${contragent}">
-            <thead>
-            <tr class="table-warning fs-5">
-                <th scope="col">ИНН</th>
-                <th scope="col">Имя</th>
-                <th scope="col">Категория</th>
-                <th scope="col">Исключить</th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
+            <table class="table table-hover" th:object="${contragent}">
+                <thead>
+                <tr class="table-warning fs-5">
+                    <th scope="col">ИНН</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Категория</th>
+                    <th class="text-center" scope="col">Исключить</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
 
-            <tr th:each="missed: ${missingInn}">
-                <th scope="row" th:text="${missed.inn}" th:field="*{inn}">1</th>
-                <td th:text="${missed.name}" th:field="*{name}">ООО</td>
-                <td>
-                    <select name="category" class="form-select form-select-sm" aria-label=".form-select-sm">
-                        <option selected>Выбери категорию</option>
-                        <option th:each="categ: ${categories}" th:text="${categ.category}" th:value="${categ.id}">One
-                        </option>
-                    </select>
-                </td>
-                <td>
-                    <select class="form-select form-select-sm" aria-label=".form-select-sm">
-                        <option selected>Нет</option>
-                        <option>Да</option>
-                    </select>
+                <tr th:each="missed: ${missingInn}">
+                    <th scope="row" th:text="${missed.inn}" th:field="*{inn}">1</th>
+                    <td th:text="${missed.name}" th:field="*{name}">ООО</td>
+                    <td>
 
-                </td>
+                        <select name="category" class="form-select form-select-sm">
+                            <option value="" disabled selected>Выбери категорию</option>
+                            <option th:each="categ: ${categories}" th:text="${categ.category}" th:value="${categ.id}">
+                                One
+                            </option>
+                        </select>
 
-                <td>
-                    <button type="submit" name="add" th:value="true" class="btn btn-danger btn-sm">Добавить</button>
+                    </td>
+                    <td class="text-center">
 
-                </td>
-            </tr>
+                            <input name="exclude" class="form-check-input" type="checkbox" id="checkboxNoLabel"
+                                   value="true">
 
-            </tbody>
-        </table>
+
+                    </td>
+
+                    <td>
+                        <button type="submit" class="btn btn-danger btn-sm">Добавить</button>
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
         </div>
     </form>
 </div>

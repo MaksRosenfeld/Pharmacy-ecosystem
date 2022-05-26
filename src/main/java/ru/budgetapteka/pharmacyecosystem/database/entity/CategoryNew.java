@@ -8,6 +8,7 @@ import java.util.Objects;
 public class CategoryNew {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+//    Добавить зависимость OneToMany и ManyToOne
     @Column(name = "id", nullable = false)
     private Long id;
     @Basic
