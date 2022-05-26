@@ -9,6 +9,7 @@ import ru.budgetapteka.pharmacyecosystem.service.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.ExcelHandler;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -27,7 +28,7 @@ public class WebRestController {
         return excelHandler.getAllCosts();
     }
     @GetMapping("/diff")
-    public List<Cost> showNewInn() {
+    public Set<Cost> showNewInn() {
         return excelHandler.getMissingInn();
     }
 }

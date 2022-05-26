@@ -13,9 +13,9 @@ public class ContragentNew {
     @Basic
     @Column(name = "name", nullable = false, length = -1)
     private String name;
-    @Basic
-    @Column(name = "category_id", nullable = true)
-    private Integer categoryId;
+    @OneToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryNew categoryId;
     @Basic
     @Column(name = "exclude", nullable = false)
     private Boolean exclude;
@@ -36,11 +36,11 @@ public class ContragentNew {
         this.name = name;
     }
 
-    public Integer getCategoryId() {
+    public CategoryNew getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(CategoryNew categoryId) {
         this.categoryId = categoryId;
     }
 

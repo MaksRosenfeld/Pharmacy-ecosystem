@@ -19,12 +19,13 @@ public class ExcelHandler {
 
     @Value("C:\\JavaProjects\\Pharmacy-ecosystem\\src\\main\\resources\\excel_files\\Выписка_01.01.2022-31.01.2022_1543.xlsx")
     private String filePath;
-    private final int debetColumn = 7; // № столбца с суммой расходов
     private final int costStart = 13; // строка начала расходов в листе
+    private final int debetColumn = 7; // № столбца с суммой расходов
+    private final int nameColumn = 3; // № столбца с названием фирмы
     private final int innColumn = 4; // № столбца с ИНН
     private final int descriptionColumn = 9; // № столбца с описанием
 
-    private List<Cost> missingInn = new ArrayList<>();
+    private Set<Cost> missingInn = new HashSet<>();
     private List<Cost> costList = new ArrayList<>();
 
     @Autowired
@@ -33,21 +34,21 @@ public class ExcelHandler {
 
     public List<Cost> getAllCosts() {
         this.costList = new ArrayList<>();
-        this.missingInn = new ArrayList<>();
+        this.missingInn = new HashSet<>();
         Sheet excelPage;
         try {
             excelPage = getSheet();
             for (Row row : excelPage) {
                 if (row.getRowNum() >= this.costStart // расходы начинаются стандартно с 13 ряда
                         && row.getCell(this.debetColumn).getCellType() == CellType.NUMERIC) {
+                    String name = row.getCell(this.nameColumn).getStringCellValue();
                     String inn = row.getCell(this.innColumn).getStringCellValue();
                     double amount = row.getCell(this.debetColumn).getNumericCellValue();
                     String description = row.getCell(this.descriptionColumn).getStringCellValue();
                     try {
-                        Cost cost = new Cost(inn, amount, description);
+                        Cost cost = new Cost(inn, name, amount, description);
                         costList.add(cost);
                         if (!contragentService.isExistingContragent(cost)) {
-                            System.out.println(cost.getInn());
                             missingInn.add(cost);
                         }
                     } catch (WrongInnException e) {
@@ -61,7 +62,7 @@ public class ExcelHandler {
         return costList;
     }
 
-    public List<Cost> getMissingInn() {
+    public Set<Cost> getMissingInn() {
         return missingInn;
     }
 

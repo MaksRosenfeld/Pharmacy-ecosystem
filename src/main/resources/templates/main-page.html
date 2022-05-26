@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -10,8 +10,9 @@
 
 </head>
 <body>
-<div class="d-flex mx-5 bg-dark mt-2 mb-5 justify-content-center align-items-center rounded myshadow" style="height: 80px; display: none">
-    <form class="col-6" th:action="@{/upload}" method="post" enctype="multipart/form-data">
+<div class="d-flex mx-5 bg-dark mt-2 mb-5 justify-content-center align-items-center rounded myshadow"
+     style="height: 80px">
+    <form class="d-flex col-6" th:action="@{/upload}" method="post" enctype="multipart/form-data">
         <div class="input-group">
             <button class="btn btn-outline-warning" type="submit" id="uploadedFile">Загрузить</button>
             <input type="file" class="form-control" name="excelfile" id="inputGroupFile03"
@@ -20,36 +21,52 @@
         </div>
     </form>
 </div>
-<div class="d-flex mx-auto mb-5 col-6 shadow rounded">
-<table class="table table-hover">
-    <thead>
-    <tr class="table-warning fs-5">
-        <th scope="col">ИНН</th>
-        <th scope="col">Имя</th>
-        <th scope="col">Категория</th>
-        <th scope="col">Тип</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-    </tr>
-    <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-    </tr>
-    <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>@twitter</td>
-    </tr>
-    </tbody>
-</table>
+<div th:if="${missingInn.size() > 0}" class="col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
+    <div class="my-4 text-center">
+        <h3>Данные контрагенты отсутсвуют в базе</h3>
+    </div>
+    <form th:action="@{/success}" method="post">
+        <div class="table-responsive">
+        <table class="table table-hover" th:object="${contragent}">
+            <thead>
+            <tr class="table-warning fs-5">
+                <th scope="col">ИНН</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Категория</th>
+                <th scope="col">Исключить</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="missed: ${missingInn}">
+                <th scope="row" th:text="${missed.inn}" th:field="*{inn}">1</th>
+                <td th:text="${missed.name}" th:field="*{name}">ООО</td>
+                <td>
+                    <select name="category" class="form-select form-select-sm" aria-label=".form-select-sm">
+                        <option selected>Выбери категорию</option>
+                        <option th:each="categ: ${categories}" th:text="${categ.category}" th:value="${categ.id}">One
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-select form-select-sm" aria-label=".form-select-sm">
+                        <option selected>Нет</option>
+                        <option>Да</option>
+                    </select>
+
+                </td>
+
+                <td>
+                    <button type="submit" name="add" th:value="true" class="btn btn-danger btn-sm">Добавить</button>
+
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+        </div>
+    </form>
 </div>
 <div id="5-boxes" class="flex-row mt-4 mx-5 px-4 justify-content-evenly" style="display: none; height: 150px">
     <div class="card shadow purple-gradient" style="width: 200px">
@@ -86,9 +103,9 @@
 </div>
 
 
-
 <!-- JavaScript Bundle with Popper -->
-<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+        crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"

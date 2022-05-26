@@ -5,6 +5,7 @@ import ru.budgetapteka.pharmacyecosystem.exceptions.WrongInnException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -12,13 +13,15 @@ import java.util.stream.Collectors;
 public class Cost {
 
     private String inn;
+    private String name;
     private double amount;
     private String description;
     private List<Integer> forPharmacyNumber; // для каких аптек учитывать расход
 
-    public Cost(String inn, double amount, String description) throws WrongInnException {
+    public Cost(String inn, String name, double amount, String description) throws WrongInnException {
         if (!inn.isBlank()) {
             this.inn = inn;
+            this.name = name;
             this.amount = amount;
             this.description = description;
             this.forPharmacyNumber = parsePharmaciesFromDescription(description);
@@ -52,6 +55,10 @@ public class Cost {
         return inn;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public double getAmount() {
         return amount;
     }
@@ -62,5 +69,18 @@ public class Cost {
 
     public List<Integer> getForPharmacyNumber() {
         return forPharmacyNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cost cost = (Cost) o;
+        return inn.equals(cost.inn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(inn);
     }
 }
