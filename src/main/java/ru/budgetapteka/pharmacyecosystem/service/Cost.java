@@ -2,6 +2,7 @@ package ru.budgetapteka.pharmacyecosystem.service;
 
 import ru.budgetapteka.pharmacyecosystem.exceptions.WrongInnException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,21 +13,25 @@ import java.util.stream.Collectors;
 
 public class Cost {
 
-    private String inn;
+    private Long inn;
     private String name;
-    private double amount;
+    private BigDecimal amount;
     private String description;
     private List<Integer> forPharmacyNumber; // для каких аптек учитывать расход
 
-    public Cost(String inn, String name, double amount, String description) throws WrongInnException {
+    public Cost(String inn, String name, BigDecimal amount, String description) throws WrongInnException {
         if (!inn.isBlank()) {
-            this.inn = inn;
+            this.inn = Long.parseLong(inn);
             this.name = name;
             this.amount = amount;
             this.description = description;
             this.forPharmacyNumber = parsePharmaciesFromDescription(description);
         } else
             throw new WrongInnException();
+    }
+
+    public Cost(Long inn) {
+        this.inn = inn;
     }
 
     private List<Integer> parsePharmaciesFromDescription(String description) {
@@ -51,7 +56,7 @@ public class Cost {
                 '}';
     }
 
-    public String getInn() {
+    public Long getInn() {
         return inn;
     }
 
@@ -59,7 +64,7 @@ public class Cost {
         return name;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.budgetapteka.pharmacyecosystem.service.ContragentServiceImpl;
 import ru.budgetapteka.pharmacyecosystem.service.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.ExcelHandler;
+import ru.budgetapteka.pharmacyecosystem.service.ExcelHandlerBank;
 
 import java.util.List;
 import java.util.Set;
@@ -19,16 +19,16 @@ public class WebRestController {
     private ContragentServiceImpl contragentService;
 
     @Autowired
-    private ExcelHandler excelHandler;
+    private ExcelHandlerBank excelHandlerBank;
 
 
 
     @GetMapping("/")
     public List<Cost> showMainPage() {
-        return excelHandler.getAllCosts();
+        return excelHandlerBank.getAllCosts();
     }
     @GetMapping("/diff")
     public Set<Cost> showNewInn() {
-        return excelHandler.getMissingInn();
+        return excelHandlerBank.getMissingInn();
     }
 }

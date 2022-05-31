@@ -1,12 +1,14 @@
 package ru.budgetapteka.pharmacyecosystem.database.entity;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "contragent_new", schema = "public", catalog = "financial_analytics")
 public class ContragentNew {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "inn", nullable = false)
     private Long inn;
@@ -19,6 +21,13 @@ public class ContragentNew {
     @Basic
     @Column(name = "exclude", nullable = false)
     private Boolean exclude;
+
+    public ContragentNew(Long inn, String name, CategoryNew categoryId, Boolean exclude) {
+        this.inn = inn;
+        this.name = name;
+        this.categoryId = categoryId;
+        this.exclude = exclude;
+    }
 
     public Long getInn() {
         return inn;

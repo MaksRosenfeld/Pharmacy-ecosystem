@@ -18,6 +18,8 @@ public class CategoryNew {
     @Column(name = "type", nullable = false, length = -1)
     private String type;
 
+
+
     public Long getId() {
         return id;
     }

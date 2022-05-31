@@ -6,6 +6,7 @@ import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.CategoryRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -16,5 +17,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryNew> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Optional<CategoryNew> getCategoryWithId(Long id) {
+        return categoryRepository.findById(id);
     }
 }

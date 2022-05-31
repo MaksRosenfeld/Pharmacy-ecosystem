@@ -3,22 +3,19 @@ package ru.budgetapteka.pharmacyecosystem.service;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.exceptions.WrongInnException;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Component
-public class ExcelHandler {
+public class ExcelHandlerBank {
 
     private InputStream file;
 
-    @Value("C:\\JavaProjects\\Pharmacy-ecosystem\\src\\main\\resources\\excel_files\\Выписка_01.01.2022-31.01.2022_1543.xlsx")
-    private String filePath;
     private final int costStart = 13; // строка начала расходов в листе
     private final int debetColumn = 7; // № столбца с суммой расходов
     private final int nameColumn = 3; // № столбца с названием фирмы
@@ -43,7 +40,7 @@ public class ExcelHandler {
                         && row.getCell(this.debetColumn).getCellType() == CellType.NUMERIC) {
                     String name = row.getCell(this.nameColumn).getStringCellValue();
                     String inn = row.getCell(this.innColumn).getStringCellValue();
-                    double amount = row.getCell(this.debetColumn).getNumericCellValue();
+                    BigDecimal amount = BigDecimal.valueOf(row.getCell(this.debetColumn).getNumericCellValue());
                     String description = row.getCell(this.descriptionColumn).getStringCellValue();
                     try {
                         Cost cost = new Cost(inn, name, amount, description);

@@ -22,6 +22,11 @@ public class ContragentServiceImpl implements ContragentService{
     @Override
     public boolean isExistingContragent(Cost cost) {
         return getAllContragents().stream()
-                .anyMatch(c -> String.valueOf(c.getInn()).equals(cost.getInn()));
+                .anyMatch(c -> c.getInn().equals(cost.getInn()));
+    }
+
+    @Override
+    public void saveNewContragent(ContragentNew contragent) {
+        contragentRepository.save(contragent);
     }
 }
