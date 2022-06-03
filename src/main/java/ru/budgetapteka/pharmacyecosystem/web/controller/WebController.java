@@ -1,12 +1,16 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.service.*;
+import ru.budgetapteka.pharmacyecosystem.service.excelservice.AbstractExcelFile;
+import ru.budgetapteka.pharmacyecosystem.service.excelservice.ExcelResults;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,19 +22,21 @@ import java.util.*;
 public class WebController {
 
     @Autowired
-    private ContragentServiceImpl contragentService;
+    private ContragentService contragentService;
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     @Autowired
-    private ExcelHandlerBank excelHandlerBank;
+    private ExcelResults excelResults;
 
     @Autowired
-    private ExcelHandler1C excelHandler1C;
+    @Qualifier("statementBank")
+    private AbstractExcelFile statementBank;
 
-    private InputStream bankStatement;
-    private InputStream oneCStatement;
+    @Autowired
+    @Qualifier("statement1C")
+    private AbstractExcelFile statement1C;
 
     @GetMapping("/")
     public String showMainPage() {
@@ -44,36 +50,36 @@ public class WebController {
 
     @ModelAttribute("missingInn")
     public Set<Cost> getMissingInn() {
-        return excelHandlerBank.getMissingInn();
+        return contragentService.getMissingInn();
     }
 
-    @ModelAttribute("allCosts")
-    public List<Cost> getCostList() {
-        return excelHandlerBank.getCostList();
-    }
+//    @ModelAttribute("allCosts")
+//    public List<Cost> getCostList() {
+//        return excelResults.getCostList();
+//    }
 
     @ModelAttribute("totalTurnOver")
-    public BigDecimal getTotalTurnOver() {return excelHandler1C.getTotalTurnOver(); }
+    public BigDecimal getTotalTurnOver() {
+        return excelResults.getTurnOver();}
 
     @ModelAttribute("totalGrossProfit")
-    public BigDecimal getTotalGrossProfit() {return excelHandler1C.getTotalGrossProfit();}
+    public BigDecimal getTotalGrossProfit() {
+        return excelResults.getGrossProfit();}
 
     @ModelAttribute("dateOfStatement")
-    public LocalDate getDateOfStatement() {return excelHandler1C.getDateOf1CStatement();}
+    public LocalDate getDateOfStatement() {
+        return excelResults.getDateOfStatements();}
 
 
     @PostMapping("/upload")
     public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
                                   @RequestParam("1C-statement") MultipartFile oneCStatement) throws IOException {
-        this.bankStatement = bankStatement.getInputStream();
-        this.oneCStatement = oneCStatement.getInputStream();
-        excelHandlerBank.setFile(this.bankStatement);
-        excelHandler1C.setFile(this.oneCStatement);
-        excelHandlerBank.getAllCosts();
-        excelHandler1C.getDataFrom1CExcel();
+        statementBank.parse(bankStatement.getInputStream());
+        statement1C.parse(oneCStatement.getInputStream());
         return "redirect:/";
     }
 
+// ИЗМЕНИТЬ МЕТОД ДОБАВЛЕНИЯ
     @PostMapping(params = "add=true")
     public String addNewContragent(@RequestParam(name = "inn") Long inn,
                                    @RequestParam(name = "name") String name,

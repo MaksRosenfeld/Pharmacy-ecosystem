@@ -14,7 +14,7 @@ public class CategoryNew {
     @Basic
     @Column(name = "category", nullable = false, length = -1)
     private String category;
-    @Basic
+
     @Column(name = "type", nullable = false, length = -1)
     private String type;
 

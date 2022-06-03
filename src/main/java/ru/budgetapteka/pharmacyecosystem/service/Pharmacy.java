@@ -1,16 +1,21 @@
 package ru.budgetapteka.pharmacyecosystem.service;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@AllArgsConstructor
+@Data
 public class Pharmacy {
 
-    private int id;
+    private Long id;
     private BigDecimal turnOverForMonth;
     private BigDecimal grossProfit;
     private BigDecimal costPrice;
+
+    public Pharmacy(Long id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

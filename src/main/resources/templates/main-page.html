@@ -44,7 +44,7 @@
         </div>
     </form>
 </div>
-<div th:if="${missingInn.size() > 0}" class="col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
+<div th:unless="${missingInn == null}" class="col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
     <div class="my-4 text-center">
         <h3>Данные контрагенты отсутсвуют в базе</h3>
     </div>
@@ -100,26 +100,26 @@
     <div class="card shadow green-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Выручка</h5>
         <div class="card-body">
-            <h4 th:unless="${totalTurnOver == 0}" th:text="${#numbers.formatCurrency(totalTurnOver)}" class="card-text"></h4>
+            <h4 th:unless="${totalTurnOver == null}" th:text="${#numbers.formatCurrency(totalTurnOver)}" class="card-text"></h4>
             <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}" class="card-title" style="color: white"></p>
         </div>
     </div>
     <div class="card shadow yellow-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Валовая прибыль</h5>
         <div class="card-body">
-            <h4 th:unless="${totalGrossProfit == 0}" th:text="${#numbers.formatCurrency(totalGrossProfit)}" class="card-title"></h4>
-            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}" class="card-title" style="color: white"></p>
+            <h4 th:unless="${totalGrossProfit == null}" th:text="${#numbers.formatCurrency(totalGrossProfit)}" class="card-title"></h4>
+            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}" class="card-text" style="color: white"></p>
         </div>
     </div>
     <div class="card shadow white-gradient" style="width: 230px; height: 130px">
-        <h5 class="card-header">Выручка</h5>
+        <h5 class="card-header">Чистая прибыль</h5>
         <div class="card-body">
-            <h3 class="card-title">Выручка</h3>
+            <h4 class="card-title">5000000</h4>
             <p class="card-text">10 000 000</p>
         </div>
     </div>
     <div class="card shadow purple-gradient" style="width: 230px; height: 130px">
-        <h5 class="card-header">Выручка</h5>
+        <h5 class="card-header">% продаж</h5>
         <div class="card-body">
             <h3 class="card-title">Выручка</h3>
             <p class="card-text">10 000 000</p>
