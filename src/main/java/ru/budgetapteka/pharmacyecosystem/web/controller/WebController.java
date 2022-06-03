@@ -53,10 +53,6 @@ public class WebController {
         return contragentService.getMissingInn();
     }
 
-//    @ModelAttribute("allCosts")
-//    public List<Cost> getCostList() {
-//        return excelResults.getCostList();
-//    }
 
     @ModelAttribute("totalTurnOver")
     public BigDecimal getTotalTurnOver() {
