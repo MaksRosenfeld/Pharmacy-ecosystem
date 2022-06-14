@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.service.excelservice;
+package ru.budgetapteka.pharmacyecosystem.service.excel;
 
 import lombok.Data;
 import org.apache.poi.ss.usermodel.Sheet;

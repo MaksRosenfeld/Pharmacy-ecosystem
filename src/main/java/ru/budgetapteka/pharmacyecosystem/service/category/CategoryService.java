@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.service;
+package ru.budgetapteka.pharmacyecosystem.service.category;
 
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 

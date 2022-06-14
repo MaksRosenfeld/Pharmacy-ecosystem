@@ -1,6 +1,5 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -9,11 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.service.*;
-import ru.budgetapteka.pharmacyecosystem.service.excelservice.AbstractExcelFile;
-import ru.budgetapteka.pharmacyecosystem.service.excelservice.ExcelResults;
+import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
+import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
+import ru.budgetapteka.pharmacyecosystem.service.excel.AbstractExcelFile;
+import ru.budgetapteka.pharmacyecosystem.service.excel.FinanceResultTo;
+import ru.budgetapteka.pharmacyecosystem.service.finance.Finance;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -28,7 +29,7 @@ public class WebController {
     private CategoryService categoryService;
 
     @Autowired
-    private ExcelResults excelResults;
+    private FinanceResultTo financeResult;
 
     @Autowired
     @Qualifier("statementBank")
@@ -38,10 +39,8 @@ public class WebController {
     @Qualifier("statement1C")
     private AbstractExcelFile statement1C;
 
-    @GetMapping("/")
-    public String showMainPage() {
-        return "main-page";
-    }
+    @Autowired
+    private Finance finance;
 
     @ModelAttribute("categories")
     public List<CategoryNew> getAllCategories() {
@@ -56,39 +55,43 @@ public class WebController {
 
     @ModelAttribute("totalTurnOver")
     public BigDecimal getTotalTurnOver() {
-        return excelResults.getTurnOver();}
+        return financeResult.getTurnOver();
+    }
 
     @ModelAttribute("totalGrossProfit")
     public BigDecimal getTotalGrossProfit() {
-        return excelResults.getGrossProfit();}
+        return financeResult.getGrossProfit();
+    }
 
     @ModelAttribute("dateOfStatement")
     public LocalDate getDateOfStatement() {
-        return excelResults.getDateOfStatements();}
+        return financeResult.getDateOfStatements();
+    }
 
+    @GetMapping("/")
+    public String showMainPage() {
+        return "main-page";
+    }
 
     @PostMapping("/upload")
     public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
                                   @RequestParam("1C-statement") MultipartFile oneCStatement) throws IOException {
         statementBank.parse(bankStatement.getInputStream());
         statement1C.parse(oneCStatement.getInputStream());
+        contragentService.countMissingInn();
         return "redirect:/";
     }
 
-// ИЗМЕНИТЬ МЕТОД ДОБАВЛЕНИЯ
     @PostMapping(params = "add=true")
     public String addNewContragent(@RequestParam(name = "inn") Long inn,
                                    @RequestParam(name = "name") String name,
-                                   @RequestParam(name = "categoryID") Optional<Long> id,
+                                   @RequestParam(name = "categoryID") Long id,
                                    @RequestParam(name = "exclude") Optional<Boolean> exclude) {
 
-        if (id.isPresent()) {
-            Optional<CategoryNew> categoryWithId = categoryService.getCategoryWithId(id.get());
-            ContragentNew contragentNew = new ContragentNew(inn, name, categoryWithId.get(), exclude.orElse(false));
-            contragentService.saveNewContragent(contragentNew);
-            getMissingInn().remove(new Cost(inn));
-            return "redirect:/";
-        }
+        Optional<CategoryNew> categoryWithId = categoryService.getCategoryWithId(id);
+        ContragentNew newContragent = contragentService.createNewContragent(inn, name, categoryWithId.get(), exclude.orElse(false));
+        contragentService.saveNewContragent(newContragent);
+        contragentService.getMissingInn().remove(new Cost(inn));
         return "main-page";
     }
 

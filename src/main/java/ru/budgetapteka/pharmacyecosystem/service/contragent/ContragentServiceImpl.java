@@ -1,37 +1,50 @@
-package ru.budgetapteka.pharmacyecosystem.service;
+package ru.budgetapteka.pharmacyecosystem.service.contragent;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepository;
-import ru.budgetapteka.pharmacyecosystem.service.excelservice.ExcelResults;
+import ru.budgetapteka.pharmacyecosystem.service.Cost;
+import ru.budgetapteka.pharmacyecosystem.service.CostType;
+import ru.budgetapteka.pharmacyecosystem.service.excel.FinanceResultTo;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
 @Service
-public class ContragentServiceImpl implements ContragentService{
+public class ContragentServiceImpl implements ContragentService {
+
+    private Set<Cost> missingInn;
 
     @Autowired
     private ContragentRepository contragentRepository;
 
     @Autowired
-    private ExcelResults excelResults;
+    private FinanceResultTo financeResults;
+
 
     @Override
-    public Set<Cost> getMissingInn() {
-        List<Cost> allCosts = excelResults.getCostList();
+    public void countMissingInn() {
+        List<Cost> allCosts = financeResults.getCostList();
         if (allCosts != null) {
             List<ContragentNew> allContragents = contragentRepository.findAll();
-            return allCosts.stream()
+            this.missingInn = allCosts.stream()
                     .filter(cost -> allContragents.stream()
                             .noneMatch(contr -> cost.getInn().equals(contr.getInn())))
                     .collect(Collectors.toSet());
         }
-        return null;
 
+
+    }
+
+    @Override
+    public ContragentNew createNewContragent(Long inn, String name, CategoryNew id, Boolean exclude) {
+        return new ContragentNew(inn, name, id, exclude);
     }
 
     @Override

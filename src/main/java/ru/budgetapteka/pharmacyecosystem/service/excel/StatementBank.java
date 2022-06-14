@@ -1,9 +1,11 @@
-package ru.budgetapteka.pharmacyecosystem.service.excelservice;
+package ru.budgetapteka.pharmacyecosystem.service.excel;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.service.Cost;
@@ -22,6 +24,8 @@ import java.util.Map;
 @Component
 public class StatementBank extends AbstractExcelFile {
 
+    private static final Logger log = LoggerFactory.getLogger(StatementBank.class);
+
     private final int COST_START = 13; // строка начала расходов в листе
     private final int DEBET_COLUMN = 7; // № столбца с суммой расходов
     private final int NAME_COLUMN = 3; // № столбца с названием фирмы
@@ -29,7 +33,7 @@ public class StatementBank extends AbstractExcelFile {
     private final int DESCRIPTION_COLUMN = 9; // № столбца с описанием
 
     @Autowired
-    private ExcelResults excelResults; // все результаты после парсинга
+    private FinanceResultTo financeResults; // все результаты после парсинга
 
     // парсит данные с файла и вносит результаты
     @Override
@@ -37,6 +41,7 @@ public class StatementBank extends AbstractExcelFile {
         try {
             super.setWorkbook(new XSSFWorkbook(inputStream));
             Sheet sheetForParsing = super.createSheetForParsing();
+            log.info("Читаем excel файл: {}", sheetForParsing.getSheetName());
             List<Cost> costList = new ArrayList<>();
             List<Cell> cellWithTypos = new ArrayList<>();
             Map<AbstractExcelFile, List<Cell>> mapCellsWithTypos = new HashMap<>();
@@ -56,9 +61,11 @@ public class StatementBank extends AbstractExcelFile {
                     }
                 }
             }
+            log.info("Найдено записей с ошибками: {}", cellWithTypos.size());
             mapCellsWithTypos.put(this, cellWithTypos);
-            excelResults.setCellsWithTypos(mapCellsWithTypos);
-            excelResults.setCostList(costList);
+            financeResults.setCellsWithTypos(mapCellsWithTypos);
+            log.info("Создаем список расходов");
+            financeResults.setCostList(costList);
         } catch (IOException e) {
             e.printStackTrace();
         }

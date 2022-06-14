@@ -1,12 +1,10 @@
-package ru.budgetapteka.pharmacyecosystem.service.excelservice;
+package ru.budgetapteka.pharmacyecosystem.service.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
