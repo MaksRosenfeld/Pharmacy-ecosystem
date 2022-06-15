@@ -23,9 +23,6 @@ public class FinanceResultTo {
     private BigDecimal grossProfit; // валовая прибыль
     private BigDecimal costPrice;
     private LocalDate dateOfStatements; // дата выписки
-    private BigDecimal fixedCosts;
-    private BigDecimal variableCosts;
-    private BigDecimal netProfit;
 
     protected void setCostList(List<Cost> costList) {
         this.costList = costList;
@@ -53,13 +50,5 @@ public class FinanceResultTo {
 
     protected void setDateOfStatements(LocalDate dateOfStatements) {
         this.dateOfStatements = dateOfStatements;
-    }
-
-    protected void setFixedCosts(BigDecimal fixedCosts) {this.fixedCosts = fixedCosts;}
-
-    protected void setVariableCosts(BigDecimal variableCosts) {this.variableCosts = variableCosts;}
-
-    protected void setNetProfit(BigDecimal netProfit) {
-        this.netProfit = netProfit;
     }
 }

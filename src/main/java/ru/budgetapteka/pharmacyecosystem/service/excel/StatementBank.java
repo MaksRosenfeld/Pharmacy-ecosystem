@@ -19,15 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
- Парсит банковскую выписку ФК Открытие - проверяет на наличие записей
- выписки в базе контрагентов, исключает поставщиков (ContragentNew.exclude = true).
- Все операции с банком ФК Открытие игнорируются:
- - % по овердрафту
- - % за обслуживание счета
- - Кредитные платежи
- */
-
 @Getter
 @Setter
 @Component
@@ -62,7 +53,7 @@ public class StatementBank extends AbstractExcelFile {
                     BigDecimal amount = BigDecimal.valueOf(row.getCell(this.DEBET_COLUMN).getNumericCellValue());
                     Cell description = row.getCell(this.DESCRIPTION_COLUMN);
                     if (!inn.isBlank() && !amount.toString().isBlank()) {
-                        List<Pharmacy> belongingCosts = DataExtractor.extractPharmacyNumbers(description); // кому принадлежат расходы
+                        List<Pharmacy> belongingCosts = DataExtractor.extractPharmacyNumbers(description);
                         costList.add(new Cost(inn, name, amount, description.getStringCellValue(), belongingCosts));
                     } else {
                         Cell typoCell = row.getCell(this.INN_COLUMN);
