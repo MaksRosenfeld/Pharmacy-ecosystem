@@ -1,5 +1,6 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
+import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,8 @@ import ru.budgetapteka.pharmacyecosystem.service.*;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.excel.AbstractExcelFile;
+import ru.budgetapteka.pharmacyecosystem.service.excel.FinanceCounter;
 import ru.budgetapteka.pharmacyecosystem.service.excel.FinanceResultTo;
-import ru.budgetapteka.pharmacyecosystem.service.finance.Finance;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -40,7 +41,7 @@ public class WebController {
     private AbstractExcelFile statement1C;
 
     @Autowired
-    private Finance finance;
+    private FinanceCounter financeCounter;
 
     @ModelAttribute("categories")
     public List<CategoryNew> getAllCategories() {
@@ -51,7 +52,6 @@ public class WebController {
     public Set<Cost> getMissingInn() {
         return contragentService.getMissingInn();
     }
-
 
     @ModelAttribute("totalTurnOver")
     public BigDecimal getTotalTurnOver() {
@@ -68,6 +68,11 @@ public class WebController {
         return financeResult.getDateOfStatements();
     }
 
+    @ModelAttribute("netProfit")
+    public BigDecimal getNetProfit() {
+        return financeResult.getNetProfit();
+    }
+
     @GetMapping("/")
     public String showMainPage() {
         return "main-page";
@@ -79,6 +84,7 @@ public class WebController {
         statementBank.parse(bankStatement.getInputStream());
         statement1C.parse(oneCStatement.getInputStream());
         contragentService.countMissingInn();
+        if (contragentService.getMissingInn().isEmpty()) financeCounter.countNetProfit();
         return "redirect:/";
     }
 
@@ -92,13 +98,13 @@ public class WebController {
         ContragentNew newContragent = contragentService.createNewContragent(inn, name, categoryWithId.get(), exclude.orElse(false));
         contragentService.saveNewContragent(newContragent);
         contragentService.getMissingInn().remove(new Cost(inn));
+        if (contragentService.getMissingInn().isEmpty()) {
+            financeCounter.countNetProfit();
+            return "redirect:/";
+        }
         return "main-page";
     }
 
-    @GetMapping("/test")
-    public String g() {
-        return "dashboard-main";
-    }
 
 
 }

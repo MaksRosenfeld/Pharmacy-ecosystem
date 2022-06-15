@@ -54,6 +54,7 @@ public class Statement1C extends AbstractExcelFile {
                     BigDecimal turnOver = BigDecimal.valueOf(row.getCell(TURN_OVER_COLUMN).getNumericCellValue());
                     BigDecimal grossProfit = BigDecimal.valueOf(row.getCell(GROSS_PROFIT_COLUMN).getNumericCellValue());
                     Integer id = DataExtractor.extractNumberOfPharmacy(row.getCell(NAME_COLUMN));
+                    // TODO: Доделать парсинг для аптек
                     totalTurnOver = totalTurnOver.add(turnOver);
                     totalGrossProfit = totalGrossProfit.add(grossProfit);
                     totalCostPrice = totalCostPrice.add(costPrice);

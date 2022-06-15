@@ -1,5 +1,7 @@
 package ru.budgetapteka.pharmacyecosystem.service.category;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
@@ -12,6 +14,8 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
+    private static final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -22,6 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryNew> getCategoryWithId(Long id) {
+        log.info("Получение категории по id: {}", id);
         return categoryRepository.findById(id);
     }
 }
