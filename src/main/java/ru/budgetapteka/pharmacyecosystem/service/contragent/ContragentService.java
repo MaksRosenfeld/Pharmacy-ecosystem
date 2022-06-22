@@ -2,8 +2,8 @@ package ru.budgetapteka.pharmacyecosystem.service.contragent;
 
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
-import ru.budgetapteka.pharmacyecosystem.service.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.CostType;
+import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
+import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
 
 import java.util.List;
 import java.util.Optional;

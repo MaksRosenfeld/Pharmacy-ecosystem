@@ -1,15 +1,15 @@
-package ru.budgetapteka.pharmacyecosystem.service;
+package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 
-import lombok.Data;
-import ru.budgetapteka.pharmacyecosystem.exceptions.WrongInnException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter(AccessLevel.PACKAGE)
 public class Cost {
 
     private Long inn;

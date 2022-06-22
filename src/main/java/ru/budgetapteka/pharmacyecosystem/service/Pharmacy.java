@@ -8,12 +8,12 @@ import java.math.BigDecimal;
 @Data
 public class Pharmacy {
 
-    private Long id;
+    private Integer id;
     private BigDecimal turnOverForMonth;
     private BigDecimal grossProfit;
     private BigDecimal costPrice;
 
-    public Pharmacy(Long id) {
+    public Pharmacy(Integer id) {
         this.id = id;
     }
 

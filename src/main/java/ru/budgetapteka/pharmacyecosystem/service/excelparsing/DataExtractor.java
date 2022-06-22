@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.service.excel;
+package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 
 import org.apache.poi.ss.usermodel.Cell;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
@@ -39,7 +39,7 @@ public class DataExtractor {
             String[] pharmacies = stringCellValue.substring(matcher.start() + 2, matcher.end() - 2).split(",");
             return Stream.of(pharmacies)
                     .map(String::strip)
-                    .map(p -> new Pharmacy(Long.parseLong(p)))
+                    .map(p -> new Pharmacy(Integer.parseInt(p)))
                     .collect(Collectors.toList());
         }
         return null;
