@@ -1,18 +1,15 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
-import ru.budgetapteka.pharmacyecosystem.dto.FinancialResultsDTO;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.*;
-import ru.budgetapteka.pharmacyecosystem.service.finance.Finance;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -23,7 +20,7 @@ import java.util.*;
 public class WebController {
 
     @Autowired
-    private FinancialResultsDTO financialResults;
+    private FinancialResultsTo financialResults;
 
     @Autowired
     private ContragentService contragentService;
@@ -44,8 +41,7 @@ public class WebController {
 
     @ModelAttribute("totalTurnOver")
     public BigDecimal getTotalTurnOver() {
-        return financialResults.getTotalTurnOver();
-    }
+        return ParsedResults.getTotalTurnOver();}
 
     @ModelAttribute("totalGrossProfit")
     public BigDecimal getTotalGrossProfit() {

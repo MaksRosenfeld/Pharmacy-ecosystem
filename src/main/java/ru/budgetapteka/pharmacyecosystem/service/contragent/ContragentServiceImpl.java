@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepository;
-import ru.budgetapteka.pharmacyecosystem.dto.FinancialResultsDTO;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
@@ -30,7 +30,7 @@ public class ContragentServiceImpl implements ContragentService {
     private ContragentRepository contragentRepository;
 
     @Autowired
-    private FinancialResultsDTO financialResults;
+    private FinancialResultsTo financialResults;
 
 
     @Override

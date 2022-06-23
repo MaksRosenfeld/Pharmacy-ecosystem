@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsToImpl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -85,7 +87,7 @@ public class ExcelParserImpl implements ExcelParser {
         pharmacy.setCostPrice(costPrice);
         return pharmacy;
     }
-
+// Парсим последний ряд для общих данных (выручка, валовая прибыль, себестоимость)
     private void parseLastRow_1C(ExcelFile1C oneC, Row lastRow) {
         log.info("Парсим последний ряд из 1С выписки");
         BigDecimal totalTurnOver = BigDecimal.valueOf(lastRow.getCell(oneC.getTURN_OVER_COLUMN()).getNumericCellValue());

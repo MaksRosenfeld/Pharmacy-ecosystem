@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.dto;
+package ru.budgetapteka.pharmacyecosystem.to;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public interface FinancialResultsDTO {
+public interface FinancialResultsTo {
 
     BigDecimal getTotalTurnOver();
     BigDecimal getTotalGrossProfit();

@@ -3,6 +3,7 @@ package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
 
 import java.math.BigDecimal;

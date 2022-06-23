@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.dto;
+package ru.budgetapteka.pharmacyecosystem.to;
 
 import lombok.Getter;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,9 +17,9 @@ import java.util.Map;
 
 @Getter
 @Component
-public class FinancialResultsDTOImpl implements FinancialResultsDTO {
+public class FinancialResultsToImpl implements FinancialResultsTo {
 
-    private BigDecimal totalTurnOver = ParsedResults.getTotalTurnOver();
+    private BigDecimal totalTurnOver = new BigDecimal("10000000");
     private BigDecimal totalGrossProfit = ParsedResults.getTotalGrossProfit();
     private BigDecimal totalCostPrice = ParsedResults.getTotalCostPrice();
     private List<Pharmacy> pharmaciesWithData = ParsedResults.getPharmaciesWithData();
