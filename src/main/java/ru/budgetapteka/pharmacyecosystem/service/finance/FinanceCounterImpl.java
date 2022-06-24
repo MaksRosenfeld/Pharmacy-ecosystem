@@ -1,38 +1,31 @@
-package ru.budgetapteka.pharmacyecosystem.service.finance;
-
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
-import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
-
-
-import java.math.BigDecimal;
-import java.util.Optional;
-
+//package ru.budgetapteka.pharmacyecosystem.service.finance;
+//
+//import lombok.Getter;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.context.annotation.Lazy;
+//import org.springframework.stereotype.Component;
+//import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
+//import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
+//import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
+//import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
+//import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
+//
+//import java.math.BigDecimal;
+//import java.util.Optional;
+//
 //@Getter
-//@Lazy // РАЗОБРАТЬСЯ С ЛЕНИВОЙ ИНИЦИАЛИЗАЦИЕЙ
 //@Component
-//public class FinanceImpl implements Finance {
+//public class FinanceCounterImpl implements FinanceCounter {
 //
 //    private BigDecimal variableCosts;
 //    private BigDecimal fixedCosts;
 //
 //    @Autowired
-//    private FinanceResultTo financeResults;
-//
-//    @Autowired
 //    private ContragentService contragentService;
 //
-////    public FinanceImpl() {
-////        countVariableCosts();
-////        countFixedCosts();
-////
-////
-////    }
+//    public FinanceCounterImpl(ParsedResults parsedResults) {
+//
+//    }
 //
 //    private void countVariableCosts() {
 //        this.variableCosts = financeResults.getCostList().stream()
