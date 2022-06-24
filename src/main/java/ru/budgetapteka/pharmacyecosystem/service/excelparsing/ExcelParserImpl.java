@@ -3,7 +3,10 @@ package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 import lombok.Getter;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
@@ -24,9 +27,11 @@ public class ExcelParserImpl implements ExcelParser {
 
     private final Parseable parseable;
     private List<Row> rowsWithTypos;
+    private final ParsedResults parsedResults;
 
-    public ExcelParserImpl(Parseable parseable) {
+    public ExcelParserImpl(Parseable parseable, ParsedResults keepResultsIn) {
         this.parseable = parseable;
+        this.parsedResults = keepResultsIn;
         log.info("Парсер создан");
     }
 
@@ -36,7 +41,7 @@ public class ExcelParserImpl implements ExcelParser {
         Sheet sheet = excel.getWorkbook().getSheetAt(0);
         List<Pharmacy> pharmaciesWithDataFrom1C = new ArrayList<>();
         Cell cellWithDate = sheet.getRow(excel.getDATE_ROW()).getCell(excel.getDATE_COLUMN());
-        ParsedResults.setDate(DataExtractor.extractDate(cellWithDate)); // дата выписки
+        parsedResults.setDate(DataExtractor.extractDate(cellWithDate)); // дата выписки
         for (Row row : sheet) {
             // исключаем ненужные ряды
             if (row.getRowNum() >= excel.getSTART_ROW()
@@ -47,7 +52,7 @@ public class ExcelParserImpl implements ExcelParser {
                 parseLastRow_1C(excel, row);
             }
         }
-        ParsedResults.setPharmaciesWithData(pharmaciesWithDataFrom1C);
+        parsedResults.setPharmaciesWithData(pharmaciesWithDataFrom1C);
     }
 
     @Override
@@ -62,13 +67,13 @@ public class ExcelParserImpl implements ExcelParser {
                 costs.add(cost);
             }
         }
-        ParsedResults.setCosts(costs);
-        log.info("Количество расходов: {}", ParsedResults.getCosts().size());
+        parsedResults.setCosts(costs);
+        log.info("Количество расходов: {}", parsedResults.getCosts().size());
 //       Опечатки сохраняем только в случае, если они были
         if (rowsWithTypos.size() > 0) {
             Map<Workbook, List<Row>> mapWithTypos = new HashMap<>();
             mapWithTypos.put(excel.getWorkbook(), rowsWithTypos);
-            ParsedResults.setCellsWithTypos(mapWithTypos);
+            parsedResults.setCellsWithTypos(mapWithTypos);
         }
 
     }
@@ -91,11 +96,11 @@ public class ExcelParserImpl implements ExcelParser {
     private void parseLastRow_1C(ExcelFile1C oneC, Row lastRow) {
         log.info("Парсим последний ряд из 1С выписки");
         BigDecimal totalTurnOver = BigDecimal.valueOf(lastRow.getCell(oneC.getTURN_OVER_COLUMN()).getNumericCellValue());
-        ParsedResults.setTotalTurnOver(totalTurnOver);
+        parsedResults.setTotalTurnOver(totalTurnOver);
         BigDecimal totalGrossProfit = BigDecimal.valueOf(lastRow.getCell(oneC.getGROSS_PROFIT_COLUMN()).getNumericCellValue());
-        ParsedResults.setTotalGrossProfit(totalGrossProfit);
+        parsedResults.setTotalGrossProfit(totalGrossProfit);
         BigDecimal totalCostPrice = BigDecimal.valueOf(lastRow.getCell(oneC.getCOST_PRICE_COLUMN()).getNumericCellValue());
-        ParsedResults.setTotalCostPrice(totalCostPrice);
+        parsedResults.setTotalCostPrice(totalCostPrice);
     }
 
     private Cost parseForCosts_BS(ExcelFileBankStatement bs, Row row) {

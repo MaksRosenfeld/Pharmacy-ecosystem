@@ -1,5 +1,7 @@
 package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
 
@@ -11,6 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DataExtractor {
 
     static LocalDate extractDate(Cell cell) {

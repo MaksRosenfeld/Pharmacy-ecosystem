@@ -1,8 +1,10 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
@@ -18,6 +20,9 @@ import java.util.*;
 
 @Controller
 public class WebController {
+
+    @Autowired
+    private WebApplicationContext context;
 
     @Autowired
     private FinancialResultsTo financialResults;
@@ -41,7 +46,8 @@ public class WebController {
 
     @ModelAttribute("totalTurnOver")
     public BigDecimal getTotalTurnOver() {
-        return ParsedResults.getTotalTurnOver();}
+        return financialResults.getTotalTurnOver();
+    }
 
     @ModelAttribute("totalGrossProfit")
     public BigDecimal getTotalGrossProfit() {
@@ -61,10 +67,12 @@ public class WebController {
     @PostMapping("/upload")
     public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
                                   @RequestParam("1C-statement") MultipartFile oneCStatement) throws IOException {
-        ExcelParser excelParser1C = new ExcelParserImpl(new ExcelFile1C(oneCStatement.getInputStream()));
+        ParsedResults parsedResults = context.getBean(ParsedResults.class);
+        ExcelParser excelParser1C = new ExcelParserImpl(new ExcelFile1C(oneCStatement.getInputStream()), parsedResults);
         excelParser1C.parse1CStatement();
-        ExcelParser excelParserBS = new ExcelParserImpl(new ExcelFileBankStatement(bankStatement.getInputStream()));
+        ExcelParser excelParserBS = new ExcelParserImpl(new ExcelFileBankStatement(bankStatement.getInputStream()), parsedResults);
         excelParserBS.parseBankStatement();
+        financialResults.acceptingDataFrom(parsedResults);
         contragentService.countMissingInn();
         return "redirect:/";
     }
@@ -82,10 +90,6 @@ public class WebController {
         return "main-page";
     }
 
-    @GetMapping("/test")
-    public String g() {
-        return "dashboard-main";
-    }
 
 
 }

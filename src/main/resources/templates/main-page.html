@@ -44,7 +44,7 @@
         </div>
     </form>
 </div>
-<div th:unless="${missingInn == null}" class="col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
+<div th:unless="${missingInn == null || missingInn.isEmpty()}" class="col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
     <div class="my-4 text-center">
         <h3>Данные контрагенты отсутсвуют в базе</h3>
     </div>

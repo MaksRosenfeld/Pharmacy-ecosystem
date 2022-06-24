@@ -1,8 +1,11 @@
 package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.budgetapteka.pharmacyecosystem.DataUtil.*;
@@ -10,21 +13,27 @@ import static ru.budgetapteka.pharmacyecosystem.DataUtil.*;
 @SpringBootTest
 class ExcelParserImplTest {
 
-    static ExcelParser parser1C;
-    static ExcelParser parserBs;
+    public ExcelParser parser1C;
+    public ExcelParser parserBs;
+    @Autowired
+    public ParsedResults parsedResults;
+    @Autowired
+    public FinancialResultsTo financialResults;
 
-    @BeforeAll
-    static void createFiles() {
-        parser1C = new ExcelParserImpl(get1CFile());
-        parserBs = new ExcelParserImpl(getBStatement());
+
+    @BeforeEach
+    void setUp() {
+        parser1C = new ExcelParserImpl(get1CFile(), parsedResults);
+        parserBs = new ExcelParserImpl(getBStatement(), parsedResults);
     }
 
     @Test
     void parse1CStatement() {
         parser1C.parse1CStatement();
-        assertEquals(expectedTurnOver, ParsedResults.getTotalTurnOver());
-        assertEquals(expectedGrossProfit, ParsedResults.getTotalGrossProfit());
-        assertEquals(expectedCostPrice, ParsedResults.getTotalCostPrice());
+        financialResults.acceptingDataFrom(parsedResults);
+        assertEquals(expectedTurnOver, financialResults.getTotalTurnOver());
+        assertEquals(expectedGrossProfit, financialResults.getTotalGrossProfit());
+        assertEquals(expectedCostPrice, financialResults.getTotalCostPrice());
     }
 
     @Test

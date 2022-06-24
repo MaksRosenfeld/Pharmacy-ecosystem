@@ -19,14 +19,22 @@ import java.util.Map;
 @Component
 public class FinancialResultsToImpl implements FinancialResultsTo {
 
-    private BigDecimal totalTurnOver = new BigDecimal("10000000");
-    private BigDecimal totalGrossProfit = ParsedResults.getTotalGrossProfit();
-    private BigDecimal totalCostPrice = ParsedResults.getTotalCostPrice();
-    private List<Pharmacy> pharmaciesWithData = ParsedResults.getPharmaciesWithData();
-    private LocalDate date = ParsedResults.getDate();
-    private List<Cost> costs = ParsedResults.getCosts();
-    private Map<Workbook, List<Row>> cellsWithTypos = ParsedResults.getCellsWithTypos();
+    private BigDecimal totalTurnOver;
+    private BigDecimal totalGrossProfit;
+    private BigDecimal totalCostPrice;
+    private List<Pharmacy> pharmaciesWithData;
+    private LocalDate date;
+    private List<Cost> costs;
+    private Map<Workbook, List<Row>> cellsWithTypos;
 
-
-
+    @Override
+    public void acceptingDataFrom(ParsedResults parsedResults) {
+        this.totalTurnOver = parsedResults.getTotalTurnOver();
+        this.totalGrossProfit = parsedResults.getTotalGrossProfit();
+        this.totalCostPrice = parsedResults.getTotalCostPrice();
+        this.pharmaciesWithData = parsedResults.getPharmaciesWithData();
+        this.date = parsedResults.getDate();
+        this.costs = parsedResults.getCosts();
+        this.cellsWithTypos = parsedResults.getCellsWithTypos();
+    }
 }

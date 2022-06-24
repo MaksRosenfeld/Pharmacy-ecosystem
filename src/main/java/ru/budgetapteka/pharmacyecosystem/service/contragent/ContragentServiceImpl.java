@@ -35,7 +35,7 @@ public class ContragentServiceImpl implements ContragentService {
 
     @Override
     public void countMissingInn() {
-        List<Cost> allCosts = ParsedResults.getCosts();
+        List<Cost> allCosts = financialResults.getCosts();
         if (allCosts != null) {
             List<ContragentNew> allContragents = contragentRepository.findAll();
             this.missingInn = allCosts.stream()
