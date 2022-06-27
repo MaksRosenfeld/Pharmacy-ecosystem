@@ -29,7 +29,10 @@ public class ContragentServiceImpl implements ContragentService {
     @Autowired
     private ContragentRepository contragentRepository;
 
-
+    public ContragentServiceImpl(ContragentRepository contragentRepository) {
+        log.info("Я тоже создан");
+        this.contragentRepository = contragentRepository;
+    }
 
     @Override
     public void countMissingInn(ParsedResults parsedResults) {

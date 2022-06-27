@@ -16,6 +16,7 @@ import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class FinanceCounterImpl implements FinanceCounter {
@@ -27,6 +28,7 @@ public class FinanceCounterImpl implements FinanceCounter {
     private BigDecimal variableCosts;
     private BigDecimal fixedCosts;
     private BigDecimal netProfit;
+    private static AtomicInteger loadingCounter = new AtomicInteger(0);
 
     private final ContragentService contragentService;
 
@@ -35,6 +37,8 @@ public class FinanceCounterImpl implements FinanceCounter {
         this.contragentService = contragentService;
         this.parsedResults = parsedResults;
         this.parsedCosts = parsedResults.getCosts();
+//        Thread loadingThread = new Thread(new Loading());
+//        loadingThread.start();
         log.info("Считаем переменные расходы");
         countVariableCosts();
         log.info("Считаем постоянные расходы");
@@ -58,7 +62,10 @@ public class FinanceCounterImpl implements FinanceCounter {
                     return type.equals(CostType.VARIABLE.getName()) && !exclude;
                 })
                 .map(Cost::getAmount)
-                .reduce(BigDecimal::add).orElse(null);
+                .reduce((a, b) -> {
+                    loadingCounter.incrementAndGet();
+                    return a.add(b);
+                }).orElse(null);
     }
 
     private void countFixedCosts() {
@@ -72,6 +79,21 @@ public class FinanceCounterImpl implements FinanceCounter {
                 .map(Cost::getAmount)
                 .reduce(BigDecimal::add).orElse(null);
     }
+//    public static class Loading implements Runnable {
+//
+//        @Override
+//        public void run() {
+//            while(true) {
+//                System.out.println(FinanceCounterImpl.loadingCounter);
+//                try {
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        }
+//    }
 }
 
 
