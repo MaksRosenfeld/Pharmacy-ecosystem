@@ -15,8 +15,7 @@ class ExcelParserImplTest {
 
     public ExcelParser parser1C;
     public ExcelParser parserBs;
-    @Autowired
-    public ParsedResults parsedResults;
+    public ParsedResults parsedResults = new ParsedResults();
     @Autowired
     public FinancialResultsTo financialResults;
 

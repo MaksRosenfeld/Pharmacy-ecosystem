@@ -17,8 +17,6 @@ import java.util.Map;
 
 @Getter
 @Setter(AccessLevel.PACKAGE)
-@Scope("prototype")
-@Component
 public class ParsedResults {
 
     private BigDecimal totalTurnOver;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
+import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
     private LocalDate date;
     private List<Cost> costs;
     private Map<Workbook, List<Row>> cellsWithTypos;
+    private BigDecimal netProfit;
 
     @Override
     public void acceptingDataFrom(ParsedResults parsedResults) {
@@ -36,5 +38,12 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         this.date = parsedResults.getDate();
         this.costs = parsedResults.getCosts();
         this.cellsWithTypos = parsedResults.getCellsWithTypos();
+    }
+
+    @Override
+    public void acceptingDataFrom(ParsedResults parsedResults, FinanceCounter financeCounter) {
+        acceptingDataFrom(parsedResults);
+        this.netProfit = financeCounter.getNetProfit();
+
     }
 }

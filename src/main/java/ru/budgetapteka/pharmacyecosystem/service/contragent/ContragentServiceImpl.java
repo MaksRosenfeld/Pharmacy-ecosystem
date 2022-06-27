@@ -29,13 +29,11 @@ public class ContragentServiceImpl implements ContragentService {
     @Autowired
     private ContragentRepository contragentRepository;
 
-    @Autowired
-    private FinancialResultsTo financialResults;
 
 
     @Override
-    public void countMissingInn() {
-        List<Cost> allCosts = financialResults.getCosts();
+    public void countMissingInn(ParsedResults parsedResults) {
+        List<Cost> allCosts = parsedResults.getCosts();
         if (allCosts != null) {
             List<ContragentNew> allContragents = contragentRepository.findAll();
             this.missingInn = allCosts.stream()
@@ -43,7 +41,7 @@ public class ContragentServiceImpl implements ContragentService {
                             .noneMatch(contr -> cost.getInn().equals(contr.getInn())))
                     .collect(Collectors.toSet());
         }
-        log.info("Количество отсутствующих расходов: {}", this.missingInn.size());
+        log.info("Количество недостающих ИНН = {}", this.missingInn.size());
 
 
     }
