@@ -14,6 +14,7 @@ import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,6 +26,7 @@ public class FinanceCounterImpl implements FinanceCounter {
 
     private final List<Cost> parsedCosts;
     private final ParsedResults parsedResults;
+    private final List<ContragentNew> allContragents;
     private BigDecimal variableCosts;
     private BigDecimal fixedCosts;
     private BigDecimal netProfit;
@@ -37,6 +39,7 @@ public class FinanceCounterImpl implements FinanceCounter {
         this.contragentService = contragentService;
         this.parsedResults = parsedResults;
         this.parsedCosts = parsedResults.getCosts();
+        this.allContragents = this.contragentService.getAllContragents();
 //        Thread loadingThread = new Thread(new Loading());
 //        loadingThread.start();
         log.info("Считаем переменные расходы");
@@ -56,7 +59,7 @@ public class FinanceCounterImpl implements FinanceCounter {
     private void countVariableCosts() {
         this.variableCosts = parsedCosts.stream()
                 .filter(cost -> {
-                    Optional<ContragentNew> contragent = contragentService.findByInn(cost.getInn());
+                    Optional<ContragentNew> contragent = allContragents.stream().filter(contr -> cost.getInn().equals(contr.getInn())).findFirst();
                     String type = contragent.get().getCategoryId().getType();
                     Boolean exclude = contragent.get().getExclude();
                     return type.equals(CostType.VARIABLE.getName()) && !exclude;
@@ -71,7 +74,7 @@ public class FinanceCounterImpl implements FinanceCounter {
     private void countFixedCosts() {
         this.fixedCosts = parsedCosts.stream()
                 .filter(cost -> {
-                    Optional<ContragentNew> contragent = contragentService.findByInn(cost.getInn());
+                    Optional<ContragentNew> contragent = allContragents.stream().filter(contr -> cost.getInn().equals(contr.getInn())).findFirst();
                     String type = contragent.get().getCategoryId().getType();
                     Boolean exclude = contragent.get().getExclude();
                     return type.equals(CostType.FIXED.getName()) && !exclude;
