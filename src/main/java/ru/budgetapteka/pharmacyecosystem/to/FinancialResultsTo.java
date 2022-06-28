@@ -24,5 +24,6 @@ public interface FinancialResultsTo {
     void acceptingDataFrom(ParsedResults parsedResults);
     void acceptingDataFrom(ParsedResults parsedResults, FinanceCounter financeCounter);
     BigDecimal getNetProfit();
+    void dataReset();
 
 }

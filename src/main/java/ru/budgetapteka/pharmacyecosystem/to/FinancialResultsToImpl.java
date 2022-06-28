@@ -46,4 +46,16 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         this.netProfit = financeCounter.getNetProfit();
 
     }
+
+    @Override
+    public void dataReset() {
+        this.totalTurnOver = null;
+        this.totalGrossProfit = null;
+        this.totalCostPrice = null;
+        this.pharmaciesWithData = null;
+        this.date = null;
+        this.costs = null;
+        this.cellsWithTypos = null;
+        this.netProfit = null;
+    }
 }

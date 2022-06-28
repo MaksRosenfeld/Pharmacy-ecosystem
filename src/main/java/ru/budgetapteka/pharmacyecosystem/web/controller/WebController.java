@@ -1,21 +1,16 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
-import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounterImpl;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.*;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -23,18 +18,23 @@ import java.util.*;
 @Controller
 public class WebController {
 
-    @Autowired
-    private WebApplicationContext context;
+    private final FinancialResultsTo financialResults;
+    private final ContragentService contragentService;
+    private final CategoryService categoryService;
+    private final ExcelParser excelParser;
+    private final FinanceCounter financeCounter;
 
-    @Autowired
-    private FinancialResultsTo financialResults;
-
-    @Autowired
-    private ContragentService contragentService;
-
-    @Autowired
-    private CategoryService categoryService;
-
+    public WebController(FinancialResultsTo financialResults,
+                         ContragentService contragentService,
+                         CategoryService categoryService,
+                         ExcelParser excelParser,
+                         FinanceCounter financeCounter) {
+        this.financialResults = financialResults;
+        this.contragentService = contragentService;
+        this.categoryService = categoryService;
+        this.excelParser = excelParser;
+        this.financeCounter = financeCounter;
+    }
 
     @ModelAttribute("categories")
     public List<CategoryNew> getAllCategories() {
@@ -73,17 +73,12 @@ public class WebController {
 
     @PostMapping("/upload")
     public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
-                                  @RequestParam("1C-statement") MultipartFile oneCStatement) throws IOException {
-        ParsedResults parsedResults = new ParsedResults();
-        ExcelParser excelParser1C = new ExcelParserImpl(new ExcelFile1C(oneCStatement.getInputStream()), parsedResults);
-        excelParser1C.parse1CStatement();
-        ExcelParser excelParserBS = new ExcelParserImpl(new ExcelFileBankStatement(bankStatement.getInputStream()), parsedResults);
-        excelParserBS.parseBankStatement();
-        contragentService.countMissingInn(parsedResults);
-        if (contragentService.getMissingInn().isEmpty()) {
-            FinanceCounter financeCounter = new FinanceCounterImpl(parsedResults, contragentService);
-            financialResults.acceptingDataFrom(parsedResults, financeCounter);
-            return "redirect:/";
+                                  @RequestParam("1C-statement") MultipartFile oneCStatement) {
+        financialResults.dataReset();
+        excelParser.parseBankStatement(bankStatement);
+        excelParser.parse1CStatement(oneCStatement);
+        if (!contragentService.hasMissingInn()) {
+            financeCounter.countCosts().countNetProfit().sendResults();
         }
         return "redirect:/";
     }
@@ -95,7 +90,8 @@ public class WebController {
                                    @RequestParam(name = "exclude") Optional<Boolean> exclude) {
 
         Optional<CategoryNew> categoryWithId = categoryService.getCategoryWithId(id);
-        ContragentNew newContragent = contragentService.createNewContragent(inn, name, categoryWithId.get(), exclude.orElse(false));
+        ContragentNew newContragent = contragentService.createNewContragent(inn, name,
+                categoryWithId.orElse(null), exclude.orElse(false));
         contragentService.saveNewContragent(newContragent);
         contragentService.getMissingInn().remove(new Cost(inn));
         return "main-page";

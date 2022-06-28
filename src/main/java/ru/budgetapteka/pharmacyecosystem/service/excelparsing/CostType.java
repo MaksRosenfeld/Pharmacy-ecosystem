@@ -4,7 +4,7 @@ public enum CostType {
     VARIABLE("переменные"),
     FIXED("постоянные");
 
-    private String name;
+    private final String name;
     CostType(String name) {
         this.name = name;
 

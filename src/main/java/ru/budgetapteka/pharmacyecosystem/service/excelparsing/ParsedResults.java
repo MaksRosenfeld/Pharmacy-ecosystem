@@ -3,10 +3,8 @@ package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
 
@@ -17,6 +15,7 @@ import java.util.Map;
 
 @Getter
 @Setter(AccessLevel.PACKAGE)
+@Component
 public class ParsedResults {
 
     private BigDecimal totalTurnOver;
@@ -26,5 +25,6 @@ public class ParsedResults {
     private LocalDate date;
     private List<Cost> costs;
     private Map<Workbook, List<Row>> cellsWithTypos;
+
 
 }

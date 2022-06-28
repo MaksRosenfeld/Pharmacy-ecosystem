@@ -1,12 +1,16 @@
 package ru.budgetapteka.pharmacyecosystem.database.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
+
 
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Table(name = "contragent_new", schema = "public", catalog = "financial_analytics")
 public class ContragentNew {
     @Id
@@ -22,55 +26,7 @@ public class ContragentNew {
     @Column(name = "exclude", nullable = false)
     private Boolean exclude;
 
-    public ContragentNew(Long inn, String name, CategoryNew categoryId, Boolean exclude) {
-        this.inn = inn;
-        this.name = name;
-        this.categoryId = categoryId;
-        this.exclude = exclude;
-    }
 
-    public Long getInn() {
-        return inn;
-    }
 
-    public void setInn(Long inn) {
-        this.inn = inn;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public CategoryNew getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(CategoryNew categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Boolean getExclude() {
-        return exclude;
-    }
-
-    public void setExclude(Boolean exclude) {
-        this.exclude = exclude;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ContragentNew that = (ContragentNew) o;
-        return Objects.equals(inn, that.inn) && Objects.equals(name, that.name) && Objects.equals(categoryId, that.categoryId) && Objects.equals(exclude, that.exclude);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(inn, name, categoryId, exclude);
-    }
 }

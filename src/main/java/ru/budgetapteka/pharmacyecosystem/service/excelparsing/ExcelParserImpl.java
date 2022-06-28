@@ -3,15 +3,11 @@ package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 import lombok.Getter;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
-import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
-import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsToImpl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,62 +17,72 @@ import java.util.Map;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Getter
+@Service
 public class ExcelParserImpl implements ExcelParser {
 
     private static final Logger log = getLogger(ExcelParserImpl.class);
 
-    private final Parseable parseable;
     private List<Row> rowsWithTypos;
     private final ParsedResults parsedResults;
 
-    public ExcelParserImpl(Parseable parseable, ParsedResults keepResultsIn) {
-        this.parseable = parseable;
+    public ExcelParserImpl(ParsedResults keepResultsIn) {
         this.parsedResults = keepResultsIn;
         log.info("Парсер создан");
     }
 
     @Override
-    public void parse1CStatement() {
-        ExcelFile1C excel = (ExcelFile1C) this.parseable;
-        Sheet sheet = excel.getWorkbook().getSheetAt(0);
-        List<Pharmacy> pharmaciesWithDataFrom1C = new ArrayList<>();
-        Cell cellWithDate = sheet.getRow(excel.getDATE_ROW()).getCell(excel.getDATE_COLUMN());
-        parsedResults.setDate(DataExtractor.extractDate(cellWithDate)); // дата выписки
-        for (Row row : sheet) {
-            // исключаем ненужные ряды
-            if (row.getRowNum() >= excel.getSTART_ROW()
-                    && row.getRowNum() < sheet.getLastRowNum()) {
-                Pharmacy pharmacyWithData = parseDataForEachPharmacy_1C(excel, row);
-                pharmaciesWithDataFrom1C.add(pharmacyWithData);
-            } else if (row.getRowNum() == sheet.getLastRowNum()) {
-                parseLastRow_1C(excel, row);
+    public void parse1CStatement(MultipartFile file) {
+        try {
+            ExcelFile1C file1C = new ExcelFile1C(file.getInputStream());
+            Sheet sheet = file1C.getWorkbook().getSheetAt(0);
+            List<Pharmacy> pharmaciesWithDataFrom1C = new ArrayList<>();
+            Cell cellWithDate = sheet.getRow(file1C.getDATE_ROW()).getCell(file1C.getDATE_COLUMN());
+            parsedResults.setDate(DataExtractor.extractDate(cellWithDate)); // дата выписки
+            for (Row row : sheet) {
+                // исключаем ненужные ряды
+                if (row.getRowNum() >= file1C.getSTART_ROW()
+                        && row.getRowNum() < sheet.getLastRowNum()) {
+                    Pharmacy pharmacyWithData = parseDataForEachPharmacy_1C(file1C, row);
+                    pharmaciesWithDataFrom1C.add(pharmacyWithData);
+                } else if (row.getRowNum() == sheet.getLastRowNum()) {
+                    parseLastRow_1C(file1C, row);
+                }
             }
+            parsedResults.setPharmaciesWithData(pharmaciesWithDataFrom1C);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        parsedResults.setPharmaciesWithData(pharmaciesWithDataFrom1C);
     }
 
     @Override
-    public void parseBankStatement() {
-        ExcelFileBankStatement excel = (ExcelFileBankStatement) this.parseable;
-        Sheet sheet = excel.getWorkbook().getSheetAt(0);
-        List<Cost> costs = new ArrayList<>();
-        for (Row row : sheet) {
-            if (row.getRowNum() >= excel.getCOST_START() // расходы начинаются стандартно с 13 ряда
-                    && row.getCell(excel.getDEBIT_COLUMN()).getCellType() == CellType.NUMERIC) {
-                Cost cost = parseForCosts_BS(excel, row);
-                costs.add(cost);
+    public void parseBankStatement(MultipartFile file) {
+        ExcelFileBankStatement bankStatement;
+        try {
+            bankStatement = new ExcelFileBankStatement(file.getInputStream());
+            Sheet sheet = bankStatement.getWorkbook().getSheetAt(0);
+            List<Cost> costs = new ArrayList<>();
+            for (Row row : sheet) {
+                if (row.getRowNum() >= bankStatement.getCOST_START() // расходы начинаются стандартно с 13 ряда
+                        && row.getCell(bankStatement.getDEBIT_COLUMN()).getCellType() == CellType.NUMERIC) {
+                    Cost cost = parseForCosts_BS(bankStatement, row);
+                    costs.add(cost);
+                }
             }
-        }
-        parsedResults.setCosts(costs);
-        log.info("Количество расходов: {}", parsedResults.getCosts().size());
+            parsedResults.setCosts(costs);
+            log.info("Количество расходов: {}", parsedResults.getCosts().size());
 //       Опечатки сохраняем только в случае, если они были
-        if (rowsWithTypos.size() > 0) {
-            Map<Workbook, List<Row>> mapWithTypos = new HashMap<>();
-            mapWithTypos.put(excel.getWorkbook(), rowsWithTypos);
-            parsedResults.setCellsWithTypos(mapWithTypos);
+            if (rowsWithTypos.size() > 0) {
+                Map<Workbook, List<Row>> mapWithTypos = new HashMap<>();
+                mapWithTypos.put(bankStatement.getWorkbook(), rowsWithTypos);
+                parsedResults.setCellsWithTypos(mapWithTypos);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+
     }
+
 
     //    Собираем данные из 1С выписки по аптекам
     private Pharmacy parseDataForEachPharmacy_1C(ExcelFile1C oneC, Row row) {
