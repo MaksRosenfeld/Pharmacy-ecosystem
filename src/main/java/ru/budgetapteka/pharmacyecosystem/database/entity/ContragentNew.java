@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "contragent_new", schema = "public", catalog = "financial_analytics")
+@Table(name = "contragent_new", schema = "public", catalog = "d50bvntr63choj")
 public class ContragentNew {
     @Id
     @Column(name = "inn", nullable = false)

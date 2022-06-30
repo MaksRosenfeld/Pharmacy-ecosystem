@@ -2,7 +2,7 @@ package ru.budgetapteka.pharmacyecosystem.to;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
+import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
@@ -17,7 +17,6 @@ public interface FinancialResultsTo {
     BigDecimal getTotalTurnOver();
     BigDecimal getTotalGrossProfit();
     BigDecimal getTotalCostPrice();
-    List<Pharmacy> getPharmaciesWithData();
     LocalDate getDate();
     List<Cost> getCosts();
     Map<Workbook, List<Row>> getCellsWithTypos();

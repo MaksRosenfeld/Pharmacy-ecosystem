@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.multipart.MultipartFile;
+import ru.budgetapteka.pharmacyecosystem.DataUtil;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,22 +15,17 @@ import static ru.budgetapteka.pharmacyecosystem.DataUtil.*;
 @SpringBootTest
 class ExcelParserImplTest {
 
-    public ExcelParser parser1C;
-    public ExcelParser parserBs;
-    public ParsedResults parsedResults = new ParsedResults();
+    @Autowired
+    public ExcelParser excelParser;
+    @Autowired
+    public ParsedResults parsedResults;
     @Autowired
     public FinancialResultsTo financialResults;
 
 
-//    @BeforeEach
-//    void setUp() {
-//        parser1C = new ExcelParserImpl(get1CFile(), parsedResults);
-//        parserBs = new ExcelParserImpl(getBStatement(), parsedResults);
-//    }
-
     @Test
     void parse1CStatement() {
-//        parser1C.parse1CStatement();
+        excelParser.parse1CStatement(convertToMultipartFile(oneCPath));
         financialResults.acceptingDataFrom(parsedResults);
         assertEquals(expectedTurnOver, financialResults.getTotalTurnOver());
         assertEquals(expectedGrossProfit, financialResults.getTotalGrossProfit());
@@ -37,5 +34,8 @@ class ExcelParserImplTest {
 
     @Test
     void parseBankStatement() {
+        excelParser.parseBankStatement(convertToMultipartFile(bankStatementPath));
+        financialResults.acceptingDataFrom(parsedResults);
+        assertNotNull(financialResults.getCosts());
     }
 }

@@ -75,8 +75,8 @@ public class WebController {
     public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
                                   @RequestParam("1C-statement") MultipartFile oneCStatement) {
         financialResults.dataReset();
+        excelParser.parse1CStatement(oneCStatement); // идет 1-ой, так как нужен список аптек
         excelParser.parseBankStatement(bankStatement);
-        excelParser.parse1CStatement(oneCStatement);
         if (!contragentService.hasMissingInn()) {
             financeCounter.countCosts().countNetProfit().sendResults();
         }

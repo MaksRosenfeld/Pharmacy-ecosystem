@@ -3,7 +3,11 @@ package ru.budgetapteka.pharmacyecosystem.service.excelparsing;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
-import ru.budgetapteka.pharmacyecosystem.service.Pharmacy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +18,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Component
 public class DataExtractor {
+
+
+    private static final Logger log = LoggerFactory.getLogger(DataExtractor.class);
 
     static LocalDate extractDate(Cell cell) {
         String cellString = cell.getStringCellValue();
@@ -34,7 +42,7 @@ public class DataExtractor {
         return null;
     }
 
-    static List<Pharmacy> extractPharmacyNumbers(Cell cell) {
+    static List<Integer> extractPharmacyNumbers(Cell cell) {
         Pattern pattern = Pattern.compile("!!.+!!");
         String stringCellValue = cell.getStringCellValue();
         Matcher matcher = pattern.matcher(stringCellValue);
@@ -42,7 +50,12 @@ public class DataExtractor {
             String[] pharmacies = stringCellValue.substring(matcher.start() + 2, matcher.end() - 2).split(",");
             return Stream.of(pharmacies)
                     .map(String::strip)
-                    .map(p -> new Pharmacy(Integer.parseInt(p)))
+                    .map(Integer::parseInt)
+                    .filter(n -> {
+                        boolean incorrectNumber = n > 15 || n < 0;
+                        if (incorrectNumber) log.info("Некорректная аптека: {}", n);
+                        return !incorrectNumber;
+                    })
                     .collect(Collectors.toList());
         }
         return null;
