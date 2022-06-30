@@ -27,6 +27,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
     private List<Cost> costs;
     private Map<Workbook, List<Row>> cellsWithTypos;
     private BigDecimal netProfit;
+    private BigDecimal rOs;
 
     @Override
     public void acceptingDataFrom(ParsedResults parsedResults) {
@@ -42,6 +43,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
     public void acceptingDataFrom(ParsedResults parsedResults, FinanceCounter financeCounter) {
         acceptingDataFrom(parsedResults);
         this.netProfit = financeCounter.getNetProfit();
+        this.rOs = financeCounter.getROs();
 
     }
 
@@ -55,5 +57,6 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         this.costs = null;
         this.cellsWithTypos = null;
         this.netProfit = null;
+        this.rOs = null;
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 public class DataUtil {
 
     public static final String oneCPath = "src/main/resources/excel_files/Отчет 04.2022.xls";
-    public static final String bankStatementPath = "src/main/resources/excel_files/Выписка_01.12.2021-31.12.2021_1543.xlsx";
+    public static final String bankStatementPath = "src/main/resources/excel_files/Выписка_01.01.2022-31.01.2022_1543.xlsx";
     public static final BigDecimal expectedCostPrice = new BigDecimal("54100165.53");
     public static final BigDecimal expectedGrossProfit = new BigDecimal("8226444.84");
     public static final BigDecimal expectedTurnOver = new BigDecimal("62326610.37");

@@ -61,6 +61,11 @@ public class WebController {
         return financialResults.getNetProfit();
     }
 
+    @ModelAttribute("rOs")
+    public BigDecimal getRoS() {
+        return financialResults.getROs();
+    }
+
     @ModelAttribute("dateOfStatement")
     public LocalDate getDateOfStatement() {
         return financialResults.getDate();
@@ -78,7 +83,11 @@ public class WebController {
         excelParser.parse1CStatement(oneCStatement); // идет 1-ой, так как нужен список аптек
         excelParser.parseBankStatement(bankStatement);
         if (!contragentService.hasMissingInn()) {
-            financeCounter.countCosts().countNetProfit().sendResults();
+            financeCounter
+                    .countCosts()
+                    .countNetProfit()
+                    .countRoS()
+                    .sendResults();
         }
         return "redirect:/";
     }

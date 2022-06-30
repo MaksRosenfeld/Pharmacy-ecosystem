@@ -7,7 +7,9 @@ public interface FinanceCounter {
     FinanceCounter countCosts();
     void sendResults();
     FinanceCounter countNetProfit();
+    FinanceCounter countRoS();
 
     BigDecimal getNetProfit();
+    BigDecimal getROs();
 
 }

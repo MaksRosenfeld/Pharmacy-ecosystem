@@ -12,6 +12,7 @@ import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ public class FinanceCounterImpl implements FinanceCounter {
     private BigDecimal variableCosts;
     private BigDecimal fixedCosts;
     private BigDecimal netProfit;
+    private BigDecimal rOs; // рентабельность
 //    private static AtomicInteger loadingCounter = new AtomicInteger(0);
 
     private final ContragentService contragentService;
@@ -38,6 +40,13 @@ public class FinanceCounterImpl implements FinanceCounter {
         this.contragentService = contragentService;
         this.parsedResults = parsedResults;
         this.finResults = finResults;
+    }
+
+//    Рентабельность продаж
+    public FinanceCounter countRoS() {
+        log.info("Считаем рентабельность продаж");
+        this.rOs = this.netProfit.divide(parsedResults.getTotalTurnOver(), 4, RoundingMode.HALF_UP);
+        return this;
     }
 
     public FinanceCounter countNetProfit() {
