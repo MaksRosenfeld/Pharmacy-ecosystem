@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Расходы</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex mx-5 bg-dark bg-gradient mt-2 mb-5 justify-content-start align-items-center rounded myshadow"
+     style="height: 100px">
+    <a href="/" class="btn btn-outline-warning m-5 text-center py-2">На
+        главную</a>
+</div>
+
+<!--Таблица расходов-->
+
+<div class="table-responsive col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
+    <button type="button" class="btn btn-success mb-3 shadow" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Добавить</button>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Укажите данные контрагента</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        <div class="form-floating">
+                            <select name="category" required class="form-select shadow mb-3" id="floatingSelect">
+                                <option value="" selected disabled>Выберите категорию</option>
+                                <option th:each="categ: ${categories}" th:text="${categ.category}" th:value="${categ.id}">
+                            </select>
+                            <label for="floatingSelect">Категория</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="number" th:name="inn" required class="form-control shadow mb-3" id="floatingInput" placeholder="ИНН"/>
+                            <label for="floatingInput">ИНН</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="text" th:name="name" required class="form-control shadow mb-3" id="floatingInput1" placeholder="Наименование"/>
+                            <label for="floatingInput1">Наименование</label>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" th:name="add" th:value="true" class="btn btn-primary">Добавить</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr class="shadow table-danger fs-5">
+            <th scope="col">ИНН</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Категория</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+
+
+        </tr>
+        </thead>
+        <tbody id="my_table">
+        <tr th:each="contragent : ${contragents}">
+            <th th:text="${contragent.inn}" scope="row">
+            </th>
+            <td th:text="${contragent.name}">
+            </td>
+            <td th:text="${contragent.categoryId.category}"></td>
+            <td>
+                <button type="submit" class="shadow btn btn-warning btn-sm">Изменить</button>
+            </td>
+            <td>
+                <button type="submit" class="shadow btn btn-danger btn-sm">Удалить</button>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<section id="down">
+
+</section>
+
+</div>
+
+</body>
+<!-- JavaScript Bundle with Popper -->
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+</html>

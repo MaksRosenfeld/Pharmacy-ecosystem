@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
+import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
@@ -28,6 +29,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
     private Map<Workbook, List<Row>> cellsWithTypos;
     private BigDecimal netProfit;
     private BigDecimal rOs;
+    private List<PharmacyCost> pharmacyCosts;
 
     @Override
     public void acceptingDataFrom(ParsedResults parsedResults) {
@@ -37,6 +39,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         this.date = parsedResults.getDate();
         this.costs = parsedResults.getCosts();
         this.cellsWithTypos = parsedResults.getCellsWithTypos();
+        this.pharmacyCosts = parsedResults.getPharmacyCosts();
     }
 
     @Override

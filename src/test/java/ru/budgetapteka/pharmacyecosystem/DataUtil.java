@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ExcelFile1C;
@@ -37,10 +38,17 @@ public class DataUtil {
     private static PharmacyService pharmacyService;
 
 
+
     public static List<Pharmacy> getAllPharmacies() {
         return pharmacyService.getAll();
     }
 
+    public static CategoryNew getNewCategory() {
+        CategoryNew categoryNew = new CategoryNew();
+        categoryNew.setCategory("Тест");
+        categoryNew.setType("Постоянные");
+        return categoryNew;
+    }
 
 
 

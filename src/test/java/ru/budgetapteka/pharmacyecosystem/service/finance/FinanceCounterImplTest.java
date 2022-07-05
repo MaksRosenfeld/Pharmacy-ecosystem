@@ -27,4 +27,16 @@ class FinanceCounterImplTest {
     @Test
     void getFixedCosts() {
     }
+
+    @Test
+    void countRoS() {
+    }
+
+    @Test
+    void countNetProfit() {
+    }
+
+    @Test
+    void countCosts() {
+    }
 }

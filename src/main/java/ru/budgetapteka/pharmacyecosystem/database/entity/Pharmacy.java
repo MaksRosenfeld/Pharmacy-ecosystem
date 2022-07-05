@@ -20,6 +20,8 @@ public class Pharmacy {
     @Id
     @Column(name = "pharmacy_number", nullable = false)
     private Integer pharmacyNumber;
+    @Column(name = "pharmacy_photo")
+    private String pharmacy_photo;
 
 
 

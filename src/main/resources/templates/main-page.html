@@ -2,51 +2,58 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Финансовый анализ</title>
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet">
 
 
-
 </head>
 <body>
-<div class="d-flex flex-column mx-5 bg-dark mt-2 mb-5 justify-content-center align-items-center rounded myshadow"
+
+<!--Шапка с формами загрузки-->
+
+<div class="d-flex flex-column mx-5 bg-dark bg-gradient mt-2 mb-5 justify-content-center align-items-center rounded myshadow"
      style="height: 100px">
     <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
         <div class="d-flex flex-row">
-        <div class="d-flex flex-column my-2">
-        <div class="input-group mb-2">
+            <div class="d-flex flex-column my-2">
+                <div class="input-group mb-2">
             <span class="btn btn-outline-warning" id="bankStatement">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-bar-chart" viewBox="0 0 16 16">
                     <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
                 </svg>
                 Банковская выписка
             </span>
-            <input type="file" class="form-control" required name="bank-statement"
-                   aria-describedby="bankStatement"
-                   aria-label="Upload">
-        </div>
-        <div class="input-group">
+                    <input type="file" class="form-control" required name="bank-statement"
+                           aria-describedby="bankStatement"
+                           aria-label="Upload">
+                </div>
+                <div class="input-group">
             <span class="btn btn-outline-warning" id="upload1CFile">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-bar-chart" viewBox="0 0 16 16">
                     <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
                 </svg>
                 1C отчет
             </span>
-            <input type="file" class="form-control" required name="1C-statement"
-                   aria-describedby="upload1CFile"
-                   aria-label="Upload">
-        </div>
-        </div>
-        <button class="btn btn-outline-warning m-2" type="submit">Загрузить</button>
+                    <input type="file" class="form-control" required name="1C-statement"
+                           aria-describedby="upload1CFile"
+                           aria-label="Upload">
+                </div>
+            </div>
+            <button class="btn btn-outline-warning m-2" type="submit">Загрузить</button>
         </div>
     </form>
 </div>
+
+<!--Таблица отсутствующих контрагентов-->
+
 <div th:unless="${missingInn == null || missingInn.isEmpty()}" class="col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
     <div class="my-4 text-center">
-        <h3>Данные контрагенты отсутсвуют в базе</h3>
+        <h3>Данные контрагенты отсутствуют в базе</h3>
     </div>
 
     <div class="table-responsive">
@@ -78,14 +85,15 @@
                                 One
                             </option>
                         </select>
-                            <div class="invalid-feedback">Необходимо выбрать категорию</div>
+                        <div class="invalid-feedback">Необходимо выбрать категорию</div>
 
                     </td>
                     <td class="text-center">
                         <input th:name="exclude" class="form-check-input" type="checkbox" th:value="true">
                     </td>
                     <td>
-                        <button type="submit" th:name="add" th:value="true" class="btn btn-danger btn-sm">Добавить</button>
+                        <button type="submit" th:name="add" th:value="true" class="btn btn-danger btn-sm">Добавить
+                        </button>
                     </td>
                 </form>
             </tr>
@@ -96,33 +104,54 @@
     </div>
 
 </div>
+<!--th:unless turnover==null-->
+<!--Форма для кнопок-->
+<div id="nav-buttons" th:unless="${totalTurnOver == null}"
+     class="d-flex col-8 justify-content-evenly bg-dark bg-gradient mx-auto rounded myshadow"
+     style="height: 60px; display: none">
+    <a href="/costs" class="btn btn-outline-warning m-2 text-center py-2">Проверить расходы</a>
+    <a href="/cost_base" class="btn btn-outline-warning m-2 text-center py-2">База расходов</a>
+    <a href="/contragent_base" class="btn btn-outline-warning m-2 text-center py-2">База контрагентов</a>
+    <a href="/statistic" class="btn btn-outline-warning m-2 text-center py-2">Статистика</a>
+
+</div>
+
+
+<!--5 Боксов с данными-->
 <div id="5-boxes" class="flex-row mt-4 mx-2 px-4 justify-content-evenly" style="display: none; height: 150px">
     <div class="card shadow green-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Выручка</h5>
         <div class="card-body">
-            <h4 th:unless="${totalTurnOver == null}" th:text="${#numbers.formatCurrency(totalTurnOver)}" class="card-text"></h4>
-            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}" class="card-title" style="color: white"></p>
+            <h4 th:unless="${totalTurnOver == null}" th:text="${#numbers.formatCurrency(totalTurnOver)}"
+                class="card-text"></h4>
+            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}"
+               class="card-title" style="color: white"></p>
         </div>
     </div>
     <div class="card shadow yellow-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Валовая прибыль</h5>
         <div class="card-body">
-            <h4 th:unless="${totalGrossProfit == null}" th:text="${#numbers.formatCurrency(totalGrossProfit)}" class="card-title"></h4>
-            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}" class="card-text" style="color: white"></p>
+            <h4 th:unless="${totalGrossProfit == null}" th:text="${#numbers.formatCurrency(totalGrossProfit)}"
+                class="card-title"></h4>
+            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}"
+               class="card-text" style="color: white"></p>
         </div>
     </div>
     <div class="card shadow white-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Чистая прибыль</h5>
         <div class="card-body">
-            <h4 th:unless="${netProfit == null}" th:text="${#numbers.formatCurrency(netProfit)}" class="card-title"></h4>
-            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}" class="card-text" style="color: white"></p>
+            <h4 th:unless="${netProfit == null}" th:text="${#numbers.formatCurrency(netProfit)}"
+                class="card-title"></h4>
+            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}"
+               class="card-text" style="color: white"></p>
         </div>
     </div>
     <div class="card shadow purple-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Рентабельность</h5>
         <div class="card-body">
             <h4 th:unless="${rOs == null}" th:text="${#numbers.formatPercent(rOs, 1, 2)}" class="card-title"></h4>
-            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}" class="card-text" style="color: white"></p>
+            <p th:unless="${dateOfStatement == null}" th:text="${#temporals.format(dateOfStatement, 'MMM yy')}"
+               class="card-text" style="color: white"></p>
         </div>
     </div>
     <div class="card shadow light-gradient" style="width: 230px; height: 130px">
@@ -130,6 +159,62 @@
         <div class="card-body">
             <h4 class="card-title"></h4>
             <p class="card-text"></p>
+        </div>
+    </div>
+</div>
+<div id="pharmacy-boxes" class="d-flex flex-column mx-5 justify-content-evenly mx-1">
+    <div th:each="pharmacy : ${pharmacies}">
+        <div th:if="${pharmacy.pharmacyNumber != 0}" class="card mb-3">
+            <div class="row g-0 shadow">
+                <div class="d-flex col-md-4 p-2">
+                    <img th:src="@{pharmacy/{photo}(photo = ${pharmacy.pharmacy_photo})}"
+                         class="shadow img-fluid rounded m-auto">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <div class="d-flex flex-column border mb-3 rounded all-side-shadow py-1 px-3" style="height: 40px">
+                            <h5 class="my-auto" th:text="'Аптека №' + ${pharmacy.pharmacyNumber}">Card title</h5>
+                        </div>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tr>
+                                <td>
+                                    <h6 class="card-text mt-3">Выручка: </h6>
+                                </td>
+                                <td>
+                                    <span class="ms-4 fs-5 badge shadow bg-warning">10 000 000</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h6 class="card-text mt-3">Валовая прибыль: </h6>
+                                </td>
+                                <td>
+                                    <span class="ms-4 fs-5 badge shadow bg-dark">10 000 000</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h6 class="card-text mt-3">Чистая прибыль: </h6>
+                                </td>
+                                <td>
+                                    <span class="ms-4 fs-5 badge shadow bg-success">10 000 000</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <p class="card-text">
+                            <small class="text-muted" th:unless="${dateOfStatement == null}"
+                                   th:text="${#temporals.format(dateOfStatement, 'MMM yy')}"></small>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface CategoryService {
     List<CategoryNew> getAllCategories();
     Optional<CategoryNew> getCategoryWithId(Long id);
+    void save(String name, String type);
 }

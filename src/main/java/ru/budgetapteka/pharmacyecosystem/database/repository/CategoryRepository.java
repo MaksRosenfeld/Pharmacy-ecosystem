@@ -6,4 +6,5 @@ import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryNew, Long> {
+    CategoryNew findByCategory(String string);
 }

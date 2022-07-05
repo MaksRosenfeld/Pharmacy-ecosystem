@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.CategoryRepository;
+import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
 
 
 import java.util.List;
@@ -32,5 +33,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<CategoryNew> getCategoryWithId(Long id) {
         return categoryRepository.findById(id);
+    }
+
+    @Override
+    public void save(String name, String type) {
+        CategoryNew categoryNew = new CategoryNew();
+        categoryNew.setCategory(name);
+        switch (type) {
+            case "var" -> categoryNew.setType(CostType.VARIABLE.getName());
+            case "fixed" -> categoryNew.setType(CostType.FIXED.getName());
+        }
+        categoryRepository.save(categoryNew);
+
     }
 }

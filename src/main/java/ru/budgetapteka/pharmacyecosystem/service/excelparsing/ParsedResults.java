@@ -37,12 +37,12 @@ public class ParsedResults {
 
     void savePharmacyResult(PharmacyResult pharmacyResult) {
         this.pharmacyResults = new ArrayList<>();
+        this.pharmacyCosts = new ArrayList<>();
         log.info("Сохраняем результат");
         pharmacyResults.add(pharmacyResult);
     }
 
     void savePharmacyCost(PharmacyCost pharmacyCost) {
-        this.pharmacyCosts = new ArrayList<>();
         log.info("Сохраняем расходы аптеки №{}", pharmacyCost.getPharmacy().getPharmacyNumber());
         pharmacyCosts.add(pharmacyCost);
     }

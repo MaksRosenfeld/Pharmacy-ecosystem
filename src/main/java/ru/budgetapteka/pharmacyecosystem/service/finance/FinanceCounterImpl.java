@@ -24,9 +24,7 @@ public class FinanceCounterImpl implements FinanceCounter {
     private static final Logger log = LoggerFactory.getLogger(FinanceCounterImpl.class);
 
     private List<Cost> parsedCosts;
-    private final ParsedResults parsedResults;
     private List<ContragentNew> allContragents;
-    private final FinancialResultsTo finResults;
     private BigDecimal variableCosts;
     private BigDecimal fixedCosts;
     private BigDecimal netProfit;
@@ -34,15 +32,16 @@ public class FinanceCounterImpl implements FinanceCounter {
 //    private static AtomicInteger loadingCounter = new AtomicInteger(0);
 
     private final ContragentService contragentService;
+    private final ParsedResults parsedResults;
+    private final FinancialResultsTo finResults;
 
-    // При создании класса идет подсчет постоянных и переменных расходов
     public FinanceCounterImpl(ParsedResults parsedResults, ContragentService contragentService, FinancialResultsTo finResults) {
         this.contragentService = contragentService;
         this.parsedResults = parsedResults;
         this.finResults = finResults;
     }
 
-//    Рентабельность продаж
+    //    Рентабельность продаж
     public FinanceCounter countRoS() {
         log.info("Считаем рентабельность продаж");
         this.rOs = this.netProfit.divide(parsedResults.getTotalTurnOver(), 4, RoundingMode.HALF_UP);
@@ -55,7 +54,8 @@ public class FinanceCounterImpl implements FinanceCounter {
         this.netProfit = parsedResults.getTotalGrossProfit().subtract(sumOfCosts);
         return this;
     }
-// TODO: разобраться с NullPointerException
+
+    // TODO: разобраться с NullPointerException
     private void countVariableCosts() {
         log.info("Считаем переменные расходы");
         this.variableCosts = parsedCosts.stream()
