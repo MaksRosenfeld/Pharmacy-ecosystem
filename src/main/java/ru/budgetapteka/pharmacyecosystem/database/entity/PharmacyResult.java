@@ -10,7 +10,6 @@ import java.sql.Date;
 @NoArgsConstructor
 @Data
 @Entity
-//@Table(name = "pharmacy_result", schema = "public", catalog = "d50bvntr63choj")
 @Table(name = "pharmacy_result")
 public class PharmacyResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,18 +1,13 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 import ru.budgetapteka.pharmacyecosystem.database.entity.*;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
@@ -23,8 +18,6 @@ import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.*;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -121,6 +114,7 @@ public class WebController {
     @PostMapping("/upload")
     public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
                                   @RequestParam("1C-statement") MultipartFile oneCStatement) {
+        log.info("Переходим на /upload");
         financialResults.dataReset();
         excelParser.parse1CStatement(oneCStatement); // идет 1-ой, так как нужен список аптек
         excelParser.parseBankStatement(bankStatement);
@@ -143,6 +137,7 @@ public class WebController {
                                    @RequestParam(name = "categoryID") Long id,
                                    @RequestParam(name = "exclude") Optional<Boolean> exclude) {
 
+        log.info("Обрабатываем POST запрос - добавление нового контрагента");
         Optional<CategoryNew> categoryWithId = categoryService.getCategoryWithId(id);
         ContragentNew newContragent = contragentService.createNewContragent(inn, name,
                 categoryWithId.orElse(null), exclude.orElse(false));
@@ -155,6 +150,7 @@ public class WebController {
     public String addNewCostCategory(@RequestParam(name = "name") String name,
                                      @RequestParam(name = "type") String type) {
 
+        log.info("Обрабатываем POST запрос - добавление новой категории");
         categoryService.save(name, type);
         return "redirect:/cost_base";
     }
@@ -188,7 +184,7 @@ public class WebController {
     }
 
     @GetMapping("/pharmacy/{photo}")
-    public ResponseEntity<Resource> getPhoto(@PathVariable(name = "photo") String photoName) throws MalformedURLException {
+    public ResponseEntity<Resource> getPhoto(@PathVariable(name = "photo") String photoName) {
         return pharmacyService.getPhoto(photoName);
 
     }

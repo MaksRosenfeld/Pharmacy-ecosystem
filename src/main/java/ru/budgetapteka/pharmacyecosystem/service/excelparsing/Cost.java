@@ -54,12 +54,8 @@ public class Cost {
             pharmacies.stream()
                     .filter(p -> this.belongingCosts.contains(p.getPharmacyNumber()))
                     .forEach(p -> {
-                        BigDecimal eachPharmacyCost;
-                        try {
-                            eachPharmacyCost = this.amount.divide(BigDecimal.valueOf(this.belongingCosts.size()));
-                        } catch (ArithmeticException e) {
-                            eachPharmacyCost = this.amount.divide(BigDecimal.valueOf(this.belongingCosts.size()), 2, RoundingMode.HALF_UP);
-                        }
+                        BigDecimal eachPharmacyCost = this.amount.divide(
+                                BigDecimal.valueOf(this.belongingCosts.size()), 2, RoundingMode.HALF_UP);
                         PharmacyCost pharmacyCost = costService.createPharmacyCost(p,
                                 parsedResults.getDate(),
                                 ctg.get().getCategoryId(),

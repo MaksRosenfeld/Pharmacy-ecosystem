@@ -13,7 +13,6 @@ import ru.budgetapteka.pharmacyecosystem.database.repository.PharmacyRepository;
 
 import java.net.MalformedURLException;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -33,6 +32,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     @Override
     public List<Pharmacy> getAll() {
+        log.info("Находим все аптеки в базе и сортируем");
         List<Pharmacy> all = pharmacyRepository.findAll();
         all.sort(Comparator.comparing(Pharmacy::getPharmacyNumber));
         return all;

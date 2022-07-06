@@ -6,7 +6,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
@@ -53,7 +52,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         acceptingDataFrom(parsedResults);
         this.netProfit = financeCounter.getNetProfit();
         this.rOs = financeCounter.getROs();
-        log.info("Размер PharmResults: {}", parsedResults.getPharmacyResults().size());
+        log.info("Размер PharmaResults: {}", parsedResults.getPharmacyResults().size());
         parsedResults.dataReset();
         log.info("Обнулили");
     }

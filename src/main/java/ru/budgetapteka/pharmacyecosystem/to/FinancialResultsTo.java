@@ -2,7 +2,6 @@ package ru.budgetapteka.pharmacyecosystem.to;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
