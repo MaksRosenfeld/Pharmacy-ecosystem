@@ -172,7 +172,8 @@
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <div class="d-flex flex-column border mb-3 rounded all-side-shadow py-1 px-3" style="height: 40px">
+                        <div class="d-flex flex-column border mb-3 rounded all-side-shadow py-1 px-3"
+                             style="height: 40px">
                             <h5 class="my-auto" th:text="'Аптека №' + ${pharmacy.pharmacyNumber}">Card title</h5>
                         </div>
                         <table>
@@ -182,35 +183,84 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tr>
-                                <td>
-                                    <h6 class="card-text mt-3">Выручка: </h6>
-                                </td>
-                                <td>
-                                    <span class="ms-4 fs-5 badge shadow bg-warning">10 000 000</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h6 class="card-text mt-3">Валовая прибыль: </h6>
-                                </td>
-                                <td>
-                                    <span class="ms-4 fs-5 badge shadow bg-dark">10 000 000</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h6 class="card-text mt-3">Чистая прибыль: </h6>
-                                </td>
-                                <td>
-                                    <span class="ms-4 fs-5 badge shadow bg-success">10 000 000</span>
-                                </td>
-                            </tr>
+                            <div th:each="result:${pharmResults}" th:if="${pharmacy.equals(result.pharmacy)}">
+                                <tr>
+                                    <td>
+                                        <h6 class="card-text mt-3">Выручка: </h6>
+                                    </td>
+                                    <td>
+                                    <span th:text="${#numbers.formatCurrency(result.turnover)}"
+                                          class="ms-4 fs-5 badge shadow bg-warning">10 000 000</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h6 class="card-text mt-3">Валовая прибыль: </h6>
+                                    </td>
+                                    <td>
+                                        <span th:text="${#numbers.formatCurrency(result.grossProfit)}"
+                                                class="ms-4 fs-5 badge shadow bg-dark">10 000 000</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h6 class="card-text mt-3">Чистая прибыль: </h6>
+                                    </td>
+                                    <td>
+                                        <span th:text="${#numbers.formatCurrency(result.costPrice)}"
+                                                class="ms-4 fs-5 badge shadow bg-success">10 000 000</span>
+                                    </td>
+                                </tr>
+                            </div>
                         </table>
                         <p class="card-text">
                             <small class="text-muted" th:unless="${dateOfStatement == null}"
                                    th:text="${#temporals.format(dateOfStatement, 'MMM yy')}"></small>
                         </p>
+                        <button class="mt-3 btn btn-outline-danger all-side-shadow" data-bs-toggle="modal"
+                                th:data-bs-target="'#pham'+${pharmacy.pharmacyNumber}">Смотреть расходы
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" th:id="'pham'+${pharmacy.pharmacyNumber}" tabindex="-1"
+                             th:aria-labelledby="'phamLabel'+${pharmacy.pharmacyNumber}"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" th:id="'phamLabel'+${pharmacy.pharmacyNumber}">Список
+                                            расходов аптеки</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr class="table-dark fs-5">
+                                                    <th scope="col">Категория</th>
+                                                    <th class="text-center" scope="col">Сумма</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <tr th:each="cost:${pharmacyCosts}"
+                                                    th:if="${cost.pharmacy.equals(pharmacy)}">
+                                                    <td th:text="${cost.categoryId.category}"></td>
+                                                    <th th:text="${#numbers.formatCurrency(cost.amount)}"
+                                                        class="text-end"></th>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>

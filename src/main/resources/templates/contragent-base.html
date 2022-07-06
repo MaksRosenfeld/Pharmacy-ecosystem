@@ -18,7 +18,7 @@
 <!--Таблица расходов-->
 
 <div class="table-responsive col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
-    <button type="button" class="btn btn-success mb-3 shadow" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Добавить</button>
+    <button type="button" class="btn btn-primary mb-3 shadow" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Добавить</button>
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -28,9 +28,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post">
+                    <form th:action="@{/}" method="post">
                         <div class="form-floating">
-                            <select name="category" required class="form-select shadow mb-3" id="floatingSelect">
+                            <select th:name="categoryID" required class="form-select shadow mb-3" id="floatingSelect">
                                 <option value="" selected disabled>Выберите категорию</option>
                                 <option th:each="categ: ${categories}" th:text="${categ.category}" th:value="${categ.id}">
                             </select>
@@ -44,6 +44,12 @@
                             <input type="text" th:name="name" required class="form-control shadow mb-3" id="floatingInput1" placeholder="Наименование"/>
                             <label for="floatingInput1">Наименование</label>
                         </div>
+                        <div>
+                            <input id="checkboxExclude" th:name="exclude" class="form-check-input" type="checkbox" th:value="true">
+                            <label class="mx-2 form-check-label" for="checkboxExclude">
+                                Исключать из подсчета
+                            </label>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                             <button type="submit" th:name="add" th:value="true" class="btn btn-primary">Добавить</button>
@@ -56,7 +62,7 @@
     </div>
     <table class="table table-hover">
         <thead>
-        <tr class="shadow table-danger fs-5">
+        <tr class="shadow table-dark fs-5">
             <th scope="col">ИНН</th>
             <th scope="col">Имя</th>
             <th scope="col">Категория</th>

@@ -11,8 +11,10 @@ import java.sql.Date;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "pharmacy_cost", schema = "public", catalog = "d50bvntr63choj")
+//@Table(name = "pharmacy_cost", schema = "public", catalog = "d50bvntr63choj")
+@Table(name = "pharmacy_cost")
 public class PharmacyCost {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)

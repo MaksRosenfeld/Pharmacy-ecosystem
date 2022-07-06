@@ -13,9 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
+import ru.budgetapteka.pharmacyecosystem.database.entity.*;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
@@ -58,6 +56,11 @@ public class WebController {
         this.pharmacyService = pharmacyService;
     }
 
+    @ModelAttribute("pharmacyCosts")
+    public List<PharmacyCost> getAllPharmacyCosts() {
+        return financialResults.getPharmacyCosts();
+    }
+
     @ModelAttribute("categories")
     public List<CategoryNew> getAllCategories() {
         return categoryService.getAllCategories();
@@ -95,6 +98,11 @@ public class WebController {
     @ModelAttribute("pharmacies")
     public List<Pharmacy> getAllPharmacies() {
         return pharmacyService.getAll();
+    }
+
+    @ModelAttribute("pharmResults")
+    public List<PharmacyResult> getPharmacyResults() {
+        return financialResults.getPharmaciesWithMonthResults();
     }
 
     @GetMapping("/")

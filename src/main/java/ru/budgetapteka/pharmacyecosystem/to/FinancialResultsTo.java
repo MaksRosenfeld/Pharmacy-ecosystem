@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
+import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
@@ -27,5 +28,6 @@ public interface FinancialResultsTo {
     BigDecimal getROs();
     void dataReset();
     List<PharmacyCost> getPharmacyCosts();
+    List<PharmacyResult> getPharmaciesWithMonthResults();
 
 }

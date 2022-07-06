@@ -22,7 +22,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     private static final Logger log = LoggerFactory.getLogger(PharmacyServiceImpl.class);
 
-    @Value("${PHOTO_STORAGE}")
+    @Value("${my.vars.photo.storage}")
     private String photoPath;
 
     private final PharmacyRepository pharmacyRepository;

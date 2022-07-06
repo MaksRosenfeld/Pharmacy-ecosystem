@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class FinanceCounterImplTest {
 
-    public ParsedResults parsedResults = new ParsedResults();
+
 
 //    @Test
 //    void getVariableCosts() {

@@ -23,9 +23,16 @@ public class Pharmacy {
     @Column(name = "pharmacy_photo")
     private String pharmacy_photo;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pharmacy pharmacy1 = (Pharmacy) o;
+        return pharmacy.equals(pharmacy1.pharmacy) && pharmacyNumber.equals(pharmacy1.pharmacyNumber) && Objects.equals(pharmacy_photo, pharmacy1.pharmacy_photo);
+    }
 
-
-
-
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(pharmacy, pharmacyNumber, pharmacy_photo);
+    }
 }

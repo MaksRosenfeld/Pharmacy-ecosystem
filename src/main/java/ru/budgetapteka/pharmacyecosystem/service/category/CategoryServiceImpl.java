@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.CategoryRepository;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
@@ -36,6 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void save(String name, String type) {
         CategoryNew categoryNew = new CategoryNew();
         categoryNew.setCategory(name);

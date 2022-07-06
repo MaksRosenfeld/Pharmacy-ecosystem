@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepository;
@@ -50,7 +51,10 @@ public class ContragentServiceImpl implements ContragentService {
     }
 
     @Override
+    @Transactional
     public ContragentNew createNewContragent(Long inn, String name, CategoryNew id, Boolean exclude) {
+        log.info("Создаю нового контрагента. ИНН: {}, Имя: {}, Категория: {}, Исключить: {} ",
+                inn, name, id.getCategory(), exclude);
         return new ContragentNew(inn, name, id, exclude);
     }
 
@@ -61,7 +65,9 @@ public class ContragentServiceImpl implements ContragentService {
 
 
     @Override
+    @Transactional
     public void saveNewContragent(ContragentNew contragent) {
+        log.info("Сохраняю контрагента");
         contragentRepository.save(contragent);
     }
 

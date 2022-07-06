@@ -62,7 +62,7 @@ public class FinanceCounterImpl implements FinanceCounter {
                 .filter(cost -> {
                     Optional<ContragentNew> contragent = allContragents.stream().filter(contr -> cost.getInn().equals(contr.getInn())).findFirst();
                     String type = contragent.orElse(null).getCategoryId().getType();
-                    Boolean exclude = contragent.get().getExclude();
+                    Boolean exclude = contragent.orElseThrow().getExclude();
                     return type.equals(CostType.VARIABLE.getName()) && !exclude;
                 })
                 .map(Cost::getAmount)
