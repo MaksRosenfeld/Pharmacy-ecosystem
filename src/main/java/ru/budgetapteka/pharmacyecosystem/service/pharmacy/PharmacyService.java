@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface PharmacyService {
     List<Pharmacy> getAll();
-    Pharmacy getPharmacy(Integer id);
     ResponseEntity<Resource> getPhoto(String photoName);
 }

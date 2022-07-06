@@ -33,6 +33,8 @@ public class PharmacyResult {
     @Basic
     @Column(name = "cost_price")
     private Double costPrice;
+    @Column(name = "net_profit")
+    private Double netProfit;
 
 
 

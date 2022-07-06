@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
+import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
@@ -89,6 +90,19 @@ public class FinanceCounterImpl implements FinanceCounter {
         countVariableCosts();
         countFixedCosts();
         return this;
+    }
+
+    @Override
+    public FinanceCounter countResultsForEachPharmacy() {
+        parsedResults.getPharmacyResults()
+                .forEach(pr -> {
+                    double totalCosts = parsedResults.getPharmacyCosts().stream()
+                            .filter(c -> c.getPharmacy().equals(pr.getPharmacy()))
+                            .mapToDouble(PharmacyCost::getAmount)
+                            .sum();
+                    pr.se
+                });
+        return null;
     }
 
     @Override

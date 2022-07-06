@@ -39,11 +39,6 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public Pharmacy getPharmacy(Integer id) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<Resource> getPhoto(String photoName) {
         Path res = Path.of(photoPath).resolve(photoName).normalize();
         UrlResource urlResource = null;

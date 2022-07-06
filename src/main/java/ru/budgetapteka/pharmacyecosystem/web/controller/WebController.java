@@ -169,7 +169,8 @@ public class WebController {
 
     @GetMapping("/pharmacy/{photo}")
     public ResponseEntity<Resource> getPhoto(@PathVariable(name = "photo") String photoName) throws MalformedURLException {
-       return pharmacyService.getPhoto(photoName);
+        return pharmacyService.getPhoto(photoName);
+
     }
 
 
