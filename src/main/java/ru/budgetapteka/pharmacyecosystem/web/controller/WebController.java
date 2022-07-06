@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import ru.budgetapteka.pharmacyecosystem.database.entity.*;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
@@ -32,44 +33,31 @@ public class WebController {
 
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
 
-    @Value("${PHOTO_STORAGE}")
-    private String photoPath;
-
     private final FinancialResultsTo financialResults;
     private final ContragentService contragentService;
     private final CategoryService categoryService;
     private final ExcelParser excelParser;
     private final FinanceCounter financeCounter;
     private final PharmacyService pharmacyService;
+    private final PharmacyResultService pharmacyResultService;
 
     public WebController(FinancialResultsTo financialResults,
                          ContragentService contragentService,
                          CategoryService categoryService,
                          ExcelParser excelParser,
                          FinanceCounter financeCounter,
-                         PharmacyService pharmacyService) {
+                         PharmacyService pharmacyService,
+                         PharmacyResultService pharmacyResultService) {
         this.financialResults = financialResults;
         this.contragentService = contragentService;
         this.categoryService = categoryService;
         this.excelParser = excelParser;
         this.financeCounter = financeCounter;
         this.pharmacyService = pharmacyService;
+        this.pharmacyResultService = pharmacyResultService;
     }
 
-    @ModelAttribute("pharmacyCosts")
-    public List<PharmacyCost> getAllPharmacyCosts() {
-        return financialResults.getPharmacyCosts();
-    }
-
-    @ModelAttribute("categories")
-    public List<CategoryNew> getAllCategories() {
-        return categoryService.getAllCategories();
-    }
-
-    @ModelAttribute("missingInn")
-    public Set<Cost> getMissingInn() {
-        return contragentService.getMissingInn();
-    }
+    //    financialResults
 
     @ModelAttribute("totalTurnOver")
     public BigDecimal getTotalTurnOver() {
@@ -91,13 +79,13 @@ public class WebController {
         return financialResults.getROs();
     }
 
-    @ModelAttribute("dateOfStatement")
-    public LocalDate getDateOfStatement() {return financialResults.getDate();
+    @ModelAttribute("pharmacyCosts")
+    public List<PharmacyCost> getAllPharmacyCosts() {
+        return financialResults.getPharmacyCosts();
     }
 
-    @ModelAttribute("pharmacies")
-    public List<Pharmacy> getAllPharmacies() {
-        return pharmacyService.getAll();
+    @ModelAttribute("dateOfStatement")
+    public LocalDate getDateOfStatement() {return financialResults.getDate();
     }
 
     @ModelAttribute("pharmResults")
@@ -105,10 +93,30 @@ public class WebController {
         return financialResults.getPharmaciesWithMonthResults();
     }
 
-    @GetMapping("/")
-    public String showMainPage() {
-        return "main-page";
+
+    //    categoryService
+
+    @ModelAttribute("categories")
+    public List<CategoryNew> getAllCategories() {
+        return categoryService.getAllCategories();
     }
+
+    //    contragentService
+
+    @ModelAttribute("missingInn")
+    public Set<Cost> getMissingInn() {
+        return contragentService.getMissingInn();
+    }
+
+    //    pharmacyService
+
+    @ModelAttribute("pharmacies")
+    public List<Pharmacy> getAllPharmacies() {
+        return pharmacyService.getAll();
+    }
+
+
+    //    POST requests
 
     @PostMapping("/upload")
     public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
@@ -121,7 +129,10 @@ public class WebController {
                     .countCosts()
                     .countNetProfit()
                     .countRoS()
+                    .countResultsForEachPharmacy()
                     .sendResults();
+            pharmacyResultService.saveResultsForEachPharmacy(
+                    financialResults.getPharmaciesWithMonthResults());
         }
         return "redirect:/";
     }
@@ -140,6 +151,22 @@ public class WebController {
         return "main-page";
     }
 
+    @PostMapping(value="/cost_base", params = {"cost"})
+    public String addNewCostCategory(@RequestParam(name = "name") String name,
+                                     @RequestParam(name = "type") String type) {
+
+        categoryService.save(name, type);
+        return "redirect:/cost_base";
+    }
+
+
+    //    GET requests
+
+    @GetMapping("/")
+    public String goToMainPage() {
+        return "main-page";
+    }
+
     @GetMapping("/costs")
     public String goToCostsPage(Model model) {
         model.addAttribute("costs", financialResults.getPharmacyCosts());
@@ -152,13 +179,6 @@ public class WebController {
         return "cost-base";
     }
 
-    @PostMapping(value="/cost_base", params = {"cost"})
-    public String addNewCostCategory(@RequestParam(name = "name") String name,
-                                     @RequestParam(name = "type") String type) {
-
-        categoryService.save(name, type);
-        return "redirect:/cost_base";
-    }
 
     @GetMapping(value = "/contragent_base")
     public String goToContragents(Model model) {

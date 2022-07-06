@@ -26,15 +26,15 @@ public class PharmacyResult {
     private Date date;
     @Basic
     @Column(name = "turnover")
-    private Double turnover;
+    private BigDecimal turnover;
     @Basic
     @Column(name = "gross_profit")
-    private Double grossProfit;
+    private BigDecimal grossProfit;
     @Basic
     @Column(name = "cost_price")
-    private Double costPrice;
+    private BigDecimal costPrice;
     @Column(name = "net_profit")
-    private Double netProfit;
+    private BigDecimal netProfit;
 
 
 

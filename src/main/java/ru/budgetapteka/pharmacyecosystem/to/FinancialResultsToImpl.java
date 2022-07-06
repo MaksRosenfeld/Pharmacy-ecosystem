@@ -25,15 +25,15 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
 
     private static final Logger log = LoggerFactory.getLogger(FinancialResultsToImpl.class);
 
-    private BigDecimal totalTurnOver;
-    private BigDecimal totalGrossProfit;
-    private BigDecimal totalCostPrice;
-    private List<PharmacyResult> pharmaciesWithMonthResults;
-    private LocalDate date;
-    private List<Cost> costs;
-    private Map<Workbook, List<Row>> cellsWithTypos;
-    private BigDecimal netProfit;
-    private BigDecimal rOs;
+    private BigDecimal totalTurnOver; // сумма выручки всех аптек
+    private BigDecimal totalGrossProfit; // сумма валовой прибыль всех аптек
+    private BigDecimal totalCostPrice; // сумма себестоимости продаж всех аптек
+    private List<PharmacyResult> pharmaciesWithMonthResults; // список аптека с подсчитанными данными
+    private LocalDate date; // дата выписки
+    private List<Cost> costs; // список всех расходов за месяц
+    private Map<Workbook, List<Row>> cellsWithTypos; // словарь опечаток
+    private BigDecimal netProfit; // сумма чистой прибыли всех аптек
+    private BigDecimal rOs; // общая рентабельность продаж
     private List<PharmacyCost> pharmacyCosts;
 
     @Override

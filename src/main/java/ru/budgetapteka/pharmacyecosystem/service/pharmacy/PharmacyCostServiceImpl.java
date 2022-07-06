@@ -18,7 +18,7 @@ public class PharmacyCostServiceImpl implements PharmacyCostService {
         pharmacyCost.setPharmacy(pharmacy);
         pharmacyCost.setDate(Date.valueOf(date));
         pharmacyCost.setCategoryId(id);
-        pharmacyCost.setAmount(amount.doubleValue());
+        pharmacyCost.setAmount(amount);
         return pharmacyCost;
     }
 }

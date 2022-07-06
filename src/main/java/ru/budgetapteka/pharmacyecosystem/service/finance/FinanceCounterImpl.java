@@ -62,7 +62,7 @@ public class FinanceCounterImpl implements FinanceCounter {
         this.variableCosts = parsedCosts.stream()
                 .filter(cost -> {
                     Optional<ContragentNew> contragent = allContragents.stream().filter(contr -> cost.getInn().equals(contr.getInn())).findFirst();
-                    String type = contragent.orElse(null).getCategoryId().getType();
+                    String type = contragent.orElseThrow().getCategoryId().getType();
                     Boolean exclude = contragent.orElseThrow().getExclude();
                     return type.equals(CostType.VARIABLE.getName()) && !exclude;
                 })
@@ -74,8 +74,10 @@ public class FinanceCounterImpl implements FinanceCounter {
         log.info("Считаем постоянные расходы");
         this.fixedCosts = parsedCosts.stream()
                 .filter(cost -> {
-                    Optional<ContragentNew> contragent = allContragents.stream().filter(contr -> cost.getInn().equals(contr.getInn())).findFirst();
-                    String type = contragent.get().getCategoryId().getType();
+                    Optional<ContragentNew> contragent = allContragents.stream()
+                            .filter(contr -> cost.getInn().equals(contr.getInn()))
+                            .findFirst();
+                    String type = contragent.orElseThrow().getCategoryId().getType();
                     Boolean exclude = contragent.get().getExclude();
                     return type.equals(CostType.FIXED.getName()) && !exclude;
                 })
@@ -94,15 +96,20 @@ public class FinanceCounterImpl implements FinanceCounter {
 
     @Override
     public FinanceCounter countResultsForEachPharmacy() {
+        countNetProfitForEach();
+        return this;
+    }
+
+    private void countNetProfitForEach() {
+        log.info("Считаем чистую прибыль для каждой аптеки");
         parsedResults.getPharmacyResults()
                 .forEach(pr -> {
-                    double totalCosts = parsedResults.getPharmacyCosts().stream()
+                    BigDecimal totalCosts = parsedResults.getPharmacyCosts().stream()
                             .filter(c -> c.getPharmacy().equals(pr.getPharmacy()))
-                            .mapToDouble(PharmacyCost::getAmount)
-                            .sum();
-                    pr.se
+                            .map(PharmacyCost::getAmount)
+                            .reduce(BigDecimal::add).orElseThrow();
+                    pr.setNetProfit(pr.getGrossProfit().subtract(totalCosts));
                 });
-        return null;
     }
 
     @Override

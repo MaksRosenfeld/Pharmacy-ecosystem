@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 @AllArgsConstructor
@@ -31,8 +32,8 @@ public class PharmacyCost {
     @JoinColumn(name = "category_id")
     private CategoryNew categoryId;
     @Basic
-    @Column(name = "amount", nullable = false, precision = 0)
-    private Double amount;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
 
 

@@ -7,10 +7,13 @@ import ru.budgetapteka.pharmacyecosystem.database.repository.PharmacyResultRepos
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 
 public interface PharmacyResultService {
 
     PharmacyResult createPharmacyResult(Pharmacy pharmacy, LocalDate date, BigDecimal turnOver, BigDecimal grossProfit, BigDecimal costPrice);
+
+    void saveResultsForEachPharmacy(List<PharmacyResult> pharmacyResults);
 
 }
