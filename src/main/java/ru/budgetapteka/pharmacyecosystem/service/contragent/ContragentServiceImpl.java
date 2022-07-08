@@ -4,6 +4,9 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
@@ -13,10 +16,12 @@ import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
 import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Lazy(value = false)
@@ -39,15 +44,23 @@ public class ContragentServiceImpl implements ContragentService {
     public boolean hasMissingInn() {
         List<Cost> allCosts = parsedResults.getCosts();
         if (allCosts != null) {
-            List<ContragentNew> allContragents = contragentRepository.findAll();
+            // из-за пагинации интерфейс PagingAndSorting, который возвращает Iterable
+            Iterable<ContragentNew> allContragents = contragentRepository.findAll();
+            List<ContragentNew> allContragentsList = new ArrayList<>();
+            allContragents.forEach(allContragentsList::add);
             this.missingInn = allCosts.stream()
-                    .filter(cost -> allContragents.stream()
+                    .filter(cost -> allContragentsList.stream()
                             .noneMatch(contr -> cost.getInn().equals(contr.getInn())))
                     .collect(Collectors.toSet());
         }
         log.info("Количество недостающих ИНН = {}", this.missingInn.size());
         return !missingInn.isEmpty();
 
+    }
+
+    @Override
+    public Page<ContragentNew> getAllPages(Pageable pageable) {
+        return contragentRepository.findAll(pageable);
     }
 
     @Override
@@ -59,7 +72,7 @@ public class ContragentServiceImpl implements ContragentService {
     }
 
     @Override
-    public List<ContragentNew> getAllContragents() {
+    public Iterable<ContragentNew> getAllContragents() {
         return contragentRepository.findAll();
     }
 

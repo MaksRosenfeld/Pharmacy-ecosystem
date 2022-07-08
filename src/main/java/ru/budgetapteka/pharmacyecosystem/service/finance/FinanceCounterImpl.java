@@ -14,6 +14,7 @@ import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +88,8 @@ public class FinanceCounterImpl implements FinanceCounter {
 
     @Override
     public FinanceCounter countCosts() {
-        this.allContragents = contragentService.getAllContragents();
+        this.allContragents = new ArrayList<>();
+        contragentService.getAllContragents().forEach(allContragents::add);
         this.parsedCosts = parsedResults.getCosts();
         countVariableCosts();
         countFixedCosts();

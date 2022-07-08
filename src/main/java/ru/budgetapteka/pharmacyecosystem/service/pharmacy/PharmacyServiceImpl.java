@@ -25,17 +25,20 @@ public class PharmacyServiceImpl implements PharmacyService {
     private String photoPath;
 
     private final PharmacyRepository pharmacyRepository;
+    private final List<Pharmacy> allPharmacies;
 
     public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
         this.pharmacyRepository = pharmacyRepository;
+        this.allPharmacies = this.pharmacyRepository.findAll();
+        this.allPharmacies.sort(Comparator.comparing(Pharmacy::getPharmacyNumber));
+
+
     }
 
     @Override
     public List<Pharmacy> getAll() {
-        log.info("Находим все аптеки в базе и сортируем");
-        List<Pharmacy> all = pharmacyRepository.findAll();
-        all.sort(Comparator.comparing(Pharmacy::getPharmacyNumber));
-        return all;
+        log.info("Находим все аптеки в базе");
+        return this.allPharmacies;
     }
 
     @Override

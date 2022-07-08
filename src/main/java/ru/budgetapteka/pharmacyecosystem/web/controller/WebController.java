@@ -2,12 +2,21 @@ package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.budgetapteka.pharmacyecosystem.database.entity.*;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
@@ -26,13 +35,14 @@ public class WebController {
 
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
 
+
     private final FinancialResultsTo financialResults;
     private final ContragentService contragentService;
     private final CategoryService categoryService;
     private final ExcelParser excelParser;
     private final FinanceCounter financeCounter;
     private final PharmacyService pharmacyService;
-    private final PharmacyResultService pharmacyResultService;
+    private final PharmacyResultService pharmacyResultService; // закомментил сохранение в базу
 
     public WebController(FinancialResultsTo financialResults,
                          ContragentService contragentService,
@@ -78,7 +88,8 @@ public class WebController {
     }
 
     @ModelAttribute("dateOfStatement")
-    public LocalDate getDateOfStatement() {return financialResults.getDate();
+    public LocalDate getDateOfStatement() {
+        return financialResults.getDate();
     }
 
     @ModelAttribute("pharmResults")
@@ -95,6 +106,11 @@ public class WebController {
     }
 
     //    contragentService
+
+    @ModelAttribute("contragents")
+    public Page<ContragentNew> getPagesWithContragents(@PageableDefault(size=15) Pageable pageable) {
+        return contragentService.getAllPages(pageable);
+    }
 
     @ModelAttribute("missingInn")
     public Set<Cost> getMissingInn() {
@@ -125,8 +141,8 @@ public class WebController {
                     .countRoS()
                     .countResultsForEachPharmacy()
                     .sendResults();
-            pharmacyResultService.saveResultsForEachPharmacy(
-                    financialResults.getPharmaciesWithMonthResults());
+//            pharmacyResultService.saveResultsForEachPharmacy(
+//                    financialResults.getPharmaciesWithMonthResults());
         }
         return "redirect:/";
     }
@@ -146,7 +162,7 @@ public class WebController {
         return "main-page";
     }
 
-    @PostMapping(value="/cost_base", params = {"cost"})
+    @PostMapping(value = "/cost_base", params = {"cost"})
     public String addNewCostCategory(@RequestParam(name = "name") String name,
                                      @RequestParam(name = "type") String type) {
 
@@ -178,8 +194,7 @@ public class WebController {
 
     @GetMapping(value = "/contragent_base")
     public String goToContragents(Model model) {
-        model.addAttribute("contragents", contragentService.getAllContragents());
-
+//        model.addAttribute("contragents", contragentService.getAllContragents());
         return "contragent-base";
     }
 
@@ -190,5 +205,8 @@ public class WebController {
     }
 
 
-
 }
+
+
+
+

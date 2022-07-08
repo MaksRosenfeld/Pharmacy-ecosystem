@@ -90,11 +90,23 @@
         </tbody>
     </table>
 </div>
-<section id="down">
 
-</section>
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${contragents.isFirst()} ? 'disabled'" >
+            <a class="page-link" th:href="@{contragent_base(page=${contragents.number}-1)}" tabindex="-1" aria-disabled="true">Предыдущая</a>
+        </li>
+        <li class="page-item" th:each="page:${#numbers.sequence(0, contragents.getTotalPages()-1)}">
+            <a class="page-link" th:classappend="${contragents.number == page} ? 'active'"
+               th:text="${page}+1" th:href="@{contragent_base(page=${page})}">1</a></li>
+        <li class="page-item" th:classappend="${contragents.isLast()} ? 'disabled'">
+            <a class="page-link" th:href="@{contragent_base(page=${contragents.number}+1)}">Следующая</a>
+        </li>
+    </ul>
+</nav>
 
-</div>
+
+
 
 </body>
 <!-- JavaScript Bundle with Popper -->

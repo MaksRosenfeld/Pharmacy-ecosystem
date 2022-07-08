@@ -77,7 +77,8 @@ public class ExcelParserImpl implements ExcelParser {
     public void parseBankStatement(MultipartFile file) {
         ExcelFileBankStatement bankStatement;
         this.rowsWithTypos = new ArrayList<>();
-        this.allContragents = contragentService.getAllContragents();
+        this.allContragents = new ArrayList<>();
+        contragentService.getAllContragents().forEach(allContragents::add);
         try {
             bankStatement = new ExcelFileBankStatement(file.getInputStream());
             Sheet sheet = bankStatement.getWorkbook().getSheetAt(0);
