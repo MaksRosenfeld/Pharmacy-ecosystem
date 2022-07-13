@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.budgetapteka.pharmacyecosystem.database.entity.*;
+import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
@@ -43,6 +44,7 @@ public class WebController {
     private final FinanceCounter financeCounter;
     private final PharmacyService pharmacyService;
     private final PharmacyResultService pharmacyResultService; // закомментил сохранение в базу
+    private final EmployeeService employeeService;
 
     public WebController(FinancialResultsTo financialResults,
                          ContragentService contragentService,
@@ -50,7 +52,8 @@ public class WebController {
                          ExcelParser excelParser,
                          FinanceCounter financeCounter,
                          PharmacyService pharmacyService,
-                         PharmacyResultService pharmacyResultService) {
+                         PharmacyResultService pharmacyResultService,
+                         EmployeeService employeeService) {
         this.financialResults = financialResults;
         this.contragentService = contragentService;
         this.categoryService = categoryService;
@@ -58,6 +61,7 @@ public class WebController {
         this.financeCounter = financeCounter;
         this.pharmacyService = pharmacyService;
         this.pharmacyResultService = pharmacyResultService;
+        this.employeeService = employeeService;
     }
 
     //    financialResults
@@ -171,6 +175,13 @@ public class WebController {
         return "redirect:/cost_base";
     }
 
+    @PostMapping(value = "/salary", params = "change=true")
+    public String changePharmacyInSalary(@RequestParam(name = "employee") int emp_id,
+                                         @RequestParam(name = "ph_to_change_on") int ph_id) {
+        employeeService.changePharmacy(emp_id, ph_id);
+        return "redirect:/salary";
+    }
+
 
     //    GET requests
 
@@ -202,6 +213,11 @@ public class WebController {
     public ResponseEntity<Resource> getPhoto(@PathVariable(name = "photo") String photoName) {
         return pharmacyService.getPhoto(photoName);
 
+    }
+
+    @GetMapping("/salary")
+    public String goToSalary() {
+        return "salary-test";
     }
 
 

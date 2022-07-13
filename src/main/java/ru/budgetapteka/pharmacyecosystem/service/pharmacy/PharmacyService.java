@@ -9,4 +9,5 @@ import java.util.List;
 public interface PharmacyService {
     List<Pharmacy> getAll();
     ResponseEntity<Resource> getPhoto(String photoName);
+    Pharmacy findById(int id);
 }

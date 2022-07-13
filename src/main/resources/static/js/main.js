@@ -1,5 +1,47 @@
 $(document).ready(function () {
+
+
+    $.getJSON("http://localhost:8080/api/all-contrs", getData)
+    function getData(data) {
+        $.each(data, function(idx, value) {
+            console.log(value["inn"])
+        })
+    }
     $("#5-boxes").css("display", "flex").hide().fadeIn(1000)
+
+    $('#amount1,#amount2').keyup(function () {
+        let total = parseInt($('#amount1').val()) + parseInt($('#amount2').val());
+        $('#total').text(total);
+    });
+    let contrs;
+
+    // $("button").click(function() {
+    //     $.getJSON("http://localhost:8080/api/all-contrs", function(data) {
+    //
+    //
+    //     })
+    // })
+
+
+    $("#change-test").change(function () {
+        alert( "Handler for .change() called." );
+    })
+
+    $("#pgbr").click(function () {
+        $("#pgbr").progressbar({
+            value: 37
+        });
+    });
+
+    let list = ["Hi", "My", "Name", "Is", "List"]
+
+    $("#box").click(function () {
+        $.each(list, function (index, value) {
+            $("#box").append(`<p>${value}</p>`)
+
+        })
+
+    })
 
 
     // $("#add_button").click(function () {

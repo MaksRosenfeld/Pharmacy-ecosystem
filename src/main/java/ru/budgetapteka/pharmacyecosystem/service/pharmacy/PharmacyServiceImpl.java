@@ -59,4 +59,9 @@ public class PharmacyServiceImpl implements PharmacyService {
                 .body(urlResource);
 
     }
+
+    @Override
+    public Pharmacy findById(int id) {
+        return pharmacyRepository.findById(id).orElseThrow();
+    }
 }
