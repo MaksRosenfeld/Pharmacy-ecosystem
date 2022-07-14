@@ -108,7 +108,7 @@
 <!--Форма для кнопок-->
 <div id="nav-buttons" th:unless="${totalTurnOver == null}"
      class="d-flex col-8 justify-content-evenly bg-dark bg-gradient mx-auto rounded myshadow"
-     style="height: 60px; display: none">
+     style="display: none; height: 60px">
     <a href="/costs" class="btn btn-outline-warning m-2 text-center py-2">Проверить расходы</a>
     <a href="/cost_base" class="btn btn-outline-warning m-2 text-center py-2">База расходов</a>
     <a href="/contragent_base" class="btn btn-outline-warning m-2 text-center py-2">База контрагентов</a>
@@ -162,7 +162,7 @@
         </div>
     </div>
 </div>
-<div id="pharmacy-boxes" class="d-flex flex-column mx-5 justify-content-evenly mx-1">
+<div id="pharmacy-boxes" class="flex-column mx-5 justify-content-evenly mx-1" style="display: none">
     <div th:each="pharmacy : ${pharmacies}">
         <div th:if="${pharmacy.pharmacyNumber != 0}" class="card mb-3">
             <div class="row g-0 shadow">

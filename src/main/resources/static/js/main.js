@@ -8,6 +8,8 @@ $(document).ready(function () {
         })
     }
     $("#5-boxes").css("display", "flex").hide().fadeIn(1000)
+    $("#pharmacy-boxes").css("display", "flex").hide().fadeIn(2000)
+    $("#nav-buttons").css("display", "flex").hide().fadeIn(1000)
 
     $('#amount1,#amount2').keyup(function () {
         let total = parseInt($('#amount1').val()) + parseInt($('#amount2').val());

@@ -50,8 +50,8 @@ class BankApiHandlerTest {
     void jsonReadTest() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(new File("test_json_folder/test.json"));
-        JsonNode doclist = jsonNode.at("/account/sendTransactionsToWARequest/paymentDocumentList");
-        for (JsonNode jn : doclist) {
+        JsonNode allPayments = jsonNode.at("/account/sendTransactionsToWARequest/paymentDocumentList");
+        for (JsonNode jn : allPayments) {
             assertThat(jn.at("/documentAmount/amount").asText()).containsPattern("[1-9.]");
         }
 
