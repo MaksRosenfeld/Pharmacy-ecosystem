@@ -6,22 +6,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepository;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
+import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
+import ru.budgetapteka.pharmacyecosystem.service.parser.CostType;
+import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Getter
 @Lazy(value = false)
@@ -41,8 +39,9 @@ public class ContragentServiceImpl implements ContragentService {
     }
 
     @Override
-    public boolean hasMissingInn() {
+    public Set<Cost> countMissingInn() {
         List<Cost> allCosts = parsedResults.getCosts();
+        log.info("Проверка размера расходов: {}", allCosts.size());
         if (allCosts != null) {
             // из-за пагинации интерфейс PagingAndSorting, который возвращает Iterable
             Iterable<ContragentNew> allContragents = contragentRepository.findAll();
@@ -54,7 +53,16 @@ public class ContragentServiceImpl implements ContragentService {
                     .collect(Collectors.toSet());
         }
         log.info("Количество недостающих ИНН = {}", this.missingInn.size());
-        return !missingInn.isEmpty();
+        return this.missingInn;
+
+    }
+
+    public void deleteFromMissedInn(Long inn) {
+        Optional<Cost> costToDelete = this.missingInn
+                .stream()
+                .filter(c -> c.getInn().equals(inn))
+                .findFirst();
+        this.missingInn.remove(costToDelete.orElseThrow());
 
     }
 

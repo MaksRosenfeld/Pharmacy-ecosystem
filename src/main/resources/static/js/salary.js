@@ -6,8 +6,8 @@ $(document).ready(function () {
     const allPharms = []
     const allEmps = []
 
-    $.getJSON("http://localhost:8080/api/all-pharmacies", getAllPharmacies)
-    $.getJSON("http://localhost:8080/api/all-employees", getAllEmployees)
+    $.getJSON("/api/all-pharmacies", getAllPharmacies)
+    $.getJSON("/api/all-employees", getAllEmployees)
 
     function getAllPharmacies(pharmacies) {
         $.each(pharmacies, function (idx, ph) {

@@ -4,8 +4,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
+import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
+import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 
 import java.math.BigDecimal;

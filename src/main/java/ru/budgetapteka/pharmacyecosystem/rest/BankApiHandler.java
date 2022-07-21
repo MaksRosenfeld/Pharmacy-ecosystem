@@ -1,98 +1,77 @@
 package ru.budgetapteka.pharmacyecosystem.rest;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+import ru.budgetapteka.pharmacyecosystem.rest.headers.HeadersMaker;
+import ru.budgetapteka.pharmacyecosystem.rest.url.Util;
+import ru.budgetapteka.pharmacyecosystem.rest.webclient.WebClientBuilderImpl;
+import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
+import ru.budgetapteka.pharmacyecosystem.service.parser.Parser;
+import ru.budgetapteka.pharmacyecosystem.service.parser.ParserImpl;
 
-import java.io.IOException;
+import java.time.Duration;
 
-@Data
+@Slf4j
 @Component
-public class BankApiHandler {
+public class BankApiHandler extends ApiHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(BankApiHandler.class);
-
-    private final String token; // токен для проверки для хедера
-    private final WebClient webClient;
-
-    // Запросы
-    private final String orderStatementRequest; // заказать выписку
-    private final String checkStatementRequest; // проверить статус выписки
-    private final String getStatementRequest; // получить выписку
-
-    // JSON результаты запросов
-    private String orderJSON;
-    private String checkJSON;
-    private String statementJSON;
-
-    // id выписки для создания запросов проверки и получения
+    @Getter
     private String statementId;
-    private String status;
+    private final ParsedResults parsedResults;
 
 
-    public BankApiHandler(@Value("${my.vars.open.base-url}") String openBaseUrl,
-                          @Value("${my.vars.open.form-statement-request}") String orderStatementRequest,
-                          @Value("${my.vars.open.token}") String token,
-                          @Value("${my.vars.open.check-statement-status}") String checkStatementRequest,
-                          @Value("${my.vars.open.get-statement}") String getStatementRequest,
-                          WebClientBuilder webClientBuilder) {
-        this.token = token;
-        this.webClient = webClientBuilder.getWebClient(openBaseUrl, createHeaders());
-        this.orderStatementRequest = orderStatementRequest;
-        this.checkStatementRequest = checkStatementRequest;
-        this.getStatementRequest = getStatementRequest;
+    public BankApiHandler(@Value("${OPEN_TOKEN}") String token, ParsedResults parsedResults) {
+        super(new WebClientBuilderImpl().getWebClient
+                (Util.Url.BANK_BASE_URL, HeadersMaker.createBankHeaders(token)));
+        this.parsedResults = parsedResults;
 
     }
 
-    // Запрашивает создание выписки, в параметрах указывать даты "yyyy-mm-dd"
-    public void orderStatement(String from, String to) {
-        log.info("Заказываем выписку от {} до {}", from, to);
-        statementId = webClient
+    @Override
+    public void getMethod(String uri) {
+        String data = super.getWebClient()
+                .get()
+                .uri(uri, statementId)
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnError(e -> log.info("Попытка прошла неудачно"))
+                .retryWhen(Retry.fixedDelay(90, Duration.ofSeconds(30)))
+                .block();
+        BankStatement bankStatement = new BankStatement(data);
+        super.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
+        Parser bankParser = new ParserImpl(bankStatement, parsedResults);
+        bankParser.parse();
+    }
+
+    @Override
+    public void postMethod(String uri, String dateFrom, String dateTo) {
+        log.info("Заказываем выписку от {} до {}", dateFrom, dateTo);
+        super.setStatementStatus(Util.Status.BANK_STATEMENT_IN_PROGRESS);
+        statementId = super.getWebClient()
                 .post()
-                .uri(orderStatementRequest, from, to)
+                .uri(uri, dateFrom, dateTo)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .map(jn -> jn.at("/data/statementId").asText())
+                .map(jn -> jn.at(Util.Path.BANK_STATEMENT_ID).asText())
                 .block();
         log.info("Номер выписки: {}", statementId);
+        super.setStatementId(statementId);
     }
 
-    public void checkStatusOfStatement() {
-        status = webClient
+    public Mono<String> checkStatement() {
+        return super.getWebClient()
                 .get()
-                .uri(checkStatementRequest, statementId)
+                .uri(Util.Url.BANK_GET_CHECK_STATEMENT_REQUEST, statementId)
                 .retrieve()
-                .bodyToMono(JsonNode.class)
-                .map(jn -> jn.at("/data/status").asText())
-                .block();
-        log.info("Статус выписки: {}", status);
-    }
-
-    public void getTheStatement() {
-        log.info("Сохраняем JSON выписку для парсинга");
-        statementJSON = webClient
-                .post()
-                .uri(getStatementRequest, statementId)
-                .retrieve()
-                .bodyToMono(String.class).block();
+                .bodyToMono(String.class);
     }
 
 
-    private HttpHeaders createHeaders() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
-        return httpHeaders;
-    }
 }

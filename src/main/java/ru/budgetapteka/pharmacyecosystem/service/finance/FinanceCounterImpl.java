@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ParsedResults;
+import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
+import ru.budgetapteka.pharmacyecosystem.service.parser.CostType;
+import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import java.math.BigDecimal;

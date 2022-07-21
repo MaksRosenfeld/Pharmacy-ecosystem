@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.CategoryRepository;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.CostType;
+import ru.budgetapteka.pharmacyecosystem.service.parser.CostType;
 
 
 import java.util.List;

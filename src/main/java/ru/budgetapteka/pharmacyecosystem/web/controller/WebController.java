@@ -2,22 +2,19 @@ package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import ru.budgetapteka.pharmacyecosystem.database.entity.*;
+import ru.budgetapteka.pharmacyecosystem.rest.ApiHandler;
+import ru.budgetapteka.pharmacyecosystem.rest.url.Util;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
@@ -25,8 +22,10 @@ import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.*;
+import ru.budgetapteka.pharmacyecosystem.service.parser.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -36,7 +35,7 @@ public class WebController {
 
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
 
-
+    private final ApiHandler apiHandler;
     private final FinancialResultsTo financialResults;
     private final ContragentService contragentService;
     private final CategoryService categoryService;
@@ -45,8 +44,9 @@ public class WebController {
     private final PharmacyService pharmacyService;
     private final PharmacyResultService pharmacyResultService; // закомментил сохранение в базу
     private final EmployeeService employeeService;
+    private boolean isStatementReady = false;
 
-    public WebController(FinancialResultsTo financialResults,
+    public WebController(ApiHandler apiHandler, FinancialResultsTo financialResults,
                          ContragentService contragentService,
                          CategoryService categoryService,
                          ExcelParser excelParser,
@@ -54,6 +54,7 @@ public class WebController {
                          PharmacyService pharmacyService,
                          PharmacyResultService pharmacyResultService,
                          EmployeeService employeeService) {
+        this.apiHandler = apiHandler;
         this.financialResults = financialResults;
         this.contragentService = contragentService;
         this.categoryService = categoryService;
@@ -128,42 +129,50 @@ public class WebController {
         return pharmacyService.getAll();
     }
 
+    @ModelAttribute("statementId")
+    public String getStatementId() {
+        return apiHandler.getStatementId();
+    }
+
+    @ModelAttribute("statement")
+    public String getStatementStatus() {
+        return apiHandler.getStatementStatus();
+    }
+
+
+    @GetMapping("/")
+    public String goToMainPage() {
+        return "options-main";
+    }
 
     //    POST requests
 
-    @PostMapping("/upload")
-    public String uploadExcelFile(@RequestParam("bank-statement") MultipartFile bankStatement,
-                                  @RequestParam("1C-statement") MultipartFile oneCStatement) {
-        log.info("Переходим на /upload");
-        financialResults.dataReset();
-        excelParser.parse1CStatement(oneCStatement); // идет 1-ой, так как нужен список аптек
-        excelParser.parseBankStatement(bankStatement);
-        if (!contragentService.hasMissingInn()) {
-            financeCounter
-                    .countCosts()
-                    .countNetProfit()
-                    .countRoS()
-                    .countResultsForEachPharmacy()
-                    .sendResults();
-//            pharmacyResultService.saveResultsForEachPharmacy(
-//                    financialResults.getPharmaciesWithMonthResults());
-        }
-        return "redirect:/";
+    @PostMapping("order_statement")
+    public ResponseEntity<?> orderStatement(@RequestParam("from") String dateFrom,
+                                 @RequestParam("to") String dateTo,
+                                 HttpServletResponse response) {
+        apiHandler.postMethod(Util.Url.BANK_POST_STATEMENT_REQUEST, dateFrom, dateTo);
+        Cookie orderCookie = new Cookie("order-statement", "true");
+        orderCookie.setMaxAge(3600);
+        orderCookie.setPath("/");
+        response.addCookie(orderCookie);
+        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+        return ResponseEntity.ok().body("Data accepted");
     }
 
-    @PostMapping(params = "add=true")
-    public String addNewContragent(@RequestParam(name = "inn") Long inn,
-                                   @RequestParam(name = "name") String name,
-                                   @RequestParam(name = "categoryID") Long id,
-                                   @RequestParam(name = "exclude") Optional<Boolean> exclude) {
 
-        log.info("Обрабатываем POST запрос - добавление нового контрагента");
+    @PostMapping("/add_new_contragent_from_missed_inn")
+    public ResponseEntity<ContragentNew> addNewContragent(@RequestParam(name = "inn") Long inn,
+                                   @RequestParam(name = "name") String name,
+                                   @RequestParam(name = "category") Long id,
+                                   @RequestParam(name = "exclude") Boolean exclude) {
+        log.info("Добавляем {}: {}", inn, name);
         Optional<CategoryNew> categoryWithId = categoryService.getCategoryWithId(id);
         ContragentNew newContragent = contragentService.createNewContragent(inn, name,
-                categoryWithId.orElse(null), exclude.orElse(false));
+                categoryWithId.orElseThrow(), exclude);
         contragentService.saveNewContragent(newContragent);
-        contragentService.getMissingInn().remove(new Cost(inn));
-        return "main-page";
+//        contragentService.deleteFromMissedInn(inn);
+        return ResponseEntity.ok().body(newContragent);
     }
 
     @PostMapping(value = "/cost_base", params = {"cost"})
@@ -185,10 +194,7 @@ public class WebController {
 
     //    GET requests
 
-    @GetMapping("/")
-    public String goToMainPage() {
-        return "main-page";
-    }
+
 
     @GetMapping("/costs")
     public String goToCostsPage(Model model) {
@@ -219,6 +225,7 @@ public class WebController {
     public String goToSalary() {
         return "salary-test";
     }
+
 
 
 }

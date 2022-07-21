@@ -1,27 +1,18 @@
 package ru.budgetapteka.pharmacyecosystem;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
-import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ExcelFile1C;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.ExcelFileBankStatement;
-import ru.budgetapteka.pharmacyecosystem.service.excelparsing.Parseable;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyCostService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @SpringBootTest
@@ -63,5 +54,10 @@ public class DataUtil {
         } catch (final IOException e) {
         }
         return new MockMultipartFile(name, originalFileName, contentType, content);
+    }
+
+    public static boolean changeChecked(Boolean isChecked) {
+        isChecked = true;
+        return isChecked;
     }
 }

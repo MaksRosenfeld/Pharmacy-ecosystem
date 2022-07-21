@@ -49,6 +49,40 @@
     </form>
 </div>
 
+<!--Кнопка для отчета-->
+<div>
+    <button type="button" class="btn btn-primary mb-3 shadow" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Создать отчет</button>
+</div>
+
+<!--Modal для кнопки-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Укажите даты</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="date-from" class="col-form-label">С:</label>
+                        <input type="date" name="from" class="form-control" id="date-from">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date-to" class="col-form-label">По:</label>
+                        <input type="date" name="to" class="form-control" id="date-to">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" name="order_statement" value="true" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!--Таблица отсутствующих контрагентов-->
 
 <div th:unless="${missingInn == null || missingInn.isEmpty()}" class="col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
@@ -119,7 +153,7 @@
 
 <!--5 Боксов с данными-->
 <div id="5-boxes" class="flex-row mt-4 mx-2 px-4 justify-content-evenly" style="display: none; height: 150px">
-    <div class="card shadow green-gradient" style="width: 230px; height: 130px">
+    <div class="anim-bigger card shadow green-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Выручка</h5>
         <div class="card-body">
             <h4 th:unless="${totalTurnOver == null}" th:text="${#numbers.formatCurrency(totalTurnOver)}"
@@ -128,7 +162,7 @@
                class="card-title" style="color: white"></p>
         </div>
     </div>
-    <div class="card shadow yellow-gradient" style="width: 230px; height: 130px">
+    <div class="anim-bigger card shadow yellow-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Валовая прибыль</h5>
         <div class="card-body">
             <h4 th:unless="${totalGrossProfit == null}" th:text="${#numbers.formatCurrency(totalGrossProfit)}"
@@ -137,7 +171,7 @@
                class="card-text" style="color: white"></p>
         </div>
     </div>
-    <div class="card shadow white-gradient" style="width: 230px; height: 130px">
+    <div class="anim-bigger card shadow white-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Чистая прибыль</h5>
         <div class="card-body">
             <h4 th:unless="${netProfit == null}" th:text="${#numbers.formatCurrency(netProfit)}"
@@ -146,7 +180,7 @@
                class="card-text" style="color: white"></p>
         </div>
     </div>
-    <div class="card shadow purple-gradient" style="width: 230px; height: 130px">
+    <div class="anim-bigger card shadow purple-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Рентабельность</h5>
         <div class="card-body">
             <h4 th:unless="${rOs == null}" th:text="${#numbers.formatPercent(rOs, 1, 2)}" class="card-title"></h4>
@@ -154,7 +188,7 @@
                class="card-text" style="color: white"></p>
         </div>
     </div>
-    <div class="card shadow light-gradient" style="width: 230px; height: 130px">
+    <div class="anim-bigger card shadow light-gradient" style="width: 230px; height: 130px">
         <h5 class="card-header">Фонд зарплат</h5>
         <div class="card-body">
             <h4 class="card-title"></h4>
