@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -85,9 +86,9 @@ public class WebRestController {
         return apiHandler.checkStatement();
     }
 
-    @GetMapping(value = "/missed-inns", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getMissingInn(@CookieValue(name = "costs", defaultValue = "not_checked") String missedInn,
-                                   HttpServletResponse response) throws IOException {
+    @GetMapping(value = "/missed-inns")
+    public ResponseEntity<?> getMissingInn(@CookieValue(name = "costs", defaultValue = "not_checked") String missedInn,
+                                           HttpServletResponse response) throws IOException {
         if ("not_checked".equals(missedInn)) {
             log.info("Запрос выписки, создаем cookie costs");
             apiHandler.getMethod(Util.Url.BANK_GET_STATEMENT_REQUEST);
@@ -96,11 +97,19 @@ public class WebRestController {
             costs.setPath("/");
             response.addCookie(costs);
         }
-//        return contragentService.countMissingInn();
-        ObjectMapper objectMapper = new ObjectMapper();
-        Object json = objectMapper.readValue(new FileInputStream("C:\\JavaProjects\\Pharmacy-ecosystem\\src\\main\\resources\\static\\json\\missed_costs.json"), Object.class);
-//        ResponseEntity.status(HttpStatus.NO_CONTENT);
+        Set<Cost> missedInns = contragentService.countMissingInn();
+        if (missedInns.isEmpty()) {
+            apiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(missedInns);
+        } else {
+            apiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
+            return ResponseEntity.ok(missedInns);
+        }
 
-        return objectMapper.writeValueAsString(json);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Object json = objectMapper.readValue(new FileInputStream("C:\\JavaProjects\\Pharmacy-ecosystem\\src\\main\\resources\\static\\json\\missed_costs.json"), Object.class);
+////        ResponseEntity.status(HttpStatus.NO_CONTENT);
+//
+//        return objectMapper.writeValueAsString(json);
     }
 }

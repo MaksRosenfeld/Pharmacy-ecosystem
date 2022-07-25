@@ -119,7 +119,11 @@ public class WebController {
 
     @ModelAttribute("missingInn")
     public Set<Cost> getMissingInn() {
-        return contragentService.getMissingInn();
+        Set<Cost> missingInn = contragentService.getMissingInn();
+        if (missingInn != null) {
+            if (!missingInn.isEmpty()) apiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
+        }
+        return missingInn;
     }
 
     //    pharmacyService
@@ -160,9 +164,9 @@ public class WebController {
         return ResponseEntity.ok().body("Data accepted");
     }
 
-
+    @ResponseBody
     @PostMapping("/add_new_contragent_from_missed_inn")
-    public ResponseEntity<ContragentNew> addNewContragent(@RequestParam(name = "inn") Long inn,
+    public ContragentNew addNewContragent(@RequestParam(name = "inn") Long inn,
                                    @RequestParam(name = "name") String name,
                                    @RequestParam(name = "category") Long id,
                                    @RequestParam(name = "exclude") Boolean exclude) {
@@ -171,8 +175,8 @@ public class WebController {
         ContragentNew newContragent = contragentService.createNewContragent(inn, name,
                 categoryWithId.orElseThrow(), exclude);
         contragentService.saveNewContragent(newContragent);
-//        contragentService.deleteFromMissedInn(inn);
-        return ResponseEntity.ok().body(newContragent);
+        contragentService.deleteFromMissedInn(inn);
+        return newContragent;
     }
 
     @PostMapping(value = "/cost_base", params = {"cost"})
@@ -215,10 +219,10 @@ public class WebController {
         return "contragent-base";
     }
 
+    @ResponseBody
     @GetMapping("/pharmacy/{photo}")
-    public ResponseEntity<Resource> getPhoto(@PathVariable(name = "photo") String photoName) {
+    public Resource getPharmacyPhoto(@PathVariable(name = "photo") String photoName) {
         return pharmacyService.getPhoto(photoName);
-
     }
 
     @GetMapping("/salary")

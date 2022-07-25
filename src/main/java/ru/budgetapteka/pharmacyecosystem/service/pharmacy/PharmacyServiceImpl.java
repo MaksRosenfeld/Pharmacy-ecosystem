@@ -42,7 +42,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public ResponseEntity<Resource> getPhoto(String photoName) {
+    public Resource getPhoto(String photoName) {
         Path res = Path.of(photoPath).resolve(photoName).normalize();
         UrlResource urlResource = null;
         try {
@@ -50,13 +50,16 @@ public class PharmacyServiceImpl implements PharmacyService {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        String dispo = """
-                 attachment; filename="%s"
-                """;
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        String.format(dispo, photoName))
-                .body(urlResource);
+        return urlResource;
+
+//
+//        String dispo = """
+//                 attachment; filename="%s"
+//                """;
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION,
+//                        String.format(dispo, photoName))
+//                .body(urlResource);
 
     }
 

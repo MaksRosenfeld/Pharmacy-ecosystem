@@ -26,6 +26,7 @@ public class Util {
     public static class Status {
         public static final String BANK_STATEMENT_NOT_ORDERED = "NOT_ORDERED";
         public static final String BANK_STATEMENT_IN_PROGRESS = "IN_PROGRESS";
+        public static final String BANK_STATEMENT_MISSED_INN = "MISSED_INN";
         public static final String BANK_STATEMENT_SUCCESS = "SUCCESS";
 
 

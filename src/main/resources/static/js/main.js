@@ -1,18 +1,19 @@
 $(document).ready(function () {
+
+
     window.addEventListener("load", getTheInfo)
 
 
     function getTheInfo(newDates = false) {
-        console.log("Работаем")
         if (getCookie("costs")) {
+            console.log("Проверяем недостающие ИНН")
             checkOnMissedInns();
         }
         if (getCookie("order-statement") || newDates === true) {
+            console.log("Сейчас начнется запрос выписки")
             setTimeout(sendRequestToCheckStatus, 3000)
         }
     }
-
-
 
 
     function sendRequestToCheckStatus() {
@@ -44,7 +45,8 @@ $(document).ready(function () {
             error: function (jqXHR) {
                 setTimeout(() => {
                     if (jqXHR.status === 500) $.ajax(this);
-                    }, 2000)}
+                }, 2000)
+            }
         })
     }
 
@@ -53,12 +55,12 @@ $(document).ready(function () {
             url: "api/missed-inns",
             dataType: "json",
             success: function (allMissedInns, textStatus, xhr) {
-                console.log(allMissedInns.length);
+                // console.log(allMissedInns.length);
                 if (xhr.status === 204) {
+                    deleteCookie("costs")
                     createButtonsReadyAndChooseDate();
                     return
-                }
-                else {
+                } else {
                     createButtonCheckMissedInn();
                     let allCategories = [];
                     $.ajax({
@@ -116,31 +118,22 @@ $(document).ready(function () {
                     category: categoryData.val(),
                     exclude: excludeData
                 })
-            $.get("api/missed-inns", function(missedInns) {
-                if (missedInns.length === 0) {
+            $.get("api/missed-inns", function (missedInns, textStatus, xhr) {
+                if (xhr.status === 204) {
                     console.log("Удаляем cookie costs")
                     $("#missedInn").modal("hide");
                     deleteCookie("costs");
+                    createButtonsReadyAndChooseDate();
                 }
             })
+
         }
     })
 
-    $("#dates-chosen").click(function() {
-        let from = $("#date-from").val();
-        let to = $("#date-to").val();
-        $.post("/order_statement", {
-            from: from,
-            to: to
-        })
-        $("#choose-dates").remove();
-        $("#buttons-area").append(`<div class="loader me-2" id="loading-circle"></div>`)
-        deleteCookie("costs");
-        localStorage.setItem("statement_ordered", "true")
-        getTheInfo(true);
-    })
+    function removeNewlyCreatedAndThButtons() {
+        $(".th-button, .newly-created-button").remove();
 
-
+    }
 
 
     function removeLoading() {
@@ -149,22 +142,21 @@ $(document).ready(function () {
 
     function createButtonError() {
         $("#buttons-area")
-            .append('<button class="btn btn-outline-danger me-2" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Выбрать даты</button>')
-            .append('<button class="btn btn-danger shadow me-2" disabled>Ошибка банка</button>')
+            .append('<button class="choose-date-range newly-created-button btn btn-outline-danger me-2" type="button">Выбрать даты</button>')
+            .append('<button class="newly-created-button btn btn-danger shadow me-2" disabled>Ошибка банка</button>')
     }
+
     function createButtonCheckMissedInn() {
         $("#buttons-area")
-            .append('<button class="btn btn-outline-danger me-2" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Выбрать даты</button>')
-            .append('<button class="btn btn-warning shadow me-2" type="button" data-bs-toggle="modal" data-bs-target="#missedInn">Нажмите для добавления ИНН</button>')
+            .append('<button class="choose-date-range newly-created-button btn btn-outline-danger me-2" type="button">Выбрать даты</button>')
+            .append('<button class="newly-created-button btn btn-warning shadow me-2" type="button" data-bs-toggle="modal" data-bs-target="#missedInn">Добавить ИНН</button>')
     }
+
     function createButtonsReadyAndChooseDate() {
         $("#buttons-area")
-            .append('<button class="btn btn-outline-danger me-2" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Выбрать даты</button>')
-            .append('<button class="btn btn-success shadow me-2" disabled>Готово</button>')
+            .append('<button class="choose-date-range newly-created-button btn btn-outline-danger me-2" type="button">Выбрать даты</button>')
+            .append('<button class="newly-created-button btn btn-success shadow me-2" disabled>Готово</button>')
     }
-
-
-
 
 
     function createOption(idx, category) {
@@ -208,11 +200,6 @@ $(document).ready(function () {
         })
     }
 
-    $(".anim-bigger").hover(function () {
-        $(this).animate({width: $(this).width() + 10}, {queue: false});
-    }, function () {
-        $(this).animate({width: $(this).width()}, {queue: false});
-    });
 
     $("#5-boxes").css("display", "flex").hide().fadeIn(1000)
     $("#pharmacy-boxes").css("display", "flex").hide().fadeIn(2000)
@@ -222,28 +209,67 @@ $(document).ready(function () {
         let total = parseInt($('#amount1').val()) + parseInt($('#amount2').val());
         $('#total').text(total);
     });
-    let contrs;
 
 
-    $("#change-test").change(function () {
-        alert("Handler for .change() called.");
-    })
+    $(document).on("focus", ".choose-date-range", chooseDateRange)
 
-    $("#pgbr").click(function () {
-        $("#pgbr").progressbar({
-            value: 37
+    function chooseDateRange() {
+        $('.choose-date-range').daterangepicker({
+            "locale": {
+                "format": "DD.MM.YYYY",
+                "separator": " - ",
+                "applyLabel": "Считать",
+                "cancelLabel": "Отмена",
+                "fromLabel": "С",
+                "toLabel": "По",
+                "customRangeLabel": "Custom",
+                "weekLabel": "Н",
+                "daysOfWeek": [
+                    "Вс",
+                    "Пн",
+                    "Вт",
+                    "Ср",
+                    "Чт",
+                    "Пт",
+                    "Сб"
+                ],
+                "monthNames": [
+                    "Январь",
+                    "Февраль",
+                    "Март",
+                    "Апрель",
+                    "Май",
+                    "Июнь",
+                    "Июль",
+                    "Август",
+                    "Сентябрь",
+                    "Октябрь",
+                    "Ноябрь",
+                    "Декабрь"
+                ],
+                "firstDay": 1
+            },
+            "showCustomRangeLabel": false,
+            "alwaysShowCalendars": true,
+            "startDate": "19.06.2022",
+            "endDate": "22.06.2022",
+            "opens": "right",
+            "drops": "auto",
+            "applyButtonClasses": "btn-warning shadow"
+        }, function (start, end, label) {
+            removeNewlyCreatedAndThButtons();
+            $("#inn-in-table").empty();
+            $.post("/order_statement", {
+                from: start.format('YYYY-MM-DD'),
+                to: end.format('YYYY-MM-DD')
+            })
+            $(".choose-date-range").remove();
+            $("#buttons-area").append(`<div class="loader me-2" id="loading-circle"></div>`)
+            deleteCookie("costs");
+            getTheInfo(true);
+            console.log('Выбранные даты: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
         });
-    });
-
-    let list = ["Hi", "My", "Name", "Is", "List"]
-
-    $("#box").click(function () {
-        $.each(list, function (index, value) {
-            $("#box").append(`<p>${value}</p>`)
-
-        })
-
-    })
+    }
 });
 
 
