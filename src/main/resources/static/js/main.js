@@ -32,7 +32,7 @@ $(document).ready(function () {
                     }, 33000)
                 } else if (status === "SUCCESS") {
                     console.log("Выписка готова\nУдаляем cookie order-statement")
-                    removeLoading();
+                    removeNewlyCreatedAndThButtons();
                     deleteCookie("order-statement");
                     checkOnMissedInns();
                 } else if (status === "ERROR") {
@@ -158,6 +158,13 @@ $(document).ready(function () {
             .append('<button class="newly-created-button btn btn-success shadow me-2" disabled>Готово</button>')
     }
 
+    function create1CReadyAndLoadingWarningButtons() {
+        $("#buttons-area")
+            .append('<span><button class="newly-created-button loading-dots btn btn-outline-warning disabled me-2" type="button">Загрузка банка</button></span>')
+            .append('<span><button class="newly-created-button shadow btn btn-success me-2" type="button">1C готово</button></span>')
+
+    }
+
 
     function createOption(idx, category) {
         $(".category-option").append(`<option value="${category["id"]}">${category["category"]}</option>`)
@@ -213,6 +220,22 @@ $(document).ready(function () {
 
     $(document).on("focus", ".choose-date-range", chooseDateRange)
 
+    function createLoadings() {
+        $("#buttons-area")
+            .append(`
+        <button class="newly-created-button shadow btn btn-primary me-2" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Открытие
+        </button>
+        `)
+            .append(`
+        <button class="newly-created-button shadow btn btn-warning me-2" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        1С
+        </button>`)
+
+    }
+
     function chooseDateRange() {
         $('.choose-date-range').daterangepicker({
             "locale": {
@@ -264,12 +287,41 @@ $(document).ready(function () {
                 to: end.format('YYYY-MM-DD')
             })
             $(".choose-date-range").remove();
-            $("#buttons-area").append(`<div class="loader me-2" id="loading-circle"></div>`)
+            createLoadings();
             deleteCookie("costs");
             getTheInfo(true);
             console.log('Выбранные даты: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
         });
     }
+
+    $("#test-button-chart").click(function () {
+        $.getJSON("api/all-pharmacies", function (allPharmacies) {
+            $.each(allPharmacies, function (idx, pharmacy) {
+                if (pharmacy["pharmacyNumber"] !== 0) {
+                    $("#pharmacy-results").append(`
+                <div class="d-flex shadow-on-hover rounded p-1 position-relative col-lg-6 col-md-12 col-sm-12 my-2">
+                <div class="d-flex flex-column col-1 rounded shadow bg-danger">
+                <div class="rotate align-self-start"><h4>Аптека</h4></div>
+                <div class="rotate align-self-end"><h4>№1</h4></div>
+               
+                </div>
+                <div class="col-11">
+                <canvas class="chartable" id="pharmacyChart${pharmacy["pharmacyNumber"]}"></canvas>
+                </div>
+               
+                   
+
+                </div>
+                `)
+
+                }
+
+            })
+        })
+
+    })
+
 });
+
 
 
