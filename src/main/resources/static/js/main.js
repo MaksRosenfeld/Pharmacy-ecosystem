@@ -1,3 +1,5 @@
+import {buildChart} from "./charts.js"
+
 $(document).ready(function () {
 
 
@@ -59,6 +61,7 @@ $(document).ready(function () {
                 if (xhr.status === 204) {
                     deleteCookie("costs")
                     createButtonsReadyAndChooseDate();
+                    ableToShowCosts();
                     return
                 } else {
                     createButtonCheckMissedInn();
@@ -130,6 +133,31 @@ $(document).ready(function () {
         }
     })
 
+    function ableToShowCosts() {
+        $("#table-costs").DataTable({
+            autoWidth: false,
+            ajax:{url:"/api/all-costs",dataSrc:""},
+            columns: [
+                {data: "inn"},
+                {data: "name", width: "40%"},
+                {data: "amount"}
+                ],
+            language: {
+                lengthMenu: "Показать по _MENU_",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "След.",
+                    previous: "Пред."},
+                info: "Кол-во записей: _START_ - _END_ из _TOTAL_",
+                search: "Фильтр:",
+
+            }
+
+        })
+
+    }
+
     function removeNewlyCreatedAndThButtons() {
         $(".th-button, .newly-created-button").remove();
 
@@ -156,6 +184,8 @@ $(document).ready(function () {
         $("#buttons-area")
             .append('<button class="choose-date-range newly-created-button btn btn-outline-danger me-2" type="button">Выбрать даты</button>')
             .append('<button class="newly-created-button btn btn-success shadow me-2" disabled>Готово</button>')
+        $("#buttons-for-data")
+            .append('<button class="newly-created-button btn btn-warning shadow me-2" type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">Смотреть расходы</button>')
     }
 
     function create1CReadyAndLoadingWarningButtons() {
@@ -297,22 +327,23 @@ $(document).ready(function () {
     $("#test-button-chart").click(function () {
         $.getJSON("api/all-pharmacies", function (allPharmacies) {
             $.each(allPharmacies, function (idx, pharmacy) {
-                if (pharmacy["pharmacyNumber"] !== 0) {
+                let phNum = pharmacy["pharmacyNumber"];
+                let id = `phChart${phNum}`
+                if (phNum !== 0) {
                     $("#pharmacy-results").append(`
                 <div class="d-flex shadow-on-hover rounded p-1 position-relative col-lg-6 col-md-12 col-sm-12 my-2">
-                <div class="d-flex flex-column col-1 rounded shadow bg-danger">
-                <div class="rotate align-self-start"><h4>Аптека</h4></div>
-                <div class="rotate align-self-end"><h4>№1</h4></div>
+                <div class="d-flex align-items-center justify-content-center col-1 rounded side-shadow bg-danger">
+                <div class="text-white"><h4>${phNum}</h4></div>
                
                 </div>
                 <div class="col-11">
-                <canvas class="chartable" id="pharmacyChart${pharmacy["pharmacyNumber"]}"></canvas>
+                <canvas class="chartable" id="${id}"></canvas>
                 </div>
-               
-                   
-
                 </div>
                 `)
+                    let element = document.getElementById(`${id}`).getContext('2d');
+                    buildChart(element, phNum, 34, 25, 18);
+
 
                 }
 

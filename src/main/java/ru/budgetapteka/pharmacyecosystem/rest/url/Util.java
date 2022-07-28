@@ -9,6 +9,8 @@ public class Util {
         public static final String BANK_POST_STATEMENT_REQUEST = "/accounts/59388/statement?format=JSON&from={from}&to={to}";
         public static final String BANK_GET_STATEMENT_REQUEST = "/accounts/59388/statement/{statementId}/print?print=false";
         public static final String BANK_GET_CHECK_STATEMENT_REQUEST = "/accounts/59388/statement/{statementId}";
+        public static final String ONE_C_BASE_URL = "http://192.168.4.7/ut-test/ru_RU/hs/TorgAPI/V1/";
+        public static final String ONE_C_GET_DATA_REQUEST = "/GetProfitReport?begin={from}&end={to}";
     }
 
 

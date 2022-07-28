@@ -1,9 +1,9 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +21,13 @@ import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -38,26 +35,24 @@ import java.util.Set;
 @RequestMapping("/api")
 public class WebRestController {
 
+    @Autowired
+    private ContragentService contragentService;
+    @Autowired
+    private PharmacyService pharmacyService;
+    @Autowired
+    private EmployeeService employeeService;
+    @Autowired
+    @Qualifier("bankApiHandler")
+    private ApiHandler bankApiHandler;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private FinancialResultsTo financeResult;
+    @Autowired
+    @Qualifier("oneCApiHandler")
+    private ApiHandler oneCApiHandler;
 
-    private final ContragentService contragentService;
-    private final PharmacyService pharmacyService;
-    private final EmployeeService employeeService;
-    private final ApiHandler apiHandler;
-    private final CategoryService categoryService;
 
-
-    public WebRestController(ContragentService contragentService,
-                             PharmacyService pharmacyService,
-                             EmployeeService employeeService,
-                             ApiHandler apiHandler,
-                             CategoryService categoryService) {
-
-        this.contragentService = contragentService;
-        this.pharmacyService = pharmacyService;
-        this.employeeService = employeeService;
-        this.apiHandler = apiHandler;
-        this.categoryService = categoryService;
-    }
 
     @GetMapping("/all-categories")
     public List<CategoryNew> getCategories() {
@@ -83,7 +78,13 @@ public class WebRestController {
 
     @GetMapping("/check")
     public Mono<String> checkStatement() {
-        return apiHandler.checkStatement();
+        return bankApiHandler.checkStatement();
+    }
+
+    @GetMapping("/all-costs")
+    public Mono<List<Cost>> getAllCosts() {
+//        financeResult.get
+        return Mono.just(financeResult.getCosts());
     }
 
     @GetMapping(value = "/missed-inns")
@@ -91,7 +92,7 @@ public class WebRestController {
                                            HttpServletResponse response) throws IOException {
         if ("not_checked".equals(missedInn)) {
             log.info("Запрос выписки, создаем cookie costs");
-            apiHandler.getMethod(Util.Url.BANK_GET_STATEMENT_REQUEST);
+            bankApiHandler.getMethod(Util.Url.BANK_GET_STATEMENT_REQUEST);
             Cookie costs = new Cookie("costs", "checked");
             costs.setMaxAge(3600);
             costs.setPath("/");
@@ -99,17 +100,16 @@ public class WebRestController {
         }
         Set<Cost> missedInns = contragentService.countMissingInn();
         if (missedInns.isEmpty()) {
-            apiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
+            bankApiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(missedInns);
         } else {
-            apiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
+            bankApiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
             return ResponseEntity.ok(missedInns);
         }
+    }
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Object json = objectMapper.readValue(new FileInputStream("C:\\JavaProjects\\Pharmacy-ecosystem\\src\\main\\resources\\static\\json\\missed_costs.json"), Object.class);
-////        ResponseEntity.status(HttpStatus.NO_CONTENT);
-//
-//        return objectMapper.writeValueAsString(json);
+    @GetMapping("/one-c")
+    public Mono<String> get1CResults() {
+        return oneCApiHandler.checkStatement();
     }
 }

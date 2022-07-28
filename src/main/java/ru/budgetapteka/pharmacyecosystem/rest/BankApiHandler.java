@@ -3,9 +3,7 @@ package ru.budgetapteka.pharmacyecosystem.rest;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -15,6 +13,7 @@ import ru.budgetapteka.pharmacyecosystem.rest.webclient.WebClientBuilderImpl;
 import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
 import ru.budgetapteka.pharmacyecosystem.service.parser.Parser;
 import ru.budgetapteka.pharmacyecosystem.service.parser.ParserImpl;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import java.time.Duration;
 
@@ -25,13 +24,14 @@ public class BankApiHandler extends ApiHandler {
     @Getter
     private String statementId;
     private final ParsedResults parsedResults;
+    private final FinancialResultsTo financialResultsTo;
 
 
-    public BankApiHandler(@Value("${OPEN_TOKEN}") String token, ParsedResults parsedResults) {
+    public BankApiHandler(@Value("${OPEN_TOKEN}") String token, ParsedResults parsedResults, FinancialResultsTo financialResultsTo) {
         super(new WebClientBuilderImpl().getWebClient
                 (Util.Url.BANK_BASE_URL, HeadersMaker.createBankHeaders(token)));
         this.parsedResults = parsedResults;
-
+        this.financialResultsTo = financialResultsTo;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class BankApiHandler extends ApiHandler {
                 .block();
         BankStatement bankStatement = new BankStatement(data);
         super.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
-        Parser bankParser = new ParserImpl(bankStatement, parsedResults);
+        Parser bankParser = new ParserImpl(bankStatement, parsedResults, financialResultsTo);
         bankParser.parse();
     }
 

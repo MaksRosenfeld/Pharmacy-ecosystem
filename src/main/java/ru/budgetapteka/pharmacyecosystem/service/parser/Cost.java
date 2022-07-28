@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 
@@ -27,7 +28,7 @@ public class Cost {
     private String name;
     private BigDecimal amount;
     private String description;
-    private CostType type;
+    private CategoryNew category;
     private List<Integer> belongingCosts; // для каких аптек учитывать расход
 
 

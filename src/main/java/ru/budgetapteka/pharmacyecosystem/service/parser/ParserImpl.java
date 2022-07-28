@@ -2,12 +2,10 @@ package ru.budgetapteka.pharmacyecosystem.service.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.rest.BankStatement;
 import ru.budgetapteka.pharmacyecosystem.rest.url.Util;
+import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -20,11 +18,13 @@ public class ParserImpl implements Parser {
 
     private final ParsedResults parsedResults;
     private final Parseable parseable;
+    private final FinancialResultsTo financialResultsTo;
 
 
-    public ParserImpl(Parseable parseable, ParsedResults parsedResults) {
+    public ParserImpl(Parseable parseable, ParsedResults parsedResults, FinancialResultsTo financialResultsTo) {
         this.parseable = parseable;
         this.parsedResults = parsedResults;
+        this.financialResultsTo = financialResultsTo;
     }
 
     @Override
@@ -49,6 +49,7 @@ public class ParserImpl implements Parser {
                 }
             }
             parsedResults.setCosts(allCosts);
+            financialResultsTo.acceptingDataFrom(parsedResults);
             log.info("Количество расходов: {}", parsedResults.getCosts().size());
         } catch (IOException e) {
             e.printStackTrace();

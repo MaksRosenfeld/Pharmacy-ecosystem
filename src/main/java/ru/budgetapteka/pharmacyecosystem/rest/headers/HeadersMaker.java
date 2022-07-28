@@ -11,4 +11,10 @@ public class HeadersMaker {
         httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
         return httpHeaders;
     }
+
+    public static HttpHeaders create1CHeaders(String user, String password) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBasicAuth(user, password);
+        return httpHeaders;
+    }
 }

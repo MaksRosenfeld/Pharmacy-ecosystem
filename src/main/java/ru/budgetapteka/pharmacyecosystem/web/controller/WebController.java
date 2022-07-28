@@ -2,6 +2,7 @@ package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +47,7 @@ public class WebController {
     private final EmployeeService employeeService;
     private boolean isStatementReady = false;
 
-    public WebController(ApiHandler apiHandler, FinancialResultsTo financialResults,
+    public WebController(@Qualifier("bankApiHandler") ApiHandler apiHandler, FinancialResultsTo financialResults,
                          ContragentService contragentService,
                          CategoryService categoryService,
                          ExcelParser excelParser,
