@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Главная</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+
+    <style>
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="css/features.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+<body>
+
+
+<main>
+    <div class="container px-4 py-3" id="featured-3">
+        <div class="d-flex flex-row picture-in-div border-bottom">
+            <div id="logo-man"><img th:src="@{pharmacy/man.png}" height="100px"/></div>
+            <div class="ms-3 align-self-center"><h2>Экосистема <span class="shadow fs-2 badge bg-danger">Бюджетной Аптеки</span>
+            </h2></div>
+        </div>
+        <div class="row g-4 py-5 row-cols-1 row-cols-md-2 row-cols-lg-3">
+            <div class="feature col p-3 rounded shadow-on-hover" id="download-box">
+                <div class="constant-move myshadow feature-icon d-inline-flex align-items-center justify-content-center bg-danger bg-gradient text-white fs-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                         class="bi bi-clipboard2-data" viewBox="0 0 16 16">
+                        <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z"/>
+                        <path d="M3 2.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 0 0-1h-.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1H12a.5.5 0 0 0 0 1h.5a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-12Z"/>
+                        <path d="M10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0V9a1 1 0 0 0-1-1Z"/>
+                    </svg>
+                </div>
+                <h2>Создать отчет</h2>
+                <p>Посчитайте все ключевые статистические показатели по всей аптечной сети и по каждой
+                    из аптек.</p>
+                <div class="d-flex flex-row-reverse" id="buttons-area">
+                    <button th:if="${statement.equals('NOT_ORDERED') || statement.equals('SUCCESS')}"
+                            class="choose-date-range th-button btn btn-outline-danger me-2" type="button">
+                        Выбрать даты
+                    </button>
+                    <button th:if="${statement.equals('SUCCESS')}" class="th-button btn btn-success shadow mx-2"
+                            disabled>
+                        Готово
+                    </button>
+                    <!--                Загрузка-->
+                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-primary me-2" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Открытие
+                    </button>
+                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        1С
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="feature col p-3 rounded shadow-on-hover">
+                <div class="myshadow feature-icon d-inline-flex align-items-center justify-content-center bg-danger bg-gradient text-white fs-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                         class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+                        <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z"/>
+                    </svg>
+                </div>
+                <h2>Статистика и данные</h2>
+                <p>Здесь находится вся статистика, собранная после формирования прошлых отчетов и сохраненная в
+                    базу.</p>
+                <div class="d-flex flex-row-reverse me-2" id="buttons-for-data">
+                    <button class="btn btn-outline-danger" type="button">Смотреть</button>
+                    <button th:if="${statement.equals('SUCCESS')}" class="th-button btn btn-warning shadow me-2" type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">Смотреть расходы</button>
+                </div>
+            </div>
+            <div class="feature col p-3 rounded shadow-on-hover">
+                <div class="myshadow feature-icon d-inline-flex align-items-center justify-content-center bg-danger bg-gradient text-white fs-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                         class="bi bi-wrench-adjustable-circle" viewBox="0 0 16 16">
+                        <path d="M12.496 8a4.491 4.491 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11c.027.2.04.403.04.61Z"/>
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.49 4.49 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8Zm-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27.596-.894Z"/>
+                    </svg>
+                </div>
+                <h2>Опции</h2>
+                <p>Измените данные в базе данных или параметры аккаунта.</p><br>
+                <div class="d-flex flex-row-reverse me-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Выбрать
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Аптеки</a></li>
+                            <li><a class="dropdown-item" href="#">Контрагенты</a></li>
+                            <li><a class="dropdown-item" href="#">Данные аккаунта</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mx-5">
+        <button class="btn btn-primary" type="button" id="test-button-chart">Push me</button>
+        <button class="btn btn-warning" type="button" id="test">Chart</button>
+    </div>
+    <div class="container mx-auto">
+        <div class="d-flex flex-row flex-wrap justify-content-between" id="pharmacy-results">
+
+        </div>
+<!--        <div class="d-flex flex-row" style="height: 270px; width: 500px">-->
+
+<!--        </div>-->
+<!--        <div class="d-flex flex-row mx-4">-->
+<!--            <div>-->
+<!--                <img src="">-->
+<!--            </div>-->
+<!--            <div class="shadow mb-3" style="height: 270px; width: 500px">-->
+<!--                <canvas id="myChart"></canvas>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+
+
+</main>
+
+
+<!-- Modal для показа недостающих ИНН -->
+<div class="modal fade" id="missedInn" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="missedInnLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="missedInnLabel">Добавьте недостающие ИНН в базу</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ИНН</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Тип расходов</th>
+                        <th scope="col">Исключить</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-group-divider" id="inn-in-table">
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal для показа недостающих ИНН -->
+<div class="modal fade" id="listOfCosts" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="listOfCostsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="listOfCostsLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped" id="table-costs">
+                    <thead>
+                    <tr>
+                        <th scope="col">ИНН</th>
+                        <th scope="col">Наименование</th>
+<!--                        <th scope="col">Тип расходов</th>-->
+                        <th scope="col">Сумма</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript Bundle with Popper -->
+
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+<script src="//cdn.jsdelivr.net/jquery.shadow-animation/1/mainfile"></script>
+<script type="module" src="js/main.js"></script>
+<script type="module" src="js/charts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js"
+        integrity="sha512-R/QOHLpV1Ggq22vfDAWYOaMd5RopHrJNMxi8/lJu8Oihwi4Ho4BRFeiMiCefn9rasajKjnx9/fTQ/xkWnkDACg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+</body>
+</html>
