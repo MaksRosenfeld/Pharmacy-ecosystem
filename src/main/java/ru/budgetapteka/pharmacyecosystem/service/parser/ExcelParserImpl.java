@@ -56,7 +56,7 @@ public class ExcelParserImpl implements ExcelParser {
         try {
             ExcelFile1C file1C = new ExcelFile1C(file.getInputStream());
             Sheet sheet = file1C.getWorkbook().getSheetAt(0);
-            this.allPharmacies = pharmacyService.getAll();
+            this.allPharmacies = pharmacyService.getAllPharmacies();
             Cell cellWithDate = sheet.getRow(file1C.getDATE_ROW()).getCell(file1C.getDATE_COLUMN());
             parsedResults.setDate(DataExtractor.extractDate(cellWithDate)); // дата выписки
             for (Row row : sheet) {
@@ -90,8 +90,8 @@ public class ExcelParserImpl implements ExcelParser {
                     costs.add(cost);
                 }
             }
-            parsedResults.setCosts(costs);
-            log.info("Количество расходов: {}", parsedResults.getCosts().size());
+            parsedResults.setAllCosts(costs);
+            log.info("Количество расходов: {}", parsedResults.getAllCosts().size());
 //       Опечатки сохраняем только в случае, если они были
             if (rowsWithTypos.size() > 0) {
                 Map<Workbook, List<Row>> mapWithTypos = new HashMap<>();

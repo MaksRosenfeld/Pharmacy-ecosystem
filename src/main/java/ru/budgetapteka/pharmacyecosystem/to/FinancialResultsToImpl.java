@@ -41,7 +41,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         this.totalGrossProfit = parsedResults.getTotalGrossProfit();
         this.totalCostPrice = parsedResults.getTotalCostPrice();
         this.date = parsedResults.getDate();
-        this.costs = parsedResults.getCosts();
+        this.costs = parsedResults.getAllCosts();
         this.cellsWithTypos = parsedResults.getCellsWithTypos();
         this.pharmacyCosts = parsedResults.getPharmacyCosts();
         this.pharmaciesWithMonthResults = parsedResults.getPharmacyResults();

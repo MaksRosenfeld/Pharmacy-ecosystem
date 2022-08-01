@@ -14,7 +14,7 @@ import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Employee;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
-import ru.budgetapteka.pharmacyecosystem.rest.ApiHandler;
+import ru.budgetapteka.pharmacyecosystem.rest.ApiUsable;
 import ru.budgetapteka.pharmacyecosystem.rest.url.Util;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
@@ -42,15 +42,15 @@ public class WebRestController {
     @Autowired
     private EmployeeService employeeService;
     @Autowired
-    @Qualifier("bankApiHandler")
-    private ApiHandler bankApiHandler;
+    @Qualifier("bankApiUsableImpl")
+    private ApiUsable bankApiUsable;
     @Autowired
     private CategoryService categoryService;
     @Autowired
     private FinancialResultsTo financeResult;
     @Autowired
-    @Qualifier("oneCApiHandler")
-    private ApiHandler oneCApiHandler;
+    @Qualifier("oneCApiUsableImpl")
+    private ApiUsable oneCApiUsable;
 
 
 
@@ -68,7 +68,7 @@ public class WebRestController {
 
     @GetMapping("/all-pharmacies")
     public List<Pharmacy> getPharmacies() {
-        return pharmacyService.getAll();
+        return pharmacyService.getAllPharmacies();
     }
 
     @GetMapping("/all-employees")
@@ -78,7 +78,7 @@ public class WebRestController {
 
     @GetMapping("/check")
     public Mono<String> checkStatement() {
-        return bankApiHandler.checkStatement();
+        return bankApiUsable.checkStatement();
     }
 
     @GetMapping("/all-costs")
@@ -92,7 +92,7 @@ public class WebRestController {
                                            HttpServletResponse response) throws IOException {
         if ("not_checked".equals(missedInn)) {
             log.info("Запрос выписки, создаем cookie costs");
-            bankApiHandler.getMethod(Util.Url.BANK_GET_STATEMENT_REQUEST);
+            bankApiUsable.getMethod(Util.Url.BANK_GET_STATEMENT_REQUEST);
             Cookie costs = new Cookie("costs", "checked");
             costs.setMaxAge(3600);
             costs.setPath("/");
@@ -100,16 +100,16 @@ public class WebRestController {
         }
         Set<Cost> missedInns = contragentService.countMissingInn();
         if (missedInns.isEmpty()) {
-            bankApiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
+            bankApiUsable.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(missedInns);
         } else {
-            bankApiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
+            bankApiUsable.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
             return ResponseEntity.ok(missedInns);
         }
     }
 
     @GetMapping("/one-c")
     public Mono<String> get1CResults() {
-        return oneCApiHandler.checkStatement();
+        return oneCApiUsable.checkStatement();
     }
 }

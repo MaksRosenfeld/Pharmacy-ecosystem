@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,8 @@ import java.util.Map;
 @Setter(AccessLevel.PACKAGE)
 @Component
 public class ParsedResults {
+
+    private final PharmacyResultService pharmacyResultService;
 
     private static final Logger log = LoggerFactory.getLogger(ParsedResults.class);
 
@@ -32,10 +36,14 @@ public class ParsedResults {
     private BigDecimal totalCostPrice;
     private List<PharmacyResult> pharmacyResults;
     private LocalDate date;
-    private List<Cost> costs;
+    private List<Cost> allCosts;
     private Map<Workbook, List<Row>> cellsWithTypos;
     private List<PharmacyCost> pharmacyCosts;
     private List<Integer> unreadablePharmacyNumbers;
+
+    public ParsedResults(PharmacyResultService pharmacyResultService) {
+        this.pharmacyResultService = pharmacyResultService;
+    }
 
 
     void savePharmacyResult(PharmacyResult pharmacyResult) {
@@ -54,5 +62,10 @@ public class ParsedResults {
     public void dataReset() {
         pharmacyResults = null;
         pharmacyCosts = null;
+    }
+
+    public void saveDate(String dateFrom) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.date = LocalDate.parse(dateFrom, formatter);
     }
 }

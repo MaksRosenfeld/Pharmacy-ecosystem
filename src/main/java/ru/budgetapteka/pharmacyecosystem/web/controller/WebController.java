@@ -2,7 +2,6 @@ package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.*;
-import ru.budgetapteka.pharmacyecosystem.rest.ApiHandler;
+import ru.budgetapteka.pharmacyecosystem.rest.ApiUsable;
+import ru.budgetapteka.pharmacyecosystem.rest.BankApiHandler;
+import ru.budgetapteka.pharmacyecosystem.rest.OneCApiHandler;
 import ru.budgetapteka.pharmacyecosystem.rest.url.Util;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
@@ -36,18 +36,20 @@ public class WebController {
 
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
 
-    private final ApiHandler apiHandler;
     private final FinancialResultsTo financialResults;
     private final ContragentService contragentService;
     private final CategoryService categoryService;
-    private final ExcelParser excelParser;
     private final FinanceCounter financeCounter;
     private final PharmacyService pharmacyService;
     private final PharmacyResultService pharmacyResultService; // закомментил сохранение в базу
     private final EmployeeService employeeService;
-    private boolean isStatementReady = false;
+    private final BankApiHandler bankHandler;
+    private final OneCApiHandler oneCHandler;
 
-    public WebController(@Qualifier("bankApiHandler") ApiHandler apiHandler, FinancialResultsTo financialResults,
+
+    public WebController(BankApiHandler bankApiHandler,
+                         OneCApiHandler oneCApiHandler,
+                         FinancialResultsTo financialResults,
                          ContragentService contragentService,
                          CategoryService categoryService,
                          ExcelParser excelParser,
@@ -55,11 +57,11 @@ public class WebController {
                          PharmacyService pharmacyService,
                          PharmacyResultService pharmacyResultService,
                          EmployeeService employeeService) {
-        this.apiHandler = apiHandler;
+        this.bankHandler = bankApiHandler;
+        this.oneCHandler = oneCApiHandler;
         this.financialResults = financialResults;
         this.contragentService = contragentService;
         this.categoryService = categoryService;
-        this.excelParser = excelParser;
         this.financeCounter = financeCounter;
         this.pharmacyService = pharmacyService;
         this.pharmacyResultService = pharmacyResultService;
@@ -122,7 +124,7 @@ public class WebController {
     public Set<Cost> getMissingInn() {
         Set<Cost> missingInn = contragentService.getMissingInn();
         if (missingInn != null) {
-            if (!missingInn.isEmpty()) apiHandler.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
+            if (!missingInn.isEmpty()) apiUsable.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
         }
         return missingInn;
     }
@@ -131,17 +133,12 @@ public class WebController {
 
     @ModelAttribute("pharmacies")
     public List<Pharmacy> getAllPharmacies() {
-        return pharmacyService.getAll();
-    }
-
-    @ModelAttribute("statementId")
-    public String getStatementId() {
-        return apiHandler.getStatementId();
+        return pharmacyService.getAllPharmacies();
     }
 
     @ModelAttribute("statement")
     public String getStatementStatus() {
-        return apiHandler.getStatementStatus();
+        return bankHandler.getBankStatementStatus().name();
     }
 
 
@@ -156,7 +153,7 @@ public class WebController {
     public ResponseEntity<?> orderStatement(@RequestParam("from") String dateFrom,
                                  @RequestParam("to") String dateTo,
                                  HttpServletResponse response) {
-        apiHandler.postMethod(Util.Url.BANK_POST_STATEMENT_REQUEST, dateFrom, dateTo);
+        bankHandler.orderBankStatement(dateFrom, dateTo);
         Cookie orderCookie = new Cookie("order-statement", "true");
         orderCookie.setMaxAge(3600);
         orderCookie.setPath("/");

@@ -1,5 +1,7 @@
 package ru.budgetapteka.pharmacyecosystem.service.pharmacy;
 
+import lombok.Data;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,15 +14,19 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+@Data
 @Service
 public class PharmacyResultServiceImpl implements PharmacyResultService{
 
     private static final Logger log = LoggerFactory.getLogger(PharmacyResultServiceImpl.class);
 
     private final PharmacyResultRepository pharmacyResultRepository;
+    private final PharmacyService pharmacyService;
 
-    public PharmacyResultServiceImpl(PharmacyResultRepository pharmacyResultRepository) {
+    public PharmacyResultServiceImpl(PharmacyResultRepository pharmacyResultRepository,
+                                     PharmacyService pharmacyService) {
         this.pharmacyResultRepository = pharmacyResultRepository;
+        this.pharmacyService = pharmacyService;
     }
 
 

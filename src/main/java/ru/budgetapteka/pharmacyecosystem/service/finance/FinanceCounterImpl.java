@@ -90,7 +90,7 @@ public class FinanceCounterImpl implements FinanceCounter {
     public FinanceCounter countCosts() {
         this.allContragents = new ArrayList<>();
         contragentService.getAllContragents().forEach(allContragents::add);
-        this.parsedCosts = parsedResults.getCosts();
+        this.parsedCosts = parsedResults.getAllCosts();
         countVariableCosts();
         countFixedCosts();
         return this;

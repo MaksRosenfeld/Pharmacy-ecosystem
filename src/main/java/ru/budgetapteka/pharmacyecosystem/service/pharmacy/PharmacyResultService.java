@@ -13,5 +13,6 @@ public interface PharmacyResultService {
     PharmacyResult createPharmacyResult(Pharmacy pharmacy, LocalDate date, BigDecimal turnOver, BigDecimal grossProfit, BigDecimal costPrice);
 
     void saveResultsForEachPharmacy(List<PharmacyResult> pharmacyResults);
+    PharmacyService getPharmacyService();
 
 }

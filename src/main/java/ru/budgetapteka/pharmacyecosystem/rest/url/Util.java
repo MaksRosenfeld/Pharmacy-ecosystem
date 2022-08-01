@@ -22,6 +22,11 @@ public class Util {
         public static final String BANK_CONTRAGENT_INN = "/beneficiaryInfo/inn";
         public static final String BANK_PAYMENT_PURPOSE = "/paymentPurpose";
         public static final String BANK_START_OF_OPERATIONS = "/account/sendTransactionsToWARequest/paymentDocumentList";
+        public static final String ONE_C_TURN_OVER = "/Выручка";
+        public static final String ONE_C_GROSS_PROFIT = "/Прибыль";
+        public static final String ONE_C_COST_PRICE = "/Себестоимость";
+
+
 
     }
 

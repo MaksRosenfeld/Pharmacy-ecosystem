@@ -31,7 +31,7 @@ public class DataUtil {
 
 
     public static List<Pharmacy> getAllPharmacies() {
-        return pharmacyService.getAll();
+        return pharmacyService.getAllPharmacies();
     }
 
     public static CategoryNew getNewCategory() {

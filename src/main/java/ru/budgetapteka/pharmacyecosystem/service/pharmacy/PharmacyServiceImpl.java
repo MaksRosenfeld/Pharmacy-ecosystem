@@ -36,7 +36,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public List<Pharmacy> getAll() {
+    public List<Pharmacy> getAllPharmacies() {
         log.info("Находим все аптеки в базе");
         return this.allPharmacies;
     }

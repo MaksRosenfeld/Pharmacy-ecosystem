@@ -40,7 +40,7 @@ public class ContragentServiceImpl implements ContragentService {
 
     @Override
     public Set<Cost> countMissingInn() {
-        List<Cost> allCosts = parsedResults.getCosts();
+        List<Cost> allCosts = parsedResults.getAllCosts();
         log.info("Проверка размера расходов: {}", allCosts.size());
         if (allCosts != null) {
             // из-за пагинации интерфейс PagingAndSorting, который возвращает Iterable
