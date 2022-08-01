@@ -31,6 +31,12 @@
             <div id="logo-man"><img th:src="@{pharmacy/man.png}" height="100px"/></div>
             <div class="ms-3 align-self-center"><h2>Экосистема <span class="shadow fs-2 badge bg-danger">Бюджетной Аптеки</span>
             </h2></div>
+            <div class="align-self-center ms-4">
+                <a href="/logout">
+                    <button class="btn btn-danger">Выйти</button>
+                </a>
+
+            </div>
         </div>
         <div class="row g-4 py-5 row-cols-1 row-cols-md-2 row-cols-lg-3">
             <div class="feature col p-3 rounded shadow-on-hover" id="download-box">
@@ -55,11 +61,13 @@
                         Готово
                     </button>
                     <!--                Загрузка-->
-                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-primary me-2" type="button" disabled>
+                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-primary me-2"
+                            type="button" disabled>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Открытие
                     </button>
-                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2" type="button" disabled>
+                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2"
+                            type="button" disabled>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         1С
                     </button>
@@ -79,7 +87,9 @@
                     базу.</p>
                 <div class="d-flex flex-row-reverse me-2" id="buttons-for-data">
                     <button class="btn btn-outline-danger" type="button">Смотреть</button>
-                    <button th:if="${statement.equals('SUCCESS')}" class="th-button btn btn-warning shadow me-2" type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">Смотреть расходы</button>
+                    <button th:if="${statement.equals('SUCCESS')}" class="th-button btn btn-warning shadow me-2"
+                            type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">Смотреть расходы
+                    </button>
                 </div>
             </div>
             <div class="feature col p-3 rounded shadow-on-hover">
@@ -94,7 +104,8 @@
                 <p>Измените данные в базе данных или параметры аккаунта.</p><br>
                 <div class="d-flex flex-row-reverse me-2">
                     <div class="dropdown">
-                        <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                             Выбрать
                         </button>
                         <ul class="dropdown-menu">
@@ -116,17 +127,17 @@
         <div class="d-flex flex-row flex-wrap justify-content-between" id="pharmacy-results">
 
         </div>
-<!--        <div class="d-flex flex-row" style="height: 270px; width: 500px">-->
+        <!--        <div class="d-flex flex-row" style="height: 270px; width: 500px">-->
 
-<!--        </div>-->
-<!--        <div class="d-flex flex-row mx-4">-->
-<!--            <div>-->
-<!--                <img src="">-->
-<!--            </div>-->
-<!--            <div class="shadow mb-3" style="height: 270px; width: 500px">-->
-<!--                <canvas id="myChart"></canvas>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!--        </div>-->
+        <!--        <div class="d-flex flex-row mx-4">-->
+        <!--            <div>-->
+        <!--                <img src="">-->
+        <!--            </div>-->
+        <!--            <div class="shadow mb-3" style="height: 270px; width: 500px">-->
+        <!--                <canvas id="myChart"></canvas>-->
+        <!--            </div>-->
+        <!--        </div>-->
     </div>
 
 
@@ -177,7 +188,7 @@
                     <tr>
                         <th scope="col">ИНН</th>
                         <th scope="col">Наименование</th>
-<!--                        <th scope="col">Тип расходов</th>-->
+                        <!--                        <th scope="col">Тип расходов</th>-->
                         <th scope="col">Сумма</th>
                         <th scope="col"></th>
                     </tr>
