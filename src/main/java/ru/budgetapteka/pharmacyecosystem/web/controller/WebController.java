@@ -12,10 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.budgetapteka.pharmacyecosystem.database.entity.*;
-import ru.budgetapteka.pharmacyecosystem.rest.ApiUsable;
-import ru.budgetapteka.pharmacyecosystem.rest.BankApiHandler;
-import ru.budgetapteka.pharmacyecosystem.rest.OneCApiHandler;
-import ru.budgetapteka.pharmacyecosystem.rest.url.Util;
+import ru.budgetapteka.pharmacyecosystem.rest.OpenApi;
+import ru.budgetapteka.pharmacyecosystem.rest.OneCApi;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
@@ -43,12 +41,12 @@ public class WebController {
     private final PharmacyService pharmacyService;
     private final PharmacyResultService pharmacyResultService; // закомментил сохранение в базу
     private final EmployeeService employeeService;
-    private final BankApiHandler bankHandler;
-    private final OneCApiHandler oneCHandler;
+    private final OpenApi bankHandler;
+    private final OneCApi oneCHandler;
 
 
-    public WebController(BankApiHandler bankApiHandler,
-                         OneCApiHandler oneCApiHandler,
+    public WebController(OpenApi openApi,
+                         OneCApi oneCApi,
                          FinancialResultsTo financialResults,
                          ContragentService contragentService,
                          CategoryService categoryService,
@@ -57,8 +55,8 @@ public class WebController {
                          PharmacyService pharmacyService,
                          PharmacyResultService pharmacyResultService,
                          EmployeeService employeeService) {
-        this.bankHandler = bankApiHandler;
-        this.oneCHandler = oneCApiHandler;
+        this.bankHandler = openApi;
+        this.oneCHandler = oneCApi;
         this.financialResults = financialResults;
         this.contragentService = contragentService;
         this.categoryService = categoryService;
@@ -120,14 +118,14 @@ public class WebController {
         return contragentService.getAllPages(pageable);
     }
 
-    @ModelAttribute("missingInn")
-    public Set<Cost> getMissingInn() {
-        Set<Cost> missingInn = contragentService.getMissingInn();
-        if (missingInn != null) {
-            if (!missingInn.isEmpty()) apiUsable.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
-        }
-        return missingInn;
-    }
+//    @ModelAttribute("missingInn")
+//    public Set<Cost> getMissingInn() {
+//        Set<Cost> missingInn = contragentService.getMissingInn();
+//        if (missingInn != null) {
+//            if (!missingInn.isEmpty()) apiUsable.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
+//        }
+//        return missingInn;
+//    }
 
     //    pharmacyService
 
@@ -136,10 +134,10 @@ public class WebController {
         return pharmacyService.getAllPharmacies();
     }
 
-    @ModelAttribute("statement")
-    public String getStatementStatus() {
-        return bankHandler.getBankStatementStatus().name();
-    }
+//    @ModelAttribute("statement")
+//    public String getStatementStatus() {
+//        return bankHandler.getBankStatementStatus().name();
+//    }
 
 
     @GetMapping("/")
@@ -153,7 +151,7 @@ public class WebController {
     public ResponseEntity<?> orderStatement(@RequestParam("from") String dateFrom,
                                  @RequestParam("to") String dateTo,
                                  HttpServletResponse response) {
-        bankHandler.orderBankStatement(dateFrom, dateTo);
+        bankHandler.orderOpenJsonNode(dateFrom, dateTo);
         Cookie orderCookie = new Cookie("order-statement", "true");
         orderCookie.setMaxAge(3600);
         orderCookie.setPath("/");

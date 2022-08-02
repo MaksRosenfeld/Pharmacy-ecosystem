@@ -1,11 +1,11 @@
 package ru.budgetapteka.pharmacyecosystem.service.parser;
 
-import ru.budgetapteka.pharmacyecosystem.rest.BankStatement;
-import ru.budgetapteka.pharmacyecosystem.rest.OneCStatement;
+import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.OpenJson;
+import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.OneCJson;
 
 public interface Parser {
 
-    void parse(BankStatement bankStatement);
-    void parse(OneCStatement oneCStatement);
+    void parse(OpenJson openJson);
+    void parse(OneCJson oneCJson);
 
 }

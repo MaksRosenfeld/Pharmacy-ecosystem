@@ -14,6 +14,7 @@ public class HeadersMaker {
 
     public static HttpHeaders create1CHeaders(String user, String password) {
         HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         httpHeaders.setBasicAuth(user, password);
         return httpHeaders;
     }

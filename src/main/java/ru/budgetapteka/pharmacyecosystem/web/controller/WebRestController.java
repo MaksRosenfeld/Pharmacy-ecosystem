@@ -14,7 +14,6 @@ import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Employee;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
-import ru.budgetapteka.pharmacyecosystem.rest.ApiUsable;
 import ru.budgetapteka.pharmacyecosystem.rest.url.Util;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
@@ -41,16 +40,16 @@ public class WebRestController {
     private PharmacyService pharmacyService;
     @Autowired
     private EmployeeService employeeService;
-    @Autowired
-    @Qualifier("bankApiUsableImpl")
-    private ApiUsable bankApiUsable;
+//    @Autowired
+//    @Qualifier("openApiImpl")
+//    private AbstractApi bankAbstractApi;
     @Autowired
     private CategoryService categoryService;
     @Autowired
     private FinancialResultsTo financeResult;
-    @Autowired
-    @Qualifier("oneCApiUsableImpl")
-    private ApiUsable oneCApiUsable;
+//    @Autowired
+//    @Qualifier("oneCApiImpl")
+//    private AbstractApi oneCAbstractApi;
 
 
 
@@ -76,10 +75,10 @@ public class WebRestController {
         return employeeService.findAll();
     }
 
-    @GetMapping("/check")
-    public Mono<String> checkStatement() {
-        return bankApiUsable.checkStatement();
-    }
+//    @GetMapping("/check")
+//    public Mono<String> checkStatement() {
+//        return bankAbstractApi.checkStatement();
+//    }
 
     @GetMapping("/all-costs")
     public Mono<List<Cost>> getAllCosts() {
@@ -87,29 +86,29 @@ public class WebRestController {
         return Mono.just(financeResult.getCosts());
     }
 
-    @GetMapping(value = "/missed-inns")
-    public ResponseEntity<?> getMissingInn(@CookieValue(name = "costs", defaultValue = "not_checked") String missedInn,
-                                           HttpServletResponse response) throws IOException {
-        if ("not_checked".equals(missedInn)) {
-            log.info("Запрос выписки, создаем cookie costs");
-            bankApiUsable.getMethod(Util.Url.BANK_GET_STATEMENT_REQUEST);
-            Cookie costs = new Cookie("costs", "checked");
-            costs.setMaxAge(3600);
-            costs.setPath("/");
-            response.addCookie(costs);
-        }
-        Set<Cost> missedInns = contragentService.countMissingInn();
-        if (missedInns.isEmpty()) {
-            bankApiUsable.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(missedInns);
-        } else {
-            bankApiUsable.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
-            return ResponseEntity.ok(missedInns);
-        }
-    }
+//    @GetMapping(value = "/missed-inns")
+//    public ResponseEntity<?> getMissingInn(@CookieValue(name = "costs", defaultValue = "not_checked") String missedInn,
+//                                           HttpServletResponse response) throws IOException {
+//        if ("not_checked".equals(missedInn)) {
+//            log.info("Запрос выписки, создаем cookie costs");
+//            bankAbstractApi.getMethod(Util.Url.BANK_GET_STATEMENT_REQUEST);
+//            Cookie costs = new Cookie("costs", "checked");
+//            costs.setMaxAge(3600);
+//            costs.setPath("/");
+//            response.addCookie(costs);
+//        }
+//        Set<Cost> missedInns = contragentService.countMissingInn();
+//        if (missedInns.isEmpty()) {
+//            bankAbstractApi.setStatementStatus(Util.Status.BANK_STATEMENT_SUCCESS);
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(missedInns);
+//        } else {
+//            bankAbstractApi.setStatementStatus(Util.Status.BANK_STATEMENT_MISSED_INN);
+//            return ResponseEntity.ok(missedInns);
+//        }
+//    }
 
-    @GetMapping("/one-c")
-    public Mono<String> get1CResults() {
-        return oneCApiUsable.checkStatement();
-    }
+//    @GetMapping("/one-c")
+//    public Mono<String> get1CResults() {
+//        return oneCAbstractApi.checkStatement();
+//    }
 }

@@ -1,16 +1,12 @@
-package ru.budgetapteka.pharmacyecosystem.rest;
+package ru.budgetapteka.pharmacyecosystem.rest.jsonnodes;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import ru.budgetapteka.pharmacyecosystem.service.parser.Parseable;
 
 @Slf4j
-public class BankStatement {
+public class OpenJson {
 
     @Getter
     private static final Long BUDGET_PHARMACY_INN = 3907029575L;
@@ -19,7 +15,7 @@ public class BankStatement {
     private JsonNode jsonNode;
 
 
-    public BankStatement(JsonNode jsonNode) {
+    public OpenJson(JsonNode jsonNode) {
         log.info("bank statement создан");
         this.jsonNode = jsonNode;
     }
