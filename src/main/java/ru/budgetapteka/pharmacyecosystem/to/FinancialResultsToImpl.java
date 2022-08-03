@@ -27,7 +27,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
     private BigDecimal totalTurnOver; // сумма выручки всех аптек
     private BigDecimal totalGrossProfit; // сумма валовой прибыль всех аптек
     private BigDecimal totalCostPrice; // сумма себестоимости продаж всех аптек
-    private List<PharmacyResult> pharmaciesWithMonthResults; // список аптека с подсчитанными данными
+    private List<PharmacyResult> pharmacyResults; // список аптека с подсчитанными данными
     private LocalDate date; // дата выписки
     private List<Cost> costs; // список всех расходов за месяц
     private Map<Workbook, List<Row>> cellsWithTypos; // словарь опечаток
@@ -44,7 +44,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         this.costs = parsedResults.getAllCosts();
         this.cellsWithTypos = parsedResults.getCellsWithTypos();
         this.pharmacyCosts = parsedResults.getPharmacyCosts();
-        this.pharmaciesWithMonthResults = parsedResults.getPharmacyResults();
+        this.pharmacyResults = parsedResults.getPharmacyResults();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
         this.totalTurnOver = null;
         this.totalGrossProfit = null;
         this.totalCostPrice = null;
-        this.pharmaciesWithMonthResults = null;
+        this.pharmacyResults = null;
         this.date = null;
         this.costs = null;
         this.cellsWithTypos = null;

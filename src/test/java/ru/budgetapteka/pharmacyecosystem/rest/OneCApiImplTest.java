@@ -27,14 +27,5 @@ class OneCApiImplTest {
     @Autowired
     private FinancialResultsTo financialResultsTo;
 
-    @Test
-    void getOneCJsonNode() throws JsonProcessingException {
-        String oneCJsonNode = oneCApi.getOneCJsonNode("2022-05-21", "2022-05-25");
-        System.out.println(oneCJsonNode);
-        JsonNode oneCNode = new ObjectMapper().readTree(oneCJsonNode);
-        OneCJson oneCJson = new OneCJson(oneCNode);
-        Parser parser = new ParserImpl(parsedResults, financialResultsTo);
-        parser.parse(oneCJson);
 
-    }
 }

@@ -32,13 +32,11 @@ public class PharmacyResultServiceImpl implements PharmacyResultService{
 
     @Override
     public PharmacyResult createPharmacyResult(Pharmacy pharmacy,
-                                               LocalDate date,
                                                BigDecimal turnOver,
                                                BigDecimal grossProfit,
                                                BigDecimal costPrice) {
         PharmacyResult pharmacyResult = new PharmacyResult();
         pharmacyResult.setPharmacy(pharmacy);
-        pharmacyResult.setDate(Date.valueOf(date));
         pharmacyResult.setTurnover(turnOver);
         pharmacyResult.setGrossProfit(grossProfit);
         pharmacyResult.setCostPrice(costPrice);

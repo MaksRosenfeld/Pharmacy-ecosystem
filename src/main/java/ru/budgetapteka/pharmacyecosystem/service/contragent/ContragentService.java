@@ -16,9 +16,9 @@ public interface ContragentService {
     void saveNewContragent(ContragentNew contragent);
     CostType getType(ContragentNew contragent);
     Optional<ContragentNew> findByInn(Long inn);
-    Set<Cost> getMissingInn();
+    Set<Cost> getMissedInns();
     ContragentNew createNewContragent(Long inn, String name, CategoryNew id, Boolean exclude);
-    Set<Cost> countMissingInn();
+    Set<Cost> countMissedInns();
     void deleteFromMissedInn(Long inn);
     Page<ContragentNew> getAllPages(Pageable pageable);
 

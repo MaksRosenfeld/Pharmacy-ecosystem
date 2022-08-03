@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class OpenJson {
+public class BankJson {
 
     @Getter
     private static final Long BUDGET_PHARMACY_INN = 3907029575L;
@@ -15,7 +15,7 @@ public class OpenJson {
     private JsonNode jsonNode;
 
 
-    public OpenJson(JsonNode jsonNode) {
+    public BankJson(JsonNode jsonNode) {
         log.info("bank statement создан");
         this.jsonNode = jsonNode;
     }

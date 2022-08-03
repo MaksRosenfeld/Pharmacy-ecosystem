@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PharmacyResultService {
 
-    PharmacyResult createPharmacyResult(Pharmacy pharmacy, LocalDate date, BigDecimal turnOver, BigDecimal grossProfit, BigDecimal costPrice);
+    PharmacyResult createPharmacyResult(Pharmacy pharmacy, BigDecimal turnOver, BigDecimal grossProfit, BigDecimal costPrice);
 
     void saveResultsForEachPharmacy(List<PharmacyResult> pharmacyResults);
     PharmacyService getPharmacyService();

@@ -52,24 +52,32 @@
                 <p>Посчитайте все ключевые статистические показатели по всей аптечной сети и по каждой
                     из аптек.</p>
                 <div class="d-flex flex-row-reverse" id="buttons-area">
-                    <button th:if="${statement.equals('NOT_ORDERED') || statement.equals('SUCCESS')}"
+                    <button th:if="${bankStatement.equals('NOT_ORDERED') || bankStatement.equals('SUCCESS')}"
                             class="choose-date-range th-button btn btn-outline-danger me-2" type="button">
                         Выбрать даты
                     </button>
-                    <button th:if="${statement.equals('SUCCESS')}" class="th-button btn btn-success shadow mx-2"
+                    <button th:if="${bankStatement.equals('SUCCESS')}" class="th-button btn btn-success shadow mx-2"
                             disabled>
                         Готово
                     </button>
                     <!--                Загрузка-->
-                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-primary me-2"
+                    <button th:if="${bankStatement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-primary me-2"
                             type="button" disabled>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Открытие
                     </button>
-                    <button th:if="${statement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2"
+                    <button th:if="${oneCStatus.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2"
                             type="button" disabled>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         1С
+                    </button>
+                    <button th:if="${oneCStatus.equals('SUCCESS') && bankStatement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2"
+                            type="button" disabled>
+                        1С Готово
+                    </button>
+                    <button th:if="${amountOfMissedInns > 0}" class="th-button btn btn-warning shadow me-2"
+                            type="button" data-bs-toggle="modal" data-bs-target="#missedInn">
+                        Добавить ИНН
                     </button>
                 </div>
             </div>
@@ -87,8 +95,9 @@
                     базу.</p>
                 <div class="d-flex flex-row-reverse me-2" id="buttons-for-data">
                     <button class="btn btn-outline-danger" type="button">Смотреть</button>
-                    <button th:if="${statement.equals('SUCCESS')}" class="th-button btn btn-warning shadow me-2"
-                            type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">Смотреть расходы
+                    <button th:if="${bankStatement.equals('SUCCESS') && amountOfMissedInns == 0}" class="th-button btn btn-warning shadow me-2"
+                            type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">
+                        Смотреть расходы
                     </button>
                 </div>
             </div>

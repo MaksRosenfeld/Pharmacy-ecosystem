@@ -1,30 +1,15 @@
 package ru.budgetapteka.pharmacyecosystem.rest;
 
-import lombok.Data;
-import org.springframework.stereotype.Service;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
-import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
+import com.fasterxml.jackson.databind.JsonNode;
+import reactor.core.publisher.Mono;
 
-/**
- * Данный класс работает со всеми АПИ и отвечает за
- * запуск и связывание каждой из нитей
- *
- * Сохранять дату, менять статус выписки
- */
-@Data
-@Service
-public class ApiService {
+public interface ApiService {
 
-    private final ParsedResults parsedResults;
-    private final FinancialResultsTo financialResultsTo;
+    public String orderBankStatement(String dateFrom, String dateTo);
+    public Mono<JsonNode> checkBankStatementStatus(String statementId);
+    public String getDataFromOneC(String dateFrom, String dateTo);
+    public Mono<JsonNode> getDataFromOpenStatement(String statementId);
+    public Status getBankStatementStatus();
+    public Status getOneCStatus();
 
-    private final OpenApi bankApi;
-    private final OneCApi oneC;
-    private Status bankStatementStatus;
-
-
-    public void run(String dateFrom, String dateTo) {
-        bankApi.orderOpenJsonNode(dateFrom, dateTo);
-
-    }
 }

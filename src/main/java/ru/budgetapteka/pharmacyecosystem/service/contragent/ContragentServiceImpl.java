@@ -29,7 +29,7 @@ public class ContragentServiceImpl implements ContragentService {
     private static final Logger log = LoggerFactory.getLogger(ContragentServiceImpl.class);
 
     private final ParsedResults parsedResults;
-    private Set<Cost> missingInn;
+    private Set<Cost> missedInns;
     private final ContragentRepository contragentRepository;
 
     public ContragentServiceImpl(ContragentRepository contragentRepository, ParsedResults parsedResults) {
@@ -39,7 +39,7 @@ public class ContragentServiceImpl implements ContragentService {
     }
 
     @Override
-    public Set<Cost> countMissingInn() {
+    public Set<Cost> countMissedInns() {
         List<Cost> allCosts = parsedResults.getAllCosts();
         log.info("Проверка размера расходов: {}", allCosts.size());
         if (allCosts != null) {
@@ -47,22 +47,22 @@ public class ContragentServiceImpl implements ContragentService {
             Iterable<ContragentNew> allContragents = contragentRepository.findAll();
             List<ContragentNew> allContragentsList = new ArrayList<>();
             allContragents.forEach(allContragentsList::add);
-            this.missingInn = allCosts.stream()
+            this.missedInns = allCosts.stream()
                     .filter(cost -> allContragentsList.stream()
                             .noneMatch(contr -> cost.getInn().equals(contr.getInn())))
                     .collect(Collectors.toSet());
         }
-        log.info("Количество недостающих ИНН = {}", this.missingInn.size());
-        return this.missingInn;
+        log.info("Количество недостающих ИНН = {}", this.missedInns.size());
+        return this.missedInns;
 
     }
 
     public void deleteFromMissedInn(Long inn) {
-        Optional<Cost> costToDelete = this.missingInn
+        Optional<Cost> costToDelete = this.missedInns
                 .stream()
                 .filter(c -> c.getInn().equals(inn))
                 .findFirst();
-        this.missingInn.remove(costToDelete.orElseThrow());
+        this.missedInns.remove(costToDelete.orElseThrow());
 
     }
 

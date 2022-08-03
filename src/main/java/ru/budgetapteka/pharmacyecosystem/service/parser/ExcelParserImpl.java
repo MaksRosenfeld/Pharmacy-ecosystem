@@ -115,8 +115,8 @@ public class ExcelParserImpl implements ExcelParser {
         BigDecimal turnOver = BigDecimal.valueOf(row.getCell(oneC.getTURN_OVER_COLUMN()).getNumericCellValue());
         BigDecimal grossProfit = BigDecimal.valueOf(row.getCell(oneC.getGROSS_PROFIT_COLUMN()).getNumericCellValue());
         BigDecimal costPrice = BigDecimal.valueOf(row.getCell(oneC.getCOST_PRICE_COLUMN()).getNumericCellValue());
-        PharmacyResult pharmacyResult = pharmacyResultService.createPharmacyResult(pharmacy, parsedResults.getDate(), turnOver, grossProfit, costPrice);
-        parsedResults.savePharmacyResult(pharmacyResult);
+//        PharmacyResult pharmacyResult = pharmacyResultService.createPharmacyResult(pharmacy, parsedResults.getDate(), turnOver, grossProfit, costPrice);
+//        parsedResults.savePharmacyResult(pharmacyResult);
 
     }
 

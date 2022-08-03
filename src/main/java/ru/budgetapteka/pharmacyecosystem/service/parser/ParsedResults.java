@@ -68,4 +68,10 @@ public class ParsedResults {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.date = LocalDate.parse(dateFrom, formatter);
     }
+
+    public void setTotalResults(BigDecimal totalTurnOver, BigDecimal totalGrossProfit, BigDecimal totalCostPrice) {
+        this.totalTurnOver = totalTurnOver;
+        this.totalGrossProfit = totalGrossProfit;
+        this.totalCostPrice = totalCostPrice;
+    }
 }

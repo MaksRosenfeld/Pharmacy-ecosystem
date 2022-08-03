@@ -27,6 +27,6 @@ public interface FinancialResultsTo {
     BigDecimal getROs();
     void dataReset();
     List<PharmacyCost> getPharmacyCosts();
-    List<PharmacyResult> getPharmaciesWithMonthResults();
+    List<PharmacyResult> getPharmacyResults();
 
 }

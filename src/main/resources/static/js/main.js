@@ -22,7 +22,7 @@ $(document).ready(function () {
         let status;
         console.log("Выписка в процессе создания")
         $.ajax({
-            url: "/api/check",
+            url: "data/api/check_statement_status",
             dataType: "json",
             success: function (data) {
                 status = data["data"]["status"] // статус выписки
@@ -36,7 +36,14 @@ $(document).ready(function () {
                     console.log("Выписка готова\nУдаляем cookie order-statement")
                     removeNewlyCreatedAndThButtons();
                     deleteCookie("order-statement");
-                    checkOnMissedInns();
+                    $.ajax({
+                        url: "data/api/get_all_costs",
+                        dataType: "json",
+                        success: function(data, textStatus, xhr) {
+                            if (xhr.status === 202) {checkOnMissedInns(); }
+                        }
+                    })
+
                 } else if (status === "ERROR") {
                     console.log("Ошибка на стороне банка\nУдаляем cookie order-statement")
                     removeLoading()
@@ -54,7 +61,7 @@ $(document).ready(function () {
 
     function checkOnMissedInns() {
         $.ajax({
-            url: "api/missed-inns",
+            url: "data/api/check_missed_inns",
             dataType: "json",
             success: function (allMissedInns, textStatus, xhr) {
                 // console.log(allMissedInns.length);
@@ -67,7 +74,7 @@ $(document).ready(function () {
                     createButtonCheckMissedInn();
                     let allCategories = [];
                     $.ajax({
-                        url: "/api/all-categories",
+                        url: "data/api/all_categories",
                         dataType: "json",
                         async: false,
                         success: function (categoriesData) {
@@ -312,7 +319,7 @@ $(document).ready(function () {
         }, function (start, end, label) {
             removeNewlyCreatedAndThButtons();
             $("#inn-in-table").empty();
-            $.post("/order_statement", {
+            $.post("/data/api/order_bank_statement", {
                 from: start.format('YYYY-MM-DD'),
                 to: end.format('YYYY-MM-DD')
             })
