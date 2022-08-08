@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Slf4j
 @SpringBootTest
-class BankApiImplTest {
+class BankApiTest {
 
     @Autowired
     private BankApi bankApi;

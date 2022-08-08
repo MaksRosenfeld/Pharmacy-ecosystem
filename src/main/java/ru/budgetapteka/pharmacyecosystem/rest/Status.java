@@ -6,5 +6,7 @@ public enum Status {
     IN_PROGRESS,
     SUCCESS,
     ERROR,
-    RECEIVED
+    RECEIVED,
+    PARSED,
+    NOT_PARSED
 }

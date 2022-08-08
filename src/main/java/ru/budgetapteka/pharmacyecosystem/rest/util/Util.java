@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.rest.url;
+package ru.budgetapteka.pharmacyecosystem.rest.util;
 
 public class Util {
 
@@ -30,14 +30,10 @@ public class Util {
 
     }
 
-    public static class Status {
-        public static final String BANK_STATEMENT_NOT_ORDERED = "NOT_ORDERED";
-        public static final String BANK_STATEMENT_IN_PROGRESS = "IN_PROGRESS";
-        public static final String BANK_STATEMENT_MISSED_INN = "MISSED_INN";
-        public static final String BANK_STATEMENT_SUCCESS = "SUCCESS";
+    public static class PhInfo {
 
-
-
+        public static final int pharmacyNumber = 16;
+        public static final Long BUDGET_PHARMACY_INN = 3907029575L;
     }
 
 

@@ -2,6 +2,7 @@ package ru.budgetapteka.pharmacyecosystem.service.parser;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@NoArgsConstructor
 @Getter
 @Setter(AccessLevel.PACKAGE)
 @Component

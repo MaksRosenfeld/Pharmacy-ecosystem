@@ -64,7 +64,6 @@ $(document).ready(function () {
             url: "data/api/check_missed_inns",
             dataType: "json",
             success: function (allMissedInns, textStatus, xhr) {
-                // console.log(allMissedInns.length);
                 if (xhr.status === 204) {
                     deleteCookie("costs")
                     createButtonsReadyAndChooseDate();
@@ -185,6 +184,11 @@ $(document).ready(function () {
         $("#buttons-area")
             .append('<button class="choose-date-range newly-created-button btn btn-outline-danger me-2" type="button">Выбрать даты</button>')
             .append('<button class="newly-created-button btn btn-warning shadow me-2" type="button" data-bs-toggle="modal" data-bs-target="#missedInn">Добавить ИНН</button>')
+    }
+
+    function createOneCReady() {
+        $("#buttons-area")
+            .append('<button class="newly-created-button shadow btn btn-warning me-2" type="button" disabled>1С Готово</button>')
     }
 
     function createButtonsReadyAndChooseDate() {

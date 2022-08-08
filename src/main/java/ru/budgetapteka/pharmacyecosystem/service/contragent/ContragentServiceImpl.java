@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepository;
+import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
 import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.parser.CostType;
 import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
@@ -28,30 +29,27 @@ public class ContragentServiceImpl implements ContragentService {
 
     private static final Logger log = LoggerFactory.getLogger(ContragentServiceImpl.class);
 
-    private final ParsedResults parsedResults;
+    private final ApiService apiService;
     private Set<Cost> missedInns;
     private final ContragentRepository contragentRepository;
 
-    public ContragentServiceImpl(ContragentRepository contragentRepository, ParsedResults parsedResults) {
-        log.info("Я тоже создан");
+    public ContragentServiceImpl(ContragentRepository contragentRepository, ApiService apiService) {
         this.contragentRepository = contragentRepository;
-        this.parsedResults = parsedResults;
+        this.apiService = apiService;
     }
 
     @Override
     public Set<Cost> countMissedInns() {
-        List<Cost> allCosts = parsedResults.getAllCosts();
+        List<Cost> allCosts = apiService.getParsedData().getAllCosts();
         log.info("Проверка размера расходов: {}", allCosts.size());
-        if (allCosts != null) {
-            // из-за пагинации интерфейс PagingAndSorting, который возвращает Iterable
-            Iterable<ContragentNew> allContragents = contragentRepository.findAll();
-            List<ContragentNew> allContragentsList = new ArrayList<>();
-            allContragents.forEach(allContragentsList::add);
-            this.missedInns = allCosts.stream()
-                    .filter(cost -> allContragentsList.stream()
-                            .noneMatch(contr -> cost.getInn().equals(contr.getInn())))
-                    .collect(Collectors.toSet());
-        }
+        // из-за пагинации интерфейс PagingAndSorting, который возвращает Iterable
+        Iterable<ContragentNew> allContragents = contragentRepository.findAll();
+        List<ContragentNew> allContragentsList = new ArrayList<>();
+        allContragents.forEach(allContragentsList::add);
+        this.missedInns = allCosts.stream()
+                .filter(cost -> allContragentsList.stream()
+                        .noneMatch(contr -> cost.getInn().equals(contr.getInn())))
+                .collect(Collectors.toSet());
         log.info("Количество недостающих ИНН = {}", this.missedInns.size());
         return this.missedInns;
 

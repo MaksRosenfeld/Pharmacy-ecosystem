@@ -2,14 +2,20 @@ package ru.budgetapteka.pharmacyecosystem.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import reactor.core.publisher.Mono;
+import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.AbstractJson;
+import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedData;
+
+import java.time.LocalDate;
 
 public interface ApiService {
+    void orderStatements(LocalDate dateFrom, LocalDate dateTo);
+    ParsedData getParsedData();
+    Requestable getBankApi();
+    Requestable getOneCApi();
+    AbstractJson getBankJson();
+    AbstractJson getOneCJson();
 
-    public String orderBankStatement(String dateFrom, String dateTo);
-    public Mono<JsonNode> checkBankStatementStatus(String statementId);
-    public String getDataFromOneC(String dateFrom, String dateTo);
-    public Mono<JsonNode> getDataFromOpenStatement(String statementId);
-    public Status getBankStatementStatus();
-    public Status getOneCStatus();
+
+
 
 }
