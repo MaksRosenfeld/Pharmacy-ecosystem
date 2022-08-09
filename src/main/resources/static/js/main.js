@@ -2,8 +2,10 @@ import {buildChart} from "./charts.js"
 
 $(document).ready(function () {
 
+    let table;
 
-    window.addEventListener("load", getTheInfo)
+
+    window.addEventListener('load', getTheInfo)
 
 
     function getTheInfo(newDates = false) {
@@ -11,9 +13,13 @@ $(document).ready(function () {
             console.log("Проверяем недостающие ИНН")
             checkOnMissedInns();
         }
-        if (getCookie("order-statement") || newDates === true) {
+        if (getCookie('order-statement') || newDates === true) {
             console.log("Сейчас начнется запрос выписки")
-            setTimeout(sendRequestToCheckStatus, 3000)
+            setTimeout(sendRequestToCheckStatus, 3000);
+        }
+        if (getCookie("check-costs")) {
+            console.log("Показываю расходы")
+            ableToShowCosts();
         }
     }
 
@@ -25,7 +31,7 @@ $(document).ready(function () {
             url: "data/api/check_statement_status",
             dataType: "json",
             success: function (data) {
-                status = data["data"]["status"] // статус выписки
+                status = data["status"] // статус выписки
                 console.log(status)
                 if (status === "IN_PROGRESS" || status === "NEW") {
                     setTimeout(() => {
@@ -33,14 +39,19 @@ $(document).ready(function () {
                         $.ajax(this);
                     }, 33000)
                 } else if (status === "SUCCESS") {
-                    console.log("Выписка готова\nУдаляем cookie order-statement")
+                    console.log("Выписка готова\nУдаляем cookie order-statement\nСоздаем check-costs")
                     removeNewlyCreatedAndThButtons();
                     deleteCookie("order-statement");
+                    setCookie("check-costs", "true", {"max-age": 3600})
                     $.ajax({
-                        url: "data/api/get_all_costs",
+                        url: "data/api/parse_statements",
                         dataType: "json",
-                        success: function(data, textStatus, xhr) {
-                            if (xhr.status === 202) {checkOnMissedInns(); }
+                        success: function (data, textStatus, xhr) {
+                            console.log("Начинаем проверку")
+                            if (xhr.status === 202) {
+                                console.log("Проверяю на отсутствие ИНН")
+                                checkOnMissedInns();
+                            }
                         }
                     })
 
@@ -120,14 +131,14 @@ $(document).ready(function () {
             console.log("Добавляем нового контрагента")
             categoryData.removeClass("error-input")
             $(`#tr${this.id}`).hide(200);
-            $.post("/add_new_contragent_from_missed_inn",
+            $.post("data/api/add_new_contragent_from_missed_inn",
                 {
                     inn: innData.val(),
                     name: nameData.val(),
                     category: categoryData.val(),
                     exclude: excludeData
                 })
-            $.get("api/missed-inns", function (missedInns, textStatus, xhr) {
+            $.get("data/api/amount_of_missed_inns", function (missedInns, textStatus, xhr) {
                 if (xhr.status === 204) {
                     console.log("Удаляем cookie costs")
                     $("#missedInn").modal("hide");
@@ -140,27 +151,30 @@ $(document).ready(function () {
     })
 
     function ableToShowCosts() {
-        $("#table-costs").DataTable({
+        table = $("#table-costs").DataTable({
+            retrieve: true,
             autoWidth: false,
-            ajax:{url:"/api/all-costs",dataSrc:""},
+            ajax: {url: "data/api/all_costs", dataSrc: ""},
             columns: [
                 {data: "inn"},
                 {data: "name", width: "40%"},
                 {data: "amount"}
-                ],
+            ],
             language: {
                 lengthMenu: "Показать по _MENU_",
                 paginate: {
                     first: "First",
                     last: "Last",
                     next: "След.",
-                    previous: "Пред."},
+                    previous: "Пред."
+                },
                 info: "Кол-во записей: _START_ - _END_ из _TOTAL_",
                 search: "Фильтр:",
 
             }
 
         })
+
 
     }
 
@@ -323,13 +337,15 @@ $(document).ready(function () {
         }, function (start, end, label) {
             removeNewlyCreatedAndThButtons();
             $("#inn-in-table").empty();
-            $.post("/data/api/order_bank_statement", {
+            $.post("/data/api/order_bank_statements", {
                 from: start.format('YYYY-MM-DD'),
                 to: end.format('YYYY-MM-DD')
             })
             $(".choose-date-range").remove();
             createLoadings();
             deleteCookie("costs");
+            deleteCookie("check-costs");
+            table.destroy();
             getTheInfo(true);
             console.log('Выбранные даты: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
         });

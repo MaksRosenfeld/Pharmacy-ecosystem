@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @Data
@@ -19,7 +20,7 @@ public class ParsedData {
     private LocalDate date;
     private List<Cost> allCosts;
     private List<PharmacyCost> pharmacyCosts;
-    private Map<Integer, Map<String, BigDecimal>> eachPharmacyParsedData;
+    private Map<Integer, Map<String, BigDecimal>> eachPharmacyParsedData; // данные с 1С по каждой аптеке
     private List<PharmacyResult> pharmacyResults;
     private BigDecimal totalTurnOver;
     private BigDecimal totalGrossProfit;

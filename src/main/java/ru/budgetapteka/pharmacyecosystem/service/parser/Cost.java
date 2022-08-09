@@ -29,6 +29,7 @@ public class Cost {
     private BigDecimal amount;
     private String description;
     private CategoryNew category;
+    private boolean exclude;
     private List<Integer> belongingCosts; // для каких аптек учитывать расход
 
 
@@ -46,36 +47,36 @@ public class Cost {
 
     //    Отправляет разделенный расход на кол-во аптек
 
-    void distributeToPharmacies(List<Pharmacy> pharmacies,
-                                List<ContragentNew> allContragents,
-                                ParsedResults parsedResults,
-                                PharmacyCostService costService) {
-        // находим совпадение по ИНН в списке контрагентов, исключаем всех с флагом "Исключить"
-        Optional<ContragentNew> ctg = allContragents.stream()
-                .filter(cg -> cg.getInn().equals(this.inn) && !cg.getExclude())
-                .findFirst();
-        // расходы без аптек относятся к офису, поэтому добавляем 0 - индекс офиса
-        if (this.belongingCosts.isEmpty()) this.belongingCosts.add(0);
-        if (ctg.isPresent()) {
-            log.info("Распределяем по аптекам: {}", this.belongingCosts);
-            log.info("Сумма расхода: {}", this.amount);
-            pharmacies.stream()
-                    .filter(p -> this.belongingCosts.contains(p.getPharmacyNumber()))
-                    .forEach(p -> {
-                        BigDecimal eachPharmacyCost = this.amount.divide(
-                                BigDecimal.valueOf(this.belongingCosts.size()), 2, RoundingMode.HALF_UP);
-                        PharmacyCost pharmacyCost = costService.createPharmacyCost(p,
-                                parsedResults.getDate(),
-                                ctg.get().getCategoryId(),
-                                eachPharmacyCost);
-                        log.info("Ушло на аптеку: {}", pharmacyCost.getAmount());
-                        parsedResults.savePharmacyCost(pharmacyCost);
-                    });
-
-        }
-
-
-    }
+//    void distributeToPharmacies(List<Pharmacy> pharmacies,
+//                                List<ContragentNew> allContragents,
+//                                ParsedResults parsedResults,
+//                                PharmacyCostService costService) {
+//        // находим совпадение по ИНН в списке контрагентов, исключаем всех с флагом "Исключить"
+//        Optional<ContragentNew> ctg = allContragents.stream()
+//                .filter(cg -> cg.getInn().equals(this.inn) && !cg.getExclude())
+//                .findFirst();
+//        // расходы без аптек относятся к офису, поэтому добавляем 0 - индекс офиса
+//        if (this.belongingCosts.isEmpty()) this.belongingCosts.add(0);
+//        if (ctg.isPresent()) {
+//            log.info("Распределяем по аптекам: {}", this.belongingCosts);
+//            log.info("Сумма расхода: {}", this.amount);
+//            pharmacies.stream()
+//                    .filter(p -> this.belongingCosts.contains(p.getPharmacyNumber()))
+//                    .forEach(p -> {
+//                        BigDecimal eachPharmacyCost = this.amount.divide(
+//                                BigDecimal.valueOf(this.belongingCosts.size()), 2, RoundingMode.HALF_UP);
+//                        PharmacyCost pharmacyCost = costService.createPharmacyCost(p,
+//                                parsedResults.getDate(),
+//                                ctg.get().getCategoryId(),
+//                                eachPharmacyCost);
+//                        log.info("Ушло на аптеку: {}", pharmacyCost.getAmount());
+//                        parsedResults.savePharmacyCost(pharmacyCost);
+//                    });
+//
+//        }
+//
+//
+//    }
 
     public void setBelongingCosts(List<Integer> belongingCosts) {
         this.belongingCosts = Objects.requireNonNullElseGet(belongingCosts, ArrayList::new);

@@ -7,4 +7,6 @@ import java.util.Set;
 public interface ParsingService {
 
     void parseStatements(Set<AbstractJson> jsonFiles);
+    ParsedData getParsedData();
+
 }

@@ -11,27 +11,27 @@ import static ru.budgetapteka.pharmacyecosystem.DataUtil.*;
 @SpringBootTest
 class ExcelParserImplTest {
 
-    @Autowired
-    public ExcelParser excelParser;
-    @Autowired
-    public ParsedResults parsedResults;
-    @Autowired
-    public FinancialResultsTo financialResults;
+//    @Autowired
+//    public ExcelParser excelParser;
+//    @Autowired
+//    public ParsedResults parsedResults;
+//    @Autowired
+//    public FinancialResultsTo financialResults;
 
 
-    @Test
-    void parse1CStatement() {
-        excelParser.parse1CStatement(convertToMultipartFile(oneCPath));
-        financialResults.acceptingDataFrom(parsedResults);
-        assertEquals(expectedTurnOver, financialResults.getTotalTurnOver());
-        assertEquals(expectedGrossProfit, financialResults.getTotalGrossProfit());
-        assertEquals(expectedCostPrice, financialResults.getTotalCostPrice());
-    }
+//    @Test
+//    void parse1CStatement() {
+//        excelParser.parse1CStatement(convertToMultipartFile(oneCPath));
+//        financialResults.acceptingDataFrom(parsedResults);
+//        assertEquals(expectedTurnOver, financialResults.getTotalTurnOver());
+//        assertEquals(expectedGrossProfit, financialResults.getTotalGrossProfit());
+//        assertEquals(expectedCostPrice, financialResults.getTotalCostPrice());
+//    }
 
-    @Test
-    void parseBankStatement() {
-        excelParser.parseBankStatement(convertToMultipartFile(bankStatementPath));
-        financialResults.acceptingDataFrom(parsedResults);
-        assertNotNull(financialResults.getCosts());
-    }
+//    @Test
+//    void parseBankStatement() {
+//        excelParser.parseBankStatement(convertToMultipartFile(bankStatementPath));
+//        financialResults.acceptingDataFrom(parsedResults);
+//        assertNotNull(financialResults.getCosts());
+//    }
 }

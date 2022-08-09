@@ -16,7 +16,6 @@ import ru.budgetapteka.pharmacyecosystem.rest.util.Util;
 import ru.budgetapteka.pharmacyecosystem.rest.webclient.WebClientBuilderImpl;
 
 import java.time.Duration;
-import java.time.LocalDate;
 
 
 import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.Url.*;
@@ -33,7 +32,7 @@ import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.Url.*;
 public class BankApi implements Requestable {
 
     private final WebClient webClient;
-    private AbstractJson bankJson;
+    private AbstractJson json;
     private Status status = Status.NOT_ORDERED;
 
     public BankApi(@Value("${OPEN_TOKEN}") String token) {
@@ -43,15 +42,14 @@ public class BankApi implements Requestable {
 
 
     @Override
-    public AbstractJson getJson(LocalDate dateFrom, LocalDate dateTo) {
+    public void requestJson(String dateFrom, String dateTo) {
         this.status = Status.NEW;
         orderBankJsonNode(dateFrom, dateTo);
-        return bankJson;
     }
 
 
     // заказывает выписку, возвращает id выписки
-    private void orderBankJsonNode(LocalDate dateFrom, LocalDate dateTo) {
+    private void orderBankJsonNode(String dateFrom, String dateTo) {
         log.info("Заказываем выписку от {} до {}", dateFrom, dateTo);
         webClient
                 .post()
@@ -61,12 +59,16 @@ public class BankApi implements Requestable {
                 .doOnError(e -> log.info("Неудачная попытка заказа выписки по банку"))
                 .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(10)))
                 .map(jn -> jn.at(Util.Path.BANK_STATEMENT_ID).asText())
-                .subscribe(this::getBankJsonNode).dispose();
+                .subscribe(statementId -> {
+                    log.info("Номер выписки: {}", statementId);
+                    getBankJsonNode(statementId);
+                });
         this.status = Status.IN_PROGRESS;
     }
 
     // возвращает json файл готовой выписки
     private void getBankJsonNode(String statementId) {
+        log.info("Проверяю готовность банковской выписки");
         webClient
                 .get()
                 .uri(BANK_GET_STATEMENT_REQUEST, statementId)
@@ -74,13 +76,16 @@ public class BankApi implements Requestable {
                 .bodyToMono(String.class)
                 .doOnError(e -> log.info("Неудачная попытка получения данных по банку"))
                 .retryWhen(Retry.fixedDelay(90, Duration.ofSeconds(30)))
-                .subscribe(this::createAbstractJson).dispose();
+                .subscribe(dataString -> {
+                    log.info("Банковская выписка готова, создаем JSON");
+                    createAbstractJson(dataString);
+                });
     }
 
     // создает абстрактный Json
     private void createAbstractJson(String stringData) {
         try {
-            this.bankJson = new BankJson(stringData);
+            this.json = new BankJson(stringData);
             this.status = Status.SUCCESS;
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Невозможно создать файл банковской выписки");

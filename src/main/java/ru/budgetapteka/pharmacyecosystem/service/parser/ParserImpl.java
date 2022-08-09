@@ -30,8 +30,8 @@ public class ParserImpl implements Parser {
         this.parsedData = parsedData;
     }
 
-    @Async
-    public void parse(@NonNull AbstractJson abstractJson) {
+
+    public void parse(AbstractJson abstractJson) {
         if (abstractJson instanceof BankJson) parseBankJson(abstractJson.getJsonNode());
         else if  (abstractJson instanceof OneCJson) parseOneCJson(abstractJson.getJsonNode());
     }

@@ -11,20 +11,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class CostTest {
 
-    @Autowired
-    private ExcelParser excelParser;
-    @Autowired
-    private ParsedResults parsedResults;
+//    @Autowired
+//    private ExcelParser excelParser;
+//    @Autowired
+//    private ParsedResults parsedResults;
 
 
-    @Test
-    void distributeToPharmacies() {
-        MultipartFile oneC = DataUtil.convertToMultipartFile(DataUtil.oneCPath);
-        MultipartFile bS = DataUtil.convertToMultipartFile(DataUtil.bankStatementPath);
-        excelParser.parse1CStatement(oneC);
-        excelParser.parseBankStatement(bS);
-        assertNotNull(parsedResults.getPharmacyCosts());
-
-
-    }
+//    @Test
+//    void distributeToPharmacies() {
+//        MultipartFile oneC = DataUtil.convertToMultipartFile(DataUtil.oneCPath);
+//        MultipartFile bS = DataUtil.convertToMultipartFile(DataUtil.bankStatementPath);
+//        excelParser.parse1CStatement(oneC);
+//        excelParser.parseBankStatement(bS);
+//        assertNotNull(parsedResults.getPharmacyCosts());
+//
+//
+//    }
 }

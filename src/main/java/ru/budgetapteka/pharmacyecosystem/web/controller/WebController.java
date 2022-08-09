@@ -7,8 +7,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,7 @@ import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
 import ru.budgetapteka.pharmacyecosystem.rest.BankApi;
 import ru.budgetapteka.pharmacyecosystem.rest.OneCApi;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
-import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
+import ru.budgetapteka.pharmacyecosystem.service.parser.FinCounterService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
@@ -25,8 +23,6 @@ import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.parser.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -40,7 +36,7 @@ public class WebController {
     private final FinancialResultsTo financialResults;
     private final ContragentService contragentService;
     private final CategoryService categoryService;
-    private final FinanceCounter financeCounter;
+    private final FinCounterService finCounterService;
     private final PharmacyService pharmacyService;
     private final PharmacyResultService pharmacyResultService; // закомментил сохранение в базу
     private final EmployeeService employeeService;
@@ -53,8 +49,7 @@ public class WebController {
                          FinancialResultsTo financialResults,
                          ContragentService contragentService,
                          CategoryService categoryService,
-                         ExcelParser excelParser,
-                         FinanceCounter financeCounter,
+                         FinCounterService finCounterService,
                          PharmacyService pharmacyService,
                          PharmacyResultService pharmacyResultService,
                          EmployeeService employeeService, ApiService apiService) {
@@ -63,7 +58,7 @@ public class WebController {
         this.financialResults = financialResults;
         this.contragentService = contragentService;
         this.categoryService = categoryService;
-        this.financeCounter = financeCounter;
+        this.finCounterService = finCounterService;
         this.pharmacyService = pharmacyService;
         this.pharmacyResultService = pharmacyResultService;
         this.employeeService = employeeService;
@@ -138,10 +133,10 @@ public class WebController {
     }
 
     @ModelAttribute("bankStatement")
-    private String getBankStatementStatus() {return apiService.getBankStatementStatus().name();}
+    private String getBankStatementStatus() {return apiService.getBankApi().getStatus().name();}
 
     @ModelAttribute("oneCStatus")
-    private String getOneCStatus() {return apiService.getOneCStatus().name();}
+    private String getOneCStatus() {return apiService.getOneCApi().getStatus().name();}
 
     @ModelAttribute("amountOfMissedInns")
     private int getAmountOfMissedInns() {
@@ -159,33 +154,20 @@ public class WebController {
 
     //    POST requests
 
-    @PostMapping("order_statement")
-    public ResponseEntity<?> orderStatement(@RequestParam("from") String dateFrom,
-                                 @RequestParam("to") String dateTo,
-                                 HttpServletResponse response) {
-        bankHandler.orderBankJsonNode(dateFrom, dateTo);
-        Cookie orderCookie = new Cookie("order-statement", "true");
-        orderCookie.setMaxAge(3600);
-        orderCookie.setPath("/");
-        response.addCookie(orderCookie);
-        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
-        return ResponseEntity.ok().body("Data accepted");
-    }
+//    @PostMapping("order_statement")
+//    public ResponseEntity<?> orderStatement(@RequestParam("from") String dateFrom,
+//                                 @RequestParam("to") String dateTo,
+//                                 HttpServletResponse response) {
+//        bankHandler.orderBankJsonNode(dateFrom, dateTo);
+//        Cookie orderCookie = new Cookie("order-statement", "true");
+//        orderCookie.setMaxAge(3600);
+//        orderCookie.setPath("/");
+//        response.addCookie(orderCookie);
+//        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+//        return ResponseEntity.ok().body("Data accepted");
+//    }
 
-    @ResponseBody
-    @PostMapping("/add_new_contragent_from_missed_inn")
-    public ContragentNew addNewContragent(@RequestParam(name = "inn") Long inn,
-                                   @RequestParam(name = "name") String name,
-                                   @RequestParam(name = "category") Long id,
-                                   @RequestParam(name = "exclude") Boolean exclude) {
-        log.info("Добавляем {}: {}", inn, name);
-        Optional<CategoryNew> categoryWithId = categoryService.getCategoryWithId(id);
-        ContragentNew newContragent = contragentService.createNewContragent(inn, name,
-                categoryWithId.orElseThrow(), exclude);
-        contragentService.saveNewContragent(newContragent);
-        contragentService.deleteFromMissedInn(inn);
-        return newContragent;
-    }
+
 
     @PostMapping(value = "/cost_base", params = {"cost"})
     public String addNewCostCategory(@RequestParam(name = "name") String name,

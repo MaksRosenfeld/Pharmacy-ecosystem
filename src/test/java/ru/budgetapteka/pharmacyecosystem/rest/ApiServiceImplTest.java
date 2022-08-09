@@ -19,15 +19,15 @@ class ApiServiceImplTest {
     @Autowired
     private ApiServiceImpl apiServiceImpl;
 
-    @Test
-    void orderBankStatement() {
-        String statement = bankApi.orderBankJsonNode("2022-05-04", "2022-05-07");
-        assertNotNull(statement);
-    }
+//    @Test
+//    void orderBankStatement() {
+//        String statement = bankApi.orderBankJsonNode("2022-05-04", "2022-05-07");
+//        assertNotNull(statement);
+//    }
 
-    @Test
-    void getDataFromOneC() {
-        apiServiceImpl.getDataFromOneC("2022-07-07", "2022-07-08");
-        assertNotNull(financialResults.getPharmacyResults());
-    }
+//    @Test
+//    void getDataFromOneC() {
+//        apiServiceImpl.getDataFromOneC("2022-07-07", "2022-07-08");
+//        assertNotNull(financialResults.getPharmacyResults());
+//    }
 }

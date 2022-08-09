@@ -1,23 +1,10 @@
 package ru.budgetapteka.pharmacyecosystem.rest;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.AbstractJson;
-import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.OneCJson;
-import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.BankJson;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedData;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
-import ru.budgetapteka.pharmacyecosystem.service.parser.Parser;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParserImpl;
-import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
-
-import java.time.LocalDate;
-import java.util.Set;
 
 /**
  * Данный класс работает со всеми АПИ и отвечает за
@@ -33,10 +20,7 @@ public class ApiServiceImpl implements ApiService {
 
     private final Requestable bankApi;
     private final Requestable oneCApi;
-    private ParsedData parsedData;
 
-    private AbstractJson bankJson;
-    private AbstractJson oneCJson;
 
     public ApiServiceImpl(@Qualifier("bankApi") Requestable bankApi,
                           @Qualifier("oneCApi") Requestable oneCApi) {
@@ -44,11 +28,10 @@ public class ApiServiceImpl implements ApiService {
         this.oneCApi = oneCApi;
     }
 
-    public void orderStatements(LocalDate dateFrom, LocalDate dateTo) {
-        this.bankJson = bankApi.getJson(dateFrom, dateTo);
-        this.oneCJson = oneCApi.getJson(dateFrom, dateTo);
+    public void orderStatements(String dateFrom, String dateTo) {
+        bankApi.requestJson(dateFrom, dateTo);
+        oneCApi.requestJson(dateFrom, dateTo);
     }
-
 
 
 }

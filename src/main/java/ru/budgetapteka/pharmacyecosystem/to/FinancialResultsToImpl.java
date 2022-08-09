@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
 import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
-import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,27 +33,27 @@ public class FinancialResultsToImpl implements FinancialResultsTo {
     private BigDecimal rOs; // общая рентабельность продаж
     private List<PharmacyCost> pharmacyCosts;
 
-    @Override
-    public void acceptingDataFrom(ParsedResults parsedResults) {
-        this.totalTurnOver = parsedResults.getTotalTurnOver();
-        this.totalGrossProfit = parsedResults.getTotalGrossProfit();
-        this.totalCostPrice = parsedResults.getTotalCostPrice();
-        this.date = parsedResults.getDate();
-        this.costs = parsedResults.getAllCosts();
-        this.cellsWithTypos = parsedResults.getCellsWithTypos();
-        this.pharmacyCosts = parsedResults.getPharmacyCosts();
-        this.pharmacyResults = parsedResults.getPharmacyResults();
-    }
+//    @Override
+//    public void acceptingDataFrom(ParsedResults parsedResults) {
+//        this.totalTurnOver = parsedResults.getTotalTurnOver();
+//        this.totalGrossProfit = parsedResults.getTotalGrossProfit();
+//        this.totalCostPrice = parsedResults.getTotalCostPrice();
+//        this.date = parsedResults.getDate();
+//        this.costs = parsedResults.getAllCosts();
+//        this.cellsWithTypos = parsedResults.getCellsWithTypos();
+//        this.pharmacyCosts = parsedResults.getPharmacyCosts();
+//        this.pharmacyResults = parsedResults.getPharmacyResults();
+//    }
 
-    @Override
-    public void acceptingDataFrom(ParsedResults parsedResults, FinanceCounter financeCounter) {
-        acceptingDataFrom(parsedResults);
-        this.netProfit = financeCounter.getNetProfit();
-        this.rOs = financeCounter.getROs();
-        log.info("Размер PharmaResults: {}", parsedResults.getPharmacyResults().size());
-        parsedResults.dataReset();
-        log.info("Обнулили");
-    }
+//    @Override
+//    public void acceptingDataFrom(ParsedResults parsedResults, FinCounterService finCounterService) {
+//        acceptingDataFrom(parsedResults);
+//        this.netProfit = finCounterService.getNetProfit();
+//        this.rOs = finCounterService.getROs();
+//        log.info("Размер PharmaResults: {}", parsedResults.getPharmacyResults().size());
+//        parsedResults.dataReset();
+//        log.info("Обнулили");
+//    }
 
     @Override
     public void dataReset() {

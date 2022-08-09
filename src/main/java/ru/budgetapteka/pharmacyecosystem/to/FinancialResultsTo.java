@@ -5,8 +5,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
 import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
-import ru.budgetapteka.pharmacyecosystem.service.finance.FinanceCounter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,8 +19,8 @@ public interface FinancialResultsTo {
     LocalDate getDate();
     List<Cost> getCosts();
     Map<Workbook, List<Row>> getCellsWithTypos();
-    void acceptingDataFrom(ParsedResults parsedResults);
-    void acceptingDataFrom(ParsedResults parsedResults, FinanceCounter financeCounter);
+//    void acceptingDataFrom(ParsedResults parsedResults);
+//    void acceptingDataFrom(ParsedResults parsedResults, FinCounterService finCounterService);
     BigDecimal getNetProfit();
     BigDecimal getROs();
     void dataReset();

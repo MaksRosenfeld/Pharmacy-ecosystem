@@ -14,7 +14,7 @@ import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepositor
 import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
 import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
 import ru.budgetapteka.pharmacyecosystem.service.parser.CostType;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsedResults;
+import ru.budgetapteka.pharmacyecosystem.service.parser.ParsingService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +29,18 @@ public class ContragentServiceImpl implements ContragentService {
 
     private static final Logger log = LoggerFactory.getLogger(ContragentServiceImpl.class);
 
-    private final ApiService apiService;
+    private final ParsingService parsingService;
     private Set<Cost> missedInns;
     private final ContragentRepository contragentRepository;
 
-    public ContragentServiceImpl(ContragentRepository contragentRepository, ApiService apiService) {
+    public ContragentServiceImpl(ContragentRepository contragentRepository, ParsingService parsingService) {
         this.contragentRepository = contragentRepository;
-        this.apiService = apiService;
+        this.parsingService = parsingService;
     }
 
     @Override
     public Set<Cost> countMissedInns() {
-        List<Cost> allCosts = apiService.getParsedData().getAllCosts();
+        List<Cost> allCosts = parsingService.getParsedData().getAllCosts();
         log.info("Проверка размера расходов: {}", allCosts.size());
         // из-за пагинации интерфейс PagingAndSorting, который возвращает Iterable
         Iterable<ContragentNew> allContragents = contragentRepository.findAll();
@@ -55,6 +55,7 @@ public class ContragentServiceImpl implements ContragentService {
 
     }
 
+    @Transactional
     public void deleteFromMissedInn(Long inn) {
         Optional<Cost> costToDelete = this.missedInns
                 .stream()
