@@ -28,15 +28,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="cost : ${costs}">
-            <th th:text="${cost.pharmacy.pharmacy}" scope="row">
+        <tr th:each="rawCost : ${costs}">
+            <th th:text="${rawCost.pharmacy.pharmacy}" scope="row">
             </th>
-            <td th:text="${cost.pharmacy.pharmacyNumber}">
+            <td th:text="${rawCost.pharmacy.pharmacyNumber}">
             </td>
-            <td th:text="${cost.categoryId.category}">
+            <td th:text="${rawCost.categoryId.category}">
                 D
             </td>
-            <td th:text="${#numbers.formatCurrency(cost.amount)}">
+            <td th:text="${#numbers.formatCurrency(rawCost.amount)}">
                 D
             </td>
         </tr>

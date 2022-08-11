@@ -6,8 +6,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
-import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyCostService;
-import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
+import ru.budgetapteka.pharmacyecosystem.service.parser.PharmacyCostService;
+import ru.budgetapteka.pharmacyecosystem.service.parser.PharmacyService;
 
 import java.io.IOException;
 import java.math.BigDecimal;

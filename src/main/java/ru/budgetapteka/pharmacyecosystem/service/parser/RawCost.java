@@ -6,39 +6,27 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
-
-
-import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
-import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyCostService;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 @Getter
 @Setter(AccessLevel.PACKAGE)
-public class Cost {
+public class RawCost extends RawAbstract {
 
-    private static final Logger log = LoggerFactory.getLogger(Cost.class);
+    private static final Logger log = LoggerFactory.getLogger(RawCost.class);
 
     private Long inn;
     private String name;
     private BigDecimal amount;
     private String description;
-    private CategoryNew category;
-    private boolean exclude;
-    private List<Integer> belongingCosts; // для каких аптек учитывать расход
-
 
     // для удаления из множества ИННов
-    public Cost(Long inn) {
+    public RawCost(Long inn) {
         this.inn = inn;
     }
 
-    public Cost(BigDecimal amount, Long inn, String name, String description) {
+    public RawCost(BigDecimal amount, Long inn, String name, String description) {
         this.amount = amount;
         this.inn = inn;
         this.name = name;
@@ -78,27 +66,14 @@ public class Cost {
 //
 //    }
 
-    public void setBelongingCosts(List<Integer> belongingCosts) {
-        this.belongingCosts = Objects.requireNonNullElseGet(belongingCosts, ArrayList::new);
 
-    }
-
-    @Override
-    public String toString() {
-        return "Cost{" +
-                "inn=" + inn +
-                ", name='" + name + '\'' +
-                ", amount=" + amount +
-                ", belongingCosts=" + belongingCosts +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Cost cost = (Cost) o;
-        return inn.equals(cost.inn);
+        RawCost rawCost = (RawCost) o;
+        return inn.equals(rawCost.inn);
     }
 
     @Override

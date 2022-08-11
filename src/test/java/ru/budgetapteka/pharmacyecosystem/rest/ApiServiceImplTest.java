@@ -3,7 +3,7 @@ package ru.budgetapteka.pharmacyecosystem.rest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,8 +14,7 @@ class ApiServiceImplTest {
     private BankApi bankApi;
     @Autowired
     private OneCApi oneCApi;
-    @Autowired
-    private FinancialResultsTo financialResults;
+
     @Autowired
     private ApiServiceImpl apiServiceImpl;
 

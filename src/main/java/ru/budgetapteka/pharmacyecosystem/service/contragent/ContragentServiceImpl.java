@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
 import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepository;
-import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
-import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
+import ru.budgetapteka.pharmacyecosystem.service.parser.RawCost;
 import ru.budgetapteka.pharmacyecosystem.service.parser.CostType;
 import ru.budgetapteka.pharmacyecosystem.service.parser.ParsingService;
 
@@ -23,14 +23,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
-@Lazy(value = false)
 @Service
+@Scope("session")
 public class ContragentServiceImpl implements ContragentService {
 
     private static final Logger log = LoggerFactory.getLogger(ContragentServiceImpl.class);
 
     private final ParsingService parsingService;
-    private Set<Cost> missedInns;
+    private Set<RawCost> missedInns;
     private final ContragentRepository contragentRepository;
 
     public ContragentServiceImpl(ContragentRepository contragentRepository, ParsingService parsingService) {
@@ -38,36 +38,16 @@ public class ContragentServiceImpl implements ContragentService {
         this.parsingService = parsingService;
     }
 
-    @Override
-    public Set<Cost> countMissedInns() {
-        List<Cost> allCosts = parsingService.getParsedData().getAllCosts();
-        log.info("Проверка размера расходов: {}", allCosts.size());
-        // из-за пагинации интерфейс PagingAndSorting, который возвращает Iterable
-        Iterable<ContragentNew> allContragents = contragentRepository.findAll();
-        List<ContragentNew> allContragentsList = new ArrayList<>();
-        allContragents.forEach(allContragentsList::add);
-        this.missedInns = allCosts.stream()
-                .filter(cost -> allContragentsList.stream()
-                        .noneMatch(contr -> cost.getInn().equals(contr.getInn())))
-                .collect(Collectors.toSet());
-        log.info("Количество недостающих ИНН = {}", this.missedInns.size());
-        return this.missedInns;
 
-    }
 
     @Transactional
     public void deleteFromMissedInn(Long inn) {
-        Optional<Cost> costToDelete = this.missedInns
+        Optional<RawCost> costToDelete = this.missedInns
                 .stream()
                 .filter(c -> c.getInn().equals(inn))
                 .findFirst();
         this.missedInns.remove(costToDelete.orElseThrow());
 
-    }
-
-    @Override
-    public Page<ContragentNew> getAllPages(Pageable pageable) {
-        return contragentRepository.findAll(pageable);
     }
 
     @Override
@@ -79,7 +59,7 @@ public class ContragentServiceImpl implements ContragentService {
     }
 
     @Override
-    public Iterable<ContragentNew> getAllContragents() {
+    public List<ContragentNew> getAllContragents() {
         return contragentRepository.findAll();
     }
 

@@ -25,25 +25,28 @@ $(document).ready(function () {
 
 
     function sendRequestToCheckStatus() {
-        let status;
+        let bankStatus;
+        let oneCStatus;
         console.log("Выписка в процессе создания")
         $.ajax({
             url: "data/api/check_statement_status",
             dataType: "json",
             success: function (data) {
-                status = data["status"] // статус выписки
-                console.log(status)
-                if (status === "IN_PROGRESS" || status === "NEW") {
+                bankStatus = data["bankStatus"] // статус выписки
+                oneCStatus = data["oneCStatus"] // статус 1С
+                console.log(`Банк: ${bankStatus}\n1С: ${oneCStatus}`)
+                if (bankStatus === "IN_PROGRESS" || bankStatus === "NEW") {
                     setTimeout(() => {
                         console.log("Проверяю статус снова");
                         $.ajax(this);
                     }, 33000)
-                } else if (status === "SUCCESS") {
+                } else if (bankStatus === "SUCCESS") {
                     console.log("Выписка готова\nУдаляем cookie order-statement\nСоздаем check-costs")
                     removeNewlyCreatedAndThButtons();
                     deleteCookie("order-statement");
                     setCookie("check-costs", "true", {"max-age": 3600})
                     $.ajax({
+                        method: "post",
                         url: "data/api/parse_statements",
                         dataType: "json",
                         success: function (data, textStatus, xhr) {
@@ -55,7 +58,7 @@ $(document).ready(function () {
                         }
                     })
 
-                } else if (status === "ERROR") {
+                } else if (bankStatus === "ERROR") {
                     console.log("Ошибка на стороне банка\nУдаляем cookie order-statement")
                     removeLoading()
                     createButtonError()
@@ -76,6 +79,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (allMissedInns, textStatus, xhr) {
                 if (xhr.status === 204) {
+                    $.post("data/api/count_all_finance_data")
                     deleteCookie("costs")
                     createButtonsReadyAndChooseDate();
                     ableToShowCosts();
@@ -144,6 +148,7 @@ $(document).ready(function () {
                     $("#missedInn").modal("hide");
                     deleteCookie("costs");
                     createButtonsReadyAndChooseDate();
+                    $.post("data/api/count_all_finance_data")
                 }
             })
 
@@ -345,7 +350,7 @@ $(document).ready(function () {
             createLoadings();
             deleteCookie("costs");
             deleteCookie("check-costs");
-            table.destroy();
+            // if (table !== null) table.destroy();
             getTheInfo(true);
             console.log('Выбранные даты: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
         });

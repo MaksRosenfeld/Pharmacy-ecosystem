@@ -34,6 +34,7 @@ public class Util {
 
         public static final int pharmacyNumber = 16;
         public static final Long BUDGET_PHARMACY_INN = 3907029575L;
+        public static final Integer OFFICE_NUMBER = 0;
     }
 
 

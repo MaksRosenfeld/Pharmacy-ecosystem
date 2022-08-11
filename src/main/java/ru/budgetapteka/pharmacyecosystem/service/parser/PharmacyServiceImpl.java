@@ -1,12 +1,11 @@
-package ru.budgetapteka.pharmacyecosystem.service.pharmacy;
+package ru.budgetapteka.pharmacyecosystem.service.parser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.repository.PharmacyRepository;
@@ -17,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Scope("session")
 public class PharmacyServiceImpl implements PharmacyService {
 
     private static final Logger log = LoggerFactory.getLogger(PharmacyServiceImpl.class);
@@ -25,20 +25,18 @@ public class PharmacyServiceImpl implements PharmacyService {
     private String photoPath;
 
     private final PharmacyRepository pharmacyRepository;
-    private final List<Pharmacy> allPharmacies;
+
 
     public PharmacyServiceImpl(PharmacyRepository pharmacyRepository) {
         this.pharmacyRepository = pharmacyRepository;
-        this.allPharmacies = this.pharmacyRepository.findAll();
-        this.allPharmacies.sort(Comparator.comparing(Pharmacy::getPharmacyNumber));
-
-
     }
 
     @Override
     public List<Pharmacy> getAllPharmacies() {
         log.info("Находим все аптеки в базе");
-        return this.allPharmacies;
+        List<Pharmacy> allPharmacies = pharmacyRepository.findAll();
+        allPharmacies.sort(Comparator.comparing(Pharmacy::getPharmacyNumber));
+        return allPharmacies;
     }
 
     @Override
@@ -64,7 +62,9 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public Pharmacy findById(int id) {
-        return pharmacyRepository.findById(id).orElseThrow();
+    public Pharmacy findByNumber(Integer number, List<Pharmacy> allPharmacies) {
+        return allPharmacies.stream()
+                .filter(ph -> number.equals(ph.getPharmacyNumber()))
+                .findFirst().orElseThrow();
     }
 }

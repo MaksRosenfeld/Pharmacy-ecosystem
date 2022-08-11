@@ -277,10 +277,10 @@
                                                 </thead>
                                                 <tbody>
 
-                                                <tr th:each="cost:${pharmacyCosts}"
-                                                    th:if="${cost.pharmacy.equals(pharmacy)}">
-                                                    <td th:text="${cost.categoryId.category}"></td>
-                                                    <th th:text="${#numbers.formatCurrency(cost.amount)}"
+                                                <tr th:each="rawCost:${pharmacyCosts}"
+                                                    th:if="${rawCost.pharmacy.equals(pharmacy)}">
+                                                    <td th:text="${rawCost.categoryId.category}"></td>
+                                                    <th th:text="${#numbers.formatCurrency(rawCost.amount)}"
                                                         class="text-end"></th>
                                                 </tr>
 

@@ -1,51 +1,39 @@
 package ru.budgetapteka.pharmacyecosystem.web.controller;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
 import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
+import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
-import ru.budgetapteka.pharmacyecosystem.rest.BankApi;
-import ru.budgetapteka.pharmacyecosystem.rest.Requestable;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
-import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsingService;
+import ru.budgetapteka.pharmacyecosystem.service.parser.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
+@Data
 @Slf4j
 @RestController
 @RequestMapping("/data/api")
 @Scope("session")
 public class DataRestController {
 
-    private final ApiService apiService;
-    private final ParsingService parsingService;
-    private final ContragentService contragentService;
-    private final CategoryService categoryService;
 
-    public DataRestController(ApiService apiService,
-                              ParsingService parsingService, ContragentService contragentService,
-                              CategoryService categoryService) {
-        this.apiService = apiService;
-        this.parsingService = parsingService;
-        this.contragentService = contragentService;
-        this.categoryService = categoryService;
-    }
+    private final HeadService headService;
+    private final ApiService apiService;
+    private final CategoryService categoryService;
+    private final ContragentService contragentService;
+    private final DataView dataView;
+
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/order_bank_statements")
@@ -56,7 +44,7 @@ public class DataRestController {
         cookie.setPath("/");
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
-        apiService.orderStatements(dateFrom, dateTo);
+        headService.orderStatements(dateFrom, dateTo);
         return ResponseEntity
                 .ok()
                 .build();
@@ -64,23 +52,39 @@ public class DataRestController {
 
     @GetMapping("/check_statement_status")
     public Map<String, String> checkStatementStatus() {
-        String status = apiService.getBankApi().getStatus().name();
-        return Map.of("status", status);
+        String bankStatus = apiService.getBankApi().getStatus().name();
+        String oneCStatus = apiService.getOneCApi().getStatus().name();
+        return Map.of("bankStatus", bankStatus, "oneCStatus", oneCStatus);
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @GetMapping("/parse_statements")
-    public Map<String, String> parseStatements() {
-        parsingService.parseStatements(Set.of(apiService.getBankApi().getJson(), apiService.getOneCApi().getJson()));
-        String parsingStatus = parsingService.getParsedData().getStatus().name();
-        return Map.of("parsingStatus", parsingStatus);
+    @ResponseBody
+    @PostMapping("/parse_statements")
+    public Map<String, Collection<? extends RawAbstract>> parseStatements() {
+        Map<String, Collection<? extends RawAbstract>> rawCosts = headService.parseRawCosts();
+        int missedInns = rawCosts.get("missedInn").size();
+        if (missedInns == 0) {
+            headService.parseRawResults();
+            headService.handleRawCosts();
+            headService.handleRawResults();
+        }
+        return rawCosts;
+
+    }
+
+    @ResponseBody
+    @PostMapping("/count_all_finance_data")
+    public DataView countAllFinanceData() {
+        headService.countAllFinancialData();
+        log.info("Завершено");
+        return dataView;
     }
 
     @GetMapping("/check_missed_inns")
     public ResponseEntity<?> checkMissedInns() {
-        Set<Cost> missedCosts = contragentService.countMissedInns();
-        return missedCosts.isEmpty() ?
-                ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.ok(missedCosts);
+        Set<RawCost> missedRawCosts = dataView.getMissedInn();
+        return missedRawCosts.isEmpty() ?
+                ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.ok(missedRawCosts);
     }
 
     @ResponseBody
@@ -98,15 +102,6 @@ public class DataRestController {
         return newContragent;
     }
 
-    @GetMapping("/amount_of_missed_inns")
-    public ResponseEntity<?> showMissedInns() {
-        Set<Cost> missedInns = contragentService.getMissedInns();
-        if (missedInns.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.FOUND).body(missedInns);
-        }
-    }
 
     @GetMapping("/all_categories")
     public List<CategoryNew> getCategories() {
@@ -114,8 +109,8 @@ public class DataRestController {
     }
 
     @GetMapping("/all_costs")
-    public List<Cost> showAllCosts() {
-        return parsingService.getParsedData().getAllCosts();
+    public List<PharmacyCost> showAllCosts() {
+        return dataView.getPharmacyCosts();
     }
 
 

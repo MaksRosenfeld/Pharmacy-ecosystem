@@ -30,10 +30,10 @@
         </tr>
         </thead>
         <tbody id="my_table">
-        <tr th:each="cost : ${costBase}">
-            <th th:text="${cost.category}" scope="row">
+        <tr th:each="rawCost : ${costBase}">
+            <th th:text="${rawCost.category}" scope="row">
             </th>
-            <td th:text="${cost.type}">
+            <td th:text="${rawCost.type}">
             </td>
             <td>
                 <button type="submit" class="shadow btn btn-warning btn-sm">Изменить</button>
@@ -60,7 +60,7 @@
                 </div>
             </td>
             <td>
-            <button type="submit" th:name="cost" class="btn btn-success shadow btn-bg">Добавить</button>
+            <button type="submit" th:name="rawCost" class="btn btn-success shadow btn-bg">Добавить</button>
             </td>
             </form>
         </tr>

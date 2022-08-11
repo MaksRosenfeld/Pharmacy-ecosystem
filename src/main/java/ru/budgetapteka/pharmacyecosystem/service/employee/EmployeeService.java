@@ -7,5 +7,5 @@ import java.util.List;
 public interface EmployeeService {
 
     List<Employee> findAll();
-    void changePharmacy(int employeeId, int newPharmacyId);
+//    void changePharmacy(int employeeId, int newPharmacyId);
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,22 +24,9 @@ public class DataExtractor {
 
     private static final Logger log = LoggerFactory.getLogger(DataExtractor.class);
 
-    static LocalDate extractDate(Cell cell) {
-        String cellString = cell.getStringCellValue();
-        String date = cellString.split("-")[1].strip();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    static LocalDate convertToLocalDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
-    }
-
-    static Integer extractNumberOfPharmacy(Cell cell) {
-        Pattern pattern = Pattern.compile("№\\d+");
-        String stringCellValue = cell.getStringCellValue();
-        Matcher matcher = pattern.matcher(stringCellValue);
-        if (matcher.find()) {
-            String pharmacyString = stringCellValue.substring(matcher.start() + 1, matcher.end());
-            return Integer.parseInt(pharmacyString);
-        }
-        return null;
     }
 
     static List<Integer> extractPharmacyNumbers(String purpose) {
@@ -56,6 +44,6 @@ public class DataExtractor {
                     })
                     .collect(Collectors.toList());
         }
-        return null;
+        return new ArrayList<>();
     }
 }

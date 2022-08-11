@@ -16,9 +16,7 @@ import ru.budgetapteka.pharmacyecosystem.rest.BankApi;
 import ru.budgetapteka.pharmacyecosystem.rest.OneCApi;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.parser.FinCounterService;
-import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
-import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
-import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
+import ru.budgetapteka.pharmacyecosystem.service.parser.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.parser.*;
@@ -33,7 +31,7 @@ public class WebController {
 
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
 
-    private final FinancialResultsTo financialResults;
+
     private final ContragentService contragentService;
     private final CategoryService categoryService;
     private final FinCounterService finCounterService;
@@ -46,7 +44,6 @@ public class WebController {
 
     public WebController(BankApi bankApi,
                          OneCApi oneCApi,
-                         FinancialResultsTo financialResults,
                          ContragentService contragentService,
                          CategoryService categoryService,
                          FinCounterService finCounterService,
@@ -55,7 +52,6 @@ public class WebController {
                          EmployeeService employeeService, ApiService apiService) {
         this.bankHandler = bankApi;
         this.apiService = apiService;
-        this.financialResults = financialResults;
         this.contragentService = contragentService;
         this.categoryService = categoryService;
         this.finCounterService = finCounterService;
@@ -66,40 +62,21 @@ public class WebController {
 
     //    financialResults
 
-    @ModelAttribute("totalTurnOver")
-    public BigDecimal getTotalTurnOver() {
-        return financialResults.getTotalTurnOver();
-    }
 
-    @ModelAttribute("totalGrossProfit")
-    public BigDecimal getTotalGrossProfit() {
-        return financialResults.getTotalGrossProfit();
-    }
 
-    @ModelAttribute("netProfit")
-    public BigDecimal getNetProfit() {
-        return financialResults.getNetProfit();
-    }
 
-    @ModelAttribute("rOs")
-    public BigDecimal getRoS() {
-        return financialResults.getROs();
-    }
 
-    @ModelAttribute("pharmacyCosts")
-    public List<PharmacyCost> getAllPharmacyCosts() {
-        return financialResults.getPharmacyCosts();
-    }
 
-    @ModelAttribute("dateOfStatement")
-    public LocalDate getDateOfStatement() {
-        return financialResults.getDate();
-    }
 
-    @ModelAttribute("pharmResults")
-    public List<PharmacyResult> getPharmacyResults() {
-        return financialResults.getPharmacyResults();
-    }
+
+
+
+
+
+
+
+
+
 
 
     //    categoryService
@@ -111,10 +88,8 @@ public class WebController {
 
     //    contragentService
 
-    @ModelAttribute("contragents")
-    public Page<ContragentNew> getPagesWithContragents(@PageableDefault(size=15) Pageable pageable) {
-        return contragentService.getAllPages(pageable);
-    }
+
+
 
 //    @ModelAttribute("missingInn")
 //    public Set<Cost> getMissingInn() {
@@ -140,7 +115,7 @@ public class WebController {
 
     @ModelAttribute("amountOfMissedInns")
     private int getAmountOfMissedInns() {
-        Set<Cost> missedInns = contragentService.getMissedInns();
+        Set<RawCost> missedInns = contragentService.getMissedInns();
         if (missedInns == null) return 0;
         else return missedInns.size();
 
@@ -178,23 +153,19 @@ public class WebController {
         return "redirect:/cost_base";
     }
 
-    @PostMapping(value = "/salary", params = "change=true")
-    public String changePharmacyInSalary(@RequestParam(name = "employee") int emp_id,
-                                         @RequestParam(name = "ph_to_change_on") int ph_id) {
-        employeeService.changePharmacy(emp_id, ph_id);
-        return "redirect:/salary";
-    }
+//    @PostMapping(value = "/salary", params = "change=true")
+//    public String changePharmacyInSalary(@RequestParam(name = "employee") int emp_id,
+//                                         @RequestParam(name = "ph_to_change_on") int ph_id) {
+//        employeeService.changePharmacy(emp_id, ph_id);
+//        return "redirect:/salary";
+//    }
 
 
     //    GET requests
 
 
 
-    @GetMapping("/costs")
-    public String goToCostsPage(Model model) {
-        model.addAttribute("costs", financialResults.getPharmacyCosts());
-        return "cost-page";
-    }
+
 
     @GetMapping(value = "/cost_base")
     public String goToCostBase(Model model) {

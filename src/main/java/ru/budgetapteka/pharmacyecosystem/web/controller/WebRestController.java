@@ -2,6 +2,7 @@ package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,9 +14,9 @@ import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
-import ru.budgetapteka.pharmacyecosystem.service.parser.Cost;
-import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
-import ru.budgetapteka.pharmacyecosystem.to.FinancialResultsTo;
+import ru.budgetapteka.pharmacyecosystem.service.parser.RawCost;
+import ru.budgetapteka.pharmacyecosystem.service.parser.PharmacyService;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@Scope("session")
 public class WebRestController {
 
     @Autowired
@@ -36,8 +38,7 @@ public class WebRestController {
 //    private AbstractApi bankAbstractApi;
     @Autowired
     private CategoryService categoryService;
-    @Autowired
-    private FinancialResultsTo financeResult;
+
 //    @Autowired
 //    @Qualifier("oneCApiImpl")
 //    private AbstractApi oneCAbstractApi;
@@ -71,11 +72,7 @@ public class WebRestController {
 //        return bankAbstractApi.checkStatement();
 //    }
 
-    @GetMapping("/all-costs")
-    public Mono<List<Cost>> getAllCosts() {
-//        financeResult.get
-        return Mono.just(financeResult.getCosts());
-    }
+
 
 //    @GetMapping(value = "/missed-inns")
 //    public ResponseEntity<?> getMissingInn(@CookieValue(name = "costs", defaultValue = "not_checked") String missedInn,

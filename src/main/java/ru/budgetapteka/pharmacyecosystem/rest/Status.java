@@ -8,5 +8,6 @@ public enum Status {
     ERROR,
     RECEIVED,
     PARSED,
-    NOT_PARSED
+    NOT_PARSED,
+    HAS_MISSED_INN
 }
