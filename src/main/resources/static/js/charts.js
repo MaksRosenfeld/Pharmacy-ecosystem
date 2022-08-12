@@ -46,7 +46,7 @@ export function buildChart(element, info, turnOver, grossProfit, netProfit) {
                         weight: 'bold',
                         size: 13
                     },
-                    formatter: null,
+                    formatter: function(value, ctx) {return value + " р."},
                     padding: 7
                 },
                 legend: {

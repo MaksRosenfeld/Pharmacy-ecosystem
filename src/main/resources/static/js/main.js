@@ -88,6 +88,7 @@ $(document).ready(function () {
                     createButtonsReadyAndChooseDate();
                     ableToShowCosts();
                     buildAllGraphs();
+                    $("#pharmacy-results").css("display", "flex").hide().fadeIn(3000);
                     return
                 } else {
                     createButtonCheckMissedInn();
@@ -155,7 +156,7 @@ $(document).ready(function () {
                     createButtonsReadyAndChooseDate();
                     $.post("data/api/count_all_finance_data")
                     buildAllGraphs();
-                    $("#pharmacy-results").css("display", "flex").slideDown(3000);
+                    $("#pharmacy-results").css("display", "flex").hide().fadeIn(3000);
 
                 }
             })

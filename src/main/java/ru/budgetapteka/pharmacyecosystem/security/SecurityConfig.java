@@ -23,7 +23,10 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .antMatchers("/salary").hasRole(Roles.ADMIN.name())
                         .anyRequest().authenticated())
-                .formLogin();
+                .formLogin()
+                .and()
+                .logout()
+                .deleteCookies("check-costs", "order-statement", "costs");
         return http.build();
 
 
