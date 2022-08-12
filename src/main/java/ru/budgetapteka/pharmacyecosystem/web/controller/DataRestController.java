@@ -121,11 +121,10 @@ public class DataRestController {
         return dataView.getPharmacyCosts();
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/all_pharmacy_results")
     public List<PharmacyResult> showAllPharmacyResults() {return dataView.getPharmacyResults();}
 
-    @ResponseStatus(HttpStatus.FOUND)
+
     @GetMapping("/office_result")
     public Map<String, BigDecimal> getOfficeResult() {
         return Map.of("turnOver", dataView.getTotalTurnOver(),

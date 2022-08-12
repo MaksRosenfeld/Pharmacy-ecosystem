@@ -2,6 +2,7 @@ package ru.budgetapteka.pharmacyecosystem.service.parser;
 
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
@@ -78,7 +79,6 @@ public class HeadServiceImpl implements HeadService {
         PharmacyResult office = pharmacyResultService.getOffice(pharmacyResults);
         dataView.setTotalTurnOver(office.getTurnOver());
         dataView.setTotalGrossProfit(office.getGrossProfit());
-
     }
 
     private void countNetProfitAndRoS() {

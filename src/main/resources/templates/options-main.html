@@ -66,12 +66,14 @@
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Открытие
                     </button>
-                    <button th:if="${oneCStatus.equals('IN_PROGRESS')}" class="one-c-loading th-button shadow btn btn-warning me-2"
+                    <button th:if="${oneCStatus.equals('IN_PROGRESS')}"
+                            class="one-c-loading th-button shadow btn btn-warning me-2"
                             type="button" disabled>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         1С
                     </button>
-                    <button th:if="${oneCStatus.equals('SUCCESS') && bankStatement.equals('IN_PROGRESS')}" id="oneCLoading" class="th-button shadow btn btn-warning me-2"
+                    <button th:if="${oneCStatus.equals('SUCCESS') && bankStatement.equals('IN_PROGRESS')}"
+                            id="oneCLoading" class="th-button shadow btn btn-warning me-2"
                             type="button" disabled>
                         1С Готово
                     </button>
@@ -95,7 +97,8 @@
                     базу.</p>
                 <div class="d-flex flex-row-reverse me-2" id="buttons-for-data">
                     <button class="btn btn-outline-danger" type="button">Смотреть</button>
-                    <button th:if="${bankStatement.equals('SUCCESS') && amountOfMissedInns == 0}" class="th-button btn btn-warning shadow me-2"
+                    <button th:if="${bankStatement.equals('SUCCESS') && amountOfMissedInns == 0}"
+                            class="th-button btn btn-warning shadow me-2"
                             type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">
                         Смотреть расходы
                     </button>
@@ -128,27 +131,10 @@
             </div>
         </div>
     </div>
-    <div class="mx-5">
-        <button class="btn btn-primary" type="button" id="test-button-chart">Push me</button>
-        <button class="btn btn-warning" type="button" id="test">Chart</button>
-    </div>
     <div class="container mx-auto">
-        <div class="d-flex flex-row flex-wrap justify-content-between" id="pharmacy-results">
-
+        <div class="flex-row flex-wrap justify-content-between" style="display: none" id="pharmacy-results">
         </div>
-        <!--        <div class="d-flex flex-row" style="height: 270px; width: 500px">-->
-
-        <!--        </div>-->
-        <!--        <div class="d-flex flex-row mx-4">-->
-        <!--            <div>-->
-        <!--                <img src="">-->
-        <!--            </div>-->
-        <!--            <div class="shadow mb-3" style="height: 270px; width: 500px">-->
-        <!--                <canvas id="myChart"></canvas>-->
-        <!--            </div>-->
-        <!--        </div>-->
     </div>
-
 
 </main>
 
@@ -197,7 +183,7 @@
                     <tr>
                         <th scope="col">ИНН</th>
                         <th scope="col">Наименование</th>
-                        <!--                        <th scope="col">Тип расходов</th>-->
+                        <th scope="col">Тип расходов</th>
                         <th scope="col">Сумма</th>
                         <th scope="col"></th>
                     </tr>

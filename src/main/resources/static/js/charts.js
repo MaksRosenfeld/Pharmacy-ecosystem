@@ -1,4 +1,4 @@
-export function buildChart(element, phNum, turnOver, grossProfit, netProfit) {
+export function buildChart(element, info, turnOver, grossProfit, netProfit) {
     const myChart = new Chart(element, {
         plugins: [ChartDataLabels],
         type: 'bar',
@@ -13,7 +13,7 @@ export function buildChart(element, phNum, turnOver, grossProfit, netProfit) {
                 },
                 {
                     label: 'Валовая прибыль',
-                    data: [grossMargin],
+                    data: [grossProfit],
                     borderColor: "#F8B400",
                     backgroundColor: 'RGBA(248,180,0,0.7)',
 
@@ -29,8 +29,6 @@ export function buildChart(element, phNum, turnOver, grossProfit, netProfit) {
         },
         options: {
             indexAxis: 'y',
-            // Elements options apply to all of the options unless overridden in a dataset
-            // In this case, we are setting the border of each horizontal bar to be 2px wide
             elements: {
                 bar: {
                     borderWidth: 2,
@@ -46,7 +44,7 @@ export function buildChart(element, phNum, turnOver, grossProfit, netProfit) {
                     color: 'white',
                     font: {
                         weight: 'bold',
-                        size: 12
+                        size: 13
                     },
                     formatter: null,
                     padding: 7
@@ -56,7 +54,7 @@ export function buildChart(element, phNum, turnOver, grossProfit, netProfit) {
                 },
                 title: {
                     display: true,
-                    text: `Данные аптеки №${phNum}`
+                    text: info
                 }
 
             }

@@ -80,10 +80,14 @@ $(document).ready(function () {
             dataType: "json",
             success: function (allMissedInns, textStatus, xhr) {
                 if (xhr.status === 204) {
-                    $.post("data/api/count_all_finance_data")
+                    $.ajax({
+                        method: "post",
+                        url: "data/api/count_all_finance_data"
+                    })
                     deleteCookie("costs")
                     createButtonsReadyAndChooseDate();
                     ableToShowCosts();
+                    buildAllGraphs();
                     return
                 } else {
                     createButtonCheckMissedInn();
@@ -150,6 +154,9 @@ $(document).ready(function () {
                     deleteCookie("costs");
                     createButtonsReadyAndChooseDate();
                     $.post("data/api/count_all_finance_data")
+                    buildAllGraphs();
+                    $("#pharmacy-results").css("display", "flex").slideDown(3000);
+
                 }
             })
 
@@ -164,7 +171,8 @@ $(document).ready(function () {
             columns: [
                 {data: "inn"},
                 {data: "name", width: "40%"},
-                {data: "amount"}
+                {data: "categoryId.category"},
+                {data: "amount", render: $.fn.dataTable.render.number(' ', ',', 2, null, " р.")}
             ],
             language: {
                 lengthMenu: "Показать по _MENU_",
@@ -362,7 +370,7 @@ $(document).ready(function () {
         });
     }
 
-    $("#test-button-chart").click(function () {
+    function buildAllGraphs() {
         $.getJSON("/data/api/all_pharmacies", function (allPharmacies) {
             $.each(allPharmacies, function (idx, pharmacy) {
                 let phNum = pharmacy["pharmacyNumber"];
@@ -378,29 +386,30 @@ $(document).ready(function () {
                 </div>
                 `)
                 let element = document.getElementById(`${id}`).getContext('2d');
-                buildChart(element, phNum, 50,
-                    30,
-                    60);
-                // if (phNum === 0) {
-                //     $.getJSON("/data/api/office_result", function (result) {
-                //         buildChart(element, phNum, 50,
-                //             30,
-                //             60);
-                //     })
-                // } else {
-                //     $.getJSON("/data/api/all_pharmacy_results", function (allResults) {
-                //         if (phNum === allResults[phNum]) {
-                //             buildChart(element, phNum, allResults[phNum]["turnOver"],
-                //                 allResults[phNum]["grossProfit"], allResults[phNum]["netProfit"]);
-                //         }
-                //     })
-                // }
+                if (phNum === 0) {
+                    $.get("/data/api/office_result", function (result) {
+                        buildChart(element, "Данные по офису", result["turnOver"],
+                            result["grossProfit"],
+                            result["netProfit"]);
+                    })
+                } else {
+                    $.getJSON("/data/api/all_pharmacy_results", function (allResults) {
+                        $.each(allResults, function (idx, pharmacy) {
+                            if (phNum === pharmacy["pharmacy"]["pharmacyNumber"]) {
+                                buildChart(element, `Данные аптеки №${phNum}`, pharmacy["turnOver"],
+                                    pharmacy["grossProfit"], pharmacy["netProfit"]);
+                            }
+                        })
+
+
+                    })
+                }
 
 
             })
         })
 
-    })
+    }
 
 });
 

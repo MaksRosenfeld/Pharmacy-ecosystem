@@ -16,6 +16,8 @@ import ru.budgetapteka.pharmacyecosystem.rest.util.Util;
 import ru.budgetapteka.pharmacyecosystem.rest.webclient.WebClientBuilderImpl;
 
 import java.time.Duration;
+import java.time.LocalTime;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.Url.*;
@@ -57,7 +59,7 @@ public class BankApi implements Requestable {
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .doOnError(e -> log.info("Неудачная попытка заказа выписки по банку"))
-                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(10)))
+                .retryWhen(Retry.backoff(2, Duration.ofSeconds(10)))
                 .map(jn -> jn.at(Util.Path.BANK_STATEMENT_ID).asText())
                 .subscribe(statementId -> {
                     log.info("Номер выписки: {}", statementId);
@@ -74,8 +76,8 @@ public class BankApi implements Requestable {
                 .uri(BANK_GET_STATEMENT_REQUEST, statementId)
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(e -> log.info("Неудачная попытка получения данных по банку"))
-                .retryWhen(Retry.fixedDelay(90, Duration.ofSeconds(30)))
+                .doOnError(e -> log.info("Проверяем готовность"))
+                .retryWhen(Retry.backoff(90, Duration.ofSeconds(5)).jitter(0.75))
                 .subscribe(dataString -> {
                     log.info("Банковская выписка готова, создаем JSON");
                     createAbstractJson(dataString);
