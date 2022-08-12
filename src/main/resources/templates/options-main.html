@@ -66,12 +66,12 @@
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Открытие
                     </button>
-                    <button th:if="${oneCStatus.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2"
+                    <button th:if="${oneCStatus.equals('IN_PROGRESS')}" class="one-c-loading th-button shadow btn btn-warning me-2"
                             type="button" disabled>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         1С
                     </button>
-                    <button th:if="${oneCStatus.equals('SUCCESS') && bankStatement.equals('IN_PROGRESS')}" class="th-button shadow btn btn-warning me-2"
+                    <button th:if="${oneCStatus.equals('SUCCESS') && bankStatement.equals('IN_PROGRESS')}" id="oneCLoading" class="th-button shadow btn btn-warning me-2"
                             type="button" disabled>
                         1С Готово
                     </button>

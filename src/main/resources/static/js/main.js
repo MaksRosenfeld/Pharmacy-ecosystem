@@ -35,6 +35,7 @@ $(document).ready(function () {
                 bankStatus = data["bankStatus"] // статус выписки
                 oneCStatus = data["oneCStatus"] // статус 1С
                 console.log(`Банк: ${bankStatus}\n1С: ${oneCStatus}`)
+                if (oneCStatus === "SUCCESS") createOneCReady();
                 if (bankStatus === "IN_PROGRESS" || bankStatus === "NEW") {
                     setTimeout(() => {
                         console.log("Проверяю статус снова");
@@ -206,8 +207,13 @@ $(document).ready(function () {
     }
 
     function createOneCReady() {
-        $("#buttons-area")
-            .append('<button class="newly-created-button shadow btn btn-warning me-2" type="button" disabled>1С Готово</button>')
+        if ($("#oneCLoading").length) {
+        } else {
+            $(".one-c-loading").remove();
+            $("#buttons-area")
+                .append('<button id="oneCLoading" class="newly-created-button shadow btn btn-warning me-2" type="button" disabled>1С Готово</button>')
+        }
+
     }
 
     function createButtonsReadyAndChooseDate() {
@@ -289,7 +295,7 @@ $(document).ready(function () {
         </button>
         `)
             .append(`
-        <button class="newly-created-button shadow btn btn-warning me-2" type="button" disabled>
+        <button class="one-c-loading newly-created-button shadow btn btn-warning me-2" type="button" disabled>
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         1С
         </button>`)
@@ -357,27 +363,39 @@ $(document).ready(function () {
     }
 
     $("#test-button-chart").click(function () {
-        $.getJSON("api/all-pharmacies", function (allPharmacies) {
+        $.getJSON("/data/api/all_pharmacies", function (allPharmacies) {
             $.each(allPharmacies, function (idx, pharmacy) {
                 let phNum = pharmacy["pharmacyNumber"];
                 let id = `phChart${phNum}`
-                if (phNum !== 0) {
-                    $("#pharmacy-results").append(`
+                $("#pharmacy-results").append(`
                 <div class="d-flex shadow-on-hover rounded p-1 position-relative col-lg-6 col-md-12 col-sm-12 my-2">
                 <div class="d-flex align-items-center justify-content-center col-1 rounded side-shadow bg-danger">
                 <div class="text-white"><h4>${phNum}</h4></div>
-               
-                </div>
+               </div>
                 <div class="col-11">
                 <canvas class="chartable" id="${id}"></canvas>
                 </div>
                 </div>
                 `)
-                    let element = document.getElementById(`${id}`).getContext('2d');
-                    buildChart(element, phNum, 34, 25, 18);
+                let element = document.getElementById(`${id}`).getContext('2d');
+                buildChart(element, phNum, 50,
+                    30,
+                    60);
+                // if (phNum === 0) {
+                //     $.getJSON("/data/api/office_result", function (result) {
+                //         buildChart(element, phNum, 50,
+                //             30,
+                //             60);
+                //     })
+                // } else {
+                //     $.getJSON("/data/api/all_pharmacy_results", function (allResults) {
+                //         if (phNum === allResults[phNum]) {
+                //             buildChart(element, phNum, allResults[phNum]["turnOver"],
+                //                 allResults[phNum]["grossProfit"], allResults[phNum]["netProfit"]);
+                //         }
+                //     })
+                // }
 
-
-                }
 
             })
         })

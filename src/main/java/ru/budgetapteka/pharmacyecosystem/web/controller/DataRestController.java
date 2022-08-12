@@ -7,9 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
+import ru.budgetapteka.pharmacyecosystem.database.entity.*;
 import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
@@ -32,6 +30,7 @@ public class DataRestController {
     private final ApiService apiService;
     private final CategoryService categoryService;
     private final ContragentService contragentService;
+    private final PharmacyService pharmacyService;
     private final DataView dataView;
 
 
@@ -102,6 +101,15 @@ public class DataRestController {
         return newContragent;
     }
 
+    @GetMapping("/amount_of_missed_inns")
+    public ResponseEntity<?> getAmountOfMissedInns() {
+        if (dataView.getMissedInn().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("There are no missed Inns");
+        } else {
+            return ResponseEntity.status(HttpStatus.FOUND).body(dataView.getMissedInn());
+        }
+    }
+
 
     @GetMapping("/all_categories")
     public List<CategoryNew> getCategories() {
@@ -111,6 +119,25 @@ public class DataRestController {
     @GetMapping("/all_costs")
     public List<PharmacyCost> showAllCosts() {
         return dataView.getPharmacyCosts();
+    }
+
+    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/all_pharmacy_results")
+    public List<PharmacyResult> showAllPharmacyResults() {return dataView.getPharmacyResults();}
+
+    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/office_result")
+    public Map<String, BigDecimal> getOfficeResult() {
+        return Map.of("turnOver", dataView.getTotalTurnOver(),
+                "grossProfit", dataView.getTotalGrossProfit(),
+                "netProfit", dataView.getTotalNetProfit(),
+                "rOs", dataView.getROs());
+    }
+
+
+    @GetMapping("/all_pharmacies")
+    public List<Pharmacy> getPharmacies() {
+        return pharmacyService.getAllPharmacies();
     }
 
 

@@ -1,25 +1,16 @@
 package ru.budgetapteka.pharmacyecosystem.service.parser;
 
 import lombok.Data;
-import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
-import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.PhInfo.OFFICE_NUMBER;
 
@@ -39,7 +30,7 @@ public class FinCounterServiceImpl implements FinCounterService {
         PharmacyResult office = allResults.stream()
                 .filter(pr -> OFFICE_NUMBER.equals(pr.getPharmacy().getPharmacyNumber()))
                 .findFirst().orElseThrow();
-        return totalNetProfit.divide(office.getTurnover(), 4, RoundingMode.HALF_UP);
+        return totalNetProfit.divide(office.getTurnOver(), 4, RoundingMode.HALF_UP);
 
     }
 
@@ -78,18 +69,27 @@ public class FinCounterServiceImpl implements FinCounterService {
 
     private BigDecimal countVariableCosts(List<PharmacyCost> pharmacyCosts) {
         log.info("Считаем переменные расходы");
-        return pharmacyCosts.stream()
+        List<BigDecimal> allVariableCosts = pharmacyCosts.stream()
                 .filter(pc -> CostType.VARIABLE.getName().equals(pc.getCategoryId().getType()))
                 .map(PharmacyCost::getAmount)
-                .reduce(BigDecimal::add).orElseThrow();
+                .toList();
+        if (allVariableCosts.isEmpty()) return BigDecimal.ZERO;
+        else {
+            return allVariableCosts.stream().reduce(BigDecimal::add).orElseThrow();
+        }
+
     }
 
     private BigDecimal countFixedCosts(List<PharmacyCost> pharmacyCosts) {
         log.info("Считаем постоянные расходы");
-        return pharmacyCosts.stream()
+        List<BigDecimal> allFixedCosts = pharmacyCosts.stream()
                 .filter(pc -> CostType.FIXED.getName().equals(pc.getCategoryId().getType()))
                 .map(PharmacyCost::getAmount)
-                .reduce(BigDecimal::add).orElseThrow();
+                .toList();
+        if (allFixedCosts.isEmpty()) return BigDecimal.ZERO;
+        else {
+            return allFixedCosts.stream().reduce(BigDecimal::add).orElseThrow();
+        }
     }
 
 

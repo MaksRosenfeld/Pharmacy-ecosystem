@@ -2,6 +2,7 @@ package ru.budgetapteka.pharmacyecosystem.service.parser;
 
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.PhInfo.OFFICE_NUMBER;
 
+@Slf4j
 @Data
 @Service
 @Scope("session")
@@ -27,7 +29,7 @@ public class PharmacyResultServiceImpl implements PharmacyResultService {
                 .map(ra -> (RawResult) ra)
                 .map(rr -> PharmacyResult.builder()
                         .pharmacy(pharmacyService.findByNumber(rr.getPharmacyNumber(), allPharmacies))
-                        .turnover(rr.getTurnOver())
+                        .turnOver(rr.getTurnOver())
                         .grossProfit(rr.getGrossProfit())
                         .costPrice(rr.getCostPrice())
                         .date(Date.valueOf(date))

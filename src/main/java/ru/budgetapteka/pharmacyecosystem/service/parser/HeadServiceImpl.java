@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static ru.budgetapteka.pharmacyecosystem.service.parser.DataExtractor.convertToLocalDate;
 
@@ -65,6 +64,7 @@ public class HeadServiceImpl implements HeadService {
 
     public void handleRawCosts() {
         this.pharmacyCosts = pharmacyCostService.convertToPharmacyCosts(rawCosts, date);
+        dataView.setPharmacyCosts(pharmacyCosts);
         this.status = Status.IN_PROGRESS;
     }
 
@@ -76,9 +76,9 @@ public class HeadServiceImpl implements HeadService {
         countEachPharmacyNetProfit();
         countNetProfitAndRoS();
         PharmacyResult office = pharmacyResultService.getOffice(pharmacyResults);
-        dataView.setTotalTurnOver(office.getTurnover());
+        dataView.setTotalTurnOver(office.getTurnOver());
         dataView.setTotalGrossProfit(office.getGrossProfit());
-        dataView.setPharmacyCosts(pharmacyCosts);
+
     }
 
     private void countNetProfitAndRoS() {

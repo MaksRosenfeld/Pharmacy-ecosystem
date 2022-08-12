@@ -1,4 +1,4 @@
-export function buildChart(element, phNum, turnOver, grossMargin, netProfit) {
+export function buildChart(element, phNum, turnOver, grossProfit, netProfit) {
     const myChart = new Chart(element, {
         plugins: [ChartDataLabels],
         type: 'bar',

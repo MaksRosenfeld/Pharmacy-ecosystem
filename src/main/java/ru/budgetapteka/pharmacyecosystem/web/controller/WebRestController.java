@@ -57,10 +57,7 @@ public class WebRestController {
         return contrs;
     }
 
-    @GetMapping("/all-pharmacies")
-    public List<Pharmacy> getPharmacies() {
-        return pharmacyService.getAllPharmacies();
-    }
+
 
     @GetMapping("/all-employees")
     public List<Employee> getEmployees() {

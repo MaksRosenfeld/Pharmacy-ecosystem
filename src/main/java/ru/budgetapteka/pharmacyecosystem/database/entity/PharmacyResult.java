@@ -28,7 +28,7 @@ public class PharmacyResult {
     @Column(name = "date")
     private Date date;
     @Column(name = "turnover")
-    private BigDecimal turnover;
+    private BigDecimal turnOver;
     @Column(name = "gross_profit")
     private BigDecimal grossProfit;
     @Column(name = "cost_price")
