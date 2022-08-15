@@ -26,8 +26,6 @@ public class WebController {
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
 
 
-
-
     private final ContragentService contragentService;
     private final CategoryService categoryService;
     private final PharmacyService pharmacyService;
