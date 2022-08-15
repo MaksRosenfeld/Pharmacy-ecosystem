@@ -9,7 +9,7 @@ $(document).ready(function () {
 
 
     function getTheInfo(newDates = false) {
-        if (getCookie("costs")) {
+        if (getCookie("new-inns")) {
             console.log("Проверяем недостающие ИНН")
             checkOnMissedInns();
         }
@@ -97,12 +97,12 @@ $(document).ready(function () {
                         url: "data/api/all_categories",
                         dataType: "json",
                         async: false,
-                        success: function (categoriesData) {
-                            $.each(categoriesData, (idx, d) => {
-                                allCategories.push(d)
-                            })
-                        }
-                    });
+                    }).done(function (categoriesData) {
+                        $.each(categoriesData, (idx, d) => {
+                            allCategories.push(d)
+                        })
+                    })
+
                     console.log(`Найдены недостающие ИНН в количестве ${allMissedInns.length}`)
                     $.each(allMissedInns, function (idx, contragent) {
                         let nameWithoutQuotes = contragent["name"].replaceAll("\"", "");
@@ -148,7 +148,7 @@ $(document).ready(function () {
                     category: categoryData.val(),
                     exclude: excludeData
                 })
-            $.get("data/api/amount_of_missed_inns", function (missedInns, textStatus, xhr) {
+            $.get("data/api/check_missed_inns", function (missedInns, textStatus, xhr) {
                 if (xhr.status === 204) {
                     console.log("Удаляем cookie costs")
                     $("#missedInn").modal("hide");
@@ -157,7 +157,6 @@ $(document).ready(function () {
                     $.post("data/api/count_all_finance_data")
                     buildAllGraphs();
                     $("#pharmacy-results").css("display", "flex").hide().fadeIn(3000);
-
                 }
             })
 
@@ -173,7 +172,9 @@ $(document).ready(function () {
                 {data: "inn"},
                 {data: "name", width: "40%"},
                 {data: "categoryId.category"},
-                {data: "amount", render: $.fn.dataTable.render.number(' ', ',', 2, null, " р.")}
+                {data: "amount", render: $.fn.dataTable.render.number(' ', ',', 2, null, " р.")},
+                {data: "pharmacy.pharmacyNumber"}
+
             ],
             language: {
                 lengthMenu: "Показать по _MENU_",

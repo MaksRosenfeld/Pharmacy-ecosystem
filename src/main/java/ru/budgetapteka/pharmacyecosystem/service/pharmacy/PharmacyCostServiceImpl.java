@@ -123,6 +123,10 @@ public class PharmacyCostServiceImpl implements PharmacyCostService {
         });
     }
 
+    public void deleteFromMissedInn(Set<RawCost> rawCosts, Long innToDelete) {
+        rawCosts.removeIf(rc -> innToDelete.equals(rc.getInn()));
+    }
+
 
     /*
    Проверяем, есть ли данный ИНН в базе и нужно ли его исключать из

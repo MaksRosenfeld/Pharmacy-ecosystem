@@ -63,9 +63,10 @@ public class WebController {
         return "home-page";
     }
 
-    @GetMapping("pharmacy/man.png")
-    public Resource getManPhoto() throws MalformedURLException {
-        return new UrlResource(Util.Path.MAN_PHOTO_PATH);
+    @ResponseBody
+    @GetMapping("/pharmacy/{photo}")
+    public Resource getPharmacyPhoto(@PathVariable(name = "photo") String photoName) {
+        return pharmacyService.getPhoto(photoName);
     }
 
 

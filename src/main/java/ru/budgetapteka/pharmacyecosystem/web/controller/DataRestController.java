@@ -76,6 +76,7 @@ public class DataRestController {
     @GetMapping("/check_missed_inns")
     public ResponseEntity<?> checkMissedInns() {
         Set<RawCost> missedRawCosts = dataView.getMissedInn();
+        log.info("Кол-во недостающих ИНН: {}", missedRawCosts.size());
         return missedRawCosts.isEmpty() ?
                 ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.ok(missedRawCosts);
     }
@@ -91,7 +92,7 @@ public class DataRestController {
         Contragent newContragent = contragentService.createNewContragent(inn, name,
                 categoryWithId.orElseThrow(), exclude);
         contragentService.saveNewContragent(newContragent);
-        contragentService.deleteFromMissedInn(inn);
+        headService.deleteFromMissedInn(inn);
         return newContragent;
     }
 

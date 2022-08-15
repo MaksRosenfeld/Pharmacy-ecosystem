@@ -56,9 +56,14 @@ public class HeadServiceImpl implements HeadService {
     public Map<String, Collection<? extends RawAbstract>> parseRawCosts() {
         AbstractJson bankJson = apiService.getBankApi().getJson();
         this.rawCosts = parsingService.parse(bankJson);
-        Set<RawCost> missedInn = pharmacyCostService.findMissedInn(rawCosts);
+        this.missedInn = pharmacyCostService.findMissedInn(rawCosts);
         dataView.setMissedInn(missedInn);
         return Map.of("missedInn", missedInn, "rawCosts", rawCosts);
+    }
+
+    public void deleteFromMissedInn(Long inn) {
+        pharmacyCostService.deleteFromMissedInn(this.missedInn, inn);
+
     }
 
     public void parseRawResults() {

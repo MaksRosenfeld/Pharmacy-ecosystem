@@ -12,6 +12,7 @@ public interface PharmacyCostService {
 
     Set<RawCost> findMissedInn(List<RawAbstract> rawAbstracts);
     List<PharmacyCost> convertToPharmacyCosts(List<RawAbstract> rawCosts, LocalDate date);
+    void deleteFromMissedInn(Set<RawCost> rawCosts, Long innToDelete);
 
 
 

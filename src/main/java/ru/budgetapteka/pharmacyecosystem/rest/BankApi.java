@@ -57,7 +57,7 @@ public class BankApi implements Requestable {
                 .uri(BANK_POST_STATEMENT_REQUEST, dateFrom, dateTo)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .doOnError(e -> log.info("Неудачная попытка заказа выписки по банку"))
+                .doOnError(e -> log.info("Неудачная попытка заказа выписки по банку: {}", e.getMessage()))
                 .retryWhen(Retry.backoff(2, Duration.ofSeconds(10)))
                 .map(jn -> jn.at(Util.Path.BANK_STATEMENT_ID).asText())
                 .subscribe(statementId -> {

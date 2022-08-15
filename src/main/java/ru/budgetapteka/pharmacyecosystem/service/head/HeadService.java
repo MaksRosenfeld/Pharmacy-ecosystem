@@ -13,5 +13,6 @@ public interface HeadService {
     void handleRawCosts();
     void handleRawResults();
     void countAllFinancialData();
+    void deleteFromMissedInn(Long inn);
 
 }
