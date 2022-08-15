@@ -20,6 +20,10 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .antMatchers("/salary").hasRole(Roles.ADMIN.name())
                         .anyRequest().authenticated())
+                .requiresChannel()
+                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+                .requiresSecure()
+                .and()
                 .formLogin().loginPage("/login").permitAll()
                 .and()
                 .logout()
