@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Расходы</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex mx-5 bg-dark bg-gradient mt-2 mb-5 justify-content-start align-items-center rounded myshadow"
+     style="height: 100px">
+    <a href="/" class="btn btn-outline-warning m-5 text-center py-2" role="button" data-bs-toggle="button">На
+        главную</a>
+</div>
+
+<!--Таблица расходов-->
+<div class="table-responsive col-8 mx-auto px-4 py-2 mb-5 shadow rounded">
+    <table class="table table-hover">
+        <thead>
+        <tr class="shadow table-danger fs-5">
+            <th scope="col">Адрес</th>
+            <th scope="col">№ аптеки</th>
+            <th scope="col">Категория</th>
+            <th scope="col">Сумма</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="rawCost : ${costs}">
+            <th th:text="${rawCost.pharmacy.pharmacy}" scope="row">
+            </th>
+            <td th:text="${rawCost.pharmacy.pharmacyNumber}">
+            </td>
+            <td th:text="${rawCost.categoryId.category}">
+                D
+            </td>
+            <td th:text="${#numbers.formatCurrency(rawCost.amount)}">
+                D
+            </td>
+        </tr>
+
+
+        </tbody>
+    </table>
+</div>
+
+</div>
+
+</body>
+</html>
