@@ -1,14 +1,18 @@
 package ru.budgetapteka.pharmacyecosystem.rest.mock;
 
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.budgetapteka.pharmacyecosystem.rest.BankApi;
 
+@Setter(AccessLevel.PACKAGE)
 @SpringBootTest
-class BankApiUsableImplTest {
+public class AnotherMockClass {
 
-//    @Autowired
-//    private ParsedResults parsedResults;
+    private int iamnumber;
+
+
 
     @Autowired
     private BankApi bankApiHandlerImpl;

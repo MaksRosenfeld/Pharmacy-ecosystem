@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Table(name = "contragent_new")
-public class ContragentNew {
+public class Contragent {
     @Id
     @Column(name = "inn", nullable = false)
     private Long inn;
@@ -21,7 +21,7 @@ public class ContragentNew {
     private String name;
     @OneToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private CategoryNew categoryId;
+    private CostCategory categoryId;
     @Basic
     @Column(name = "exclude", nullable = false)
     private Boolean exclude;

@@ -1,10 +1,9 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.pharmacy;
 
-import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.RawAbstract;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.RawCost;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;

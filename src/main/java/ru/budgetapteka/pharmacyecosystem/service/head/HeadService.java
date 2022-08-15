@@ -1,4 +1,6 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.head;
+
+import ru.budgetapteka.pharmacyecosystem.service.parsing.RawAbstract;
 
 import java.util.Collection;
 import java.util.Map;

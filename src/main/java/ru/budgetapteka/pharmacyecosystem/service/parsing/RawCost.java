@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.parsing;
 
 import lombok.AccessLevel;
 import lombok.Getter;

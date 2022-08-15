@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.database.entity;
+package ru.budgetapteka.pharmacyecosystem.util;
 
 import lombok.Getter;
 

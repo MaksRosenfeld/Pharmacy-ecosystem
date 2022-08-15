@@ -4,14 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Employee;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.repository.EmployeeRepository;
-import ru.budgetapteka.pharmacyecosystem.service.parser.PharmacyService;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Scope("session")

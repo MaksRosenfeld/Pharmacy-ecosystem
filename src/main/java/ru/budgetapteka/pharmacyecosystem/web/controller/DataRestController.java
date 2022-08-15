@@ -2,7 +2,6 @@ package ru.budgetapteka.pharmacyecosystem.web.controller;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,10 @@ import ru.budgetapteka.pharmacyecosystem.database.entity.*;
 import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
-import ru.budgetapteka.pharmacyecosystem.service.parser.*;
+import ru.budgetapteka.pharmacyecosystem.service.head.DataView;
+import ru.budgetapteka.pharmacyecosystem.service.head.HeadService;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.*;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -71,14 +73,6 @@ public class DataRestController {
 
     }
 
-    @ResponseBody
-    @PostMapping("/count_all_finance_data")
-    public DataView countAllFinanceData() {
-        headService.countAllFinancialData();
-        log.info("Завершено");
-        return dataView;
-    }
-
     @GetMapping("/check_missed_inns")
     public ResponseEntity<?> checkMissedInns() {
         Set<RawCost> missedRawCosts = dataView.getMissedInn();
@@ -88,18 +82,27 @@ public class DataRestController {
 
     @ResponseBody
     @PostMapping("/add_new_contragent_from_missed_inn")
-    public ContragentNew addNewContragent(@RequestParam(name = "inn") Long inn,
-                                          @RequestParam(name = "name") String name,
-                                          @RequestParam(name = "category") Long id,
-                                          @RequestParam(name = "exclude") Boolean exclude) {
+    public Contragent addNewContragent(@RequestParam(name = "inn") Long inn,
+                                       @RequestParam(name = "name") String name,
+                                       @RequestParam(name = "category") Long id,
+                                       @RequestParam(name = "exclude") Boolean exclude) {
         log.info("Добавляем {}: {}", inn, name);
-        Optional<CategoryNew> categoryWithId = categoryService.getCategoryWithId(id);
-        ContragentNew newContragent = contragentService.createNewContragent(inn, name,
+        Optional<CostCategory> categoryWithId = categoryService.getCategoryWithId(id);
+        Contragent newContragent = contragentService.createNewContragent(inn, name,
                 categoryWithId.orElseThrow(), exclude);
         contragentService.saveNewContragent(newContragent);
         contragentService.deleteFromMissedInn(inn);
         return newContragent;
     }
+
+    @ResponseBody
+    @PostMapping("/count_all_finance_data")
+    public DataView countAllFinanceData() {
+        headService.countAllFinancialData();
+        log.info("Завершено");
+        return dataView;
+    }
+
 
     @GetMapping("/amount_of_missed_inns")
     public ResponseEntity<?> getAmountOfMissedInns() {
@@ -112,7 +115,7 @@ public class DataRestController {
 
 
     @GetMapping("/all_categories")
-    public List<CategoryNew> getCategories() {
+    public List<CostCategory> getCategories() {
         return categoryService.getAllCategories();
     }
 
@@ -122,7 +125,9 @@ public class DataRestController {
     }
 
     @GetMapping("/all_pharmacy_results")
-    public List<PharmacyResult> showAllPharmacyResults() {return dataView.getPharmacyResults();}
+    public List<PharmacyResult> showAllPharmacyResults() {
+        return dataView.getPharmacyResults();
+    }
 
 
     @GetMapping("/office_result")

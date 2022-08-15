@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.pharmacy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

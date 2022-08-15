@@ -1,6 +1,7 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.pharmacy;
 
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.RawAbstract;
 
 import java.time.LocalDate;
 import java.util.List;

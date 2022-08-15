@@ -1,28 +1,21 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
-import ru.budgetapteka.pharmacyecosystem.rest.Status;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.AbstractJson;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.BankJson;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.OneCJson;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.*;
 
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.Path.*;
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.Path.ONE_C_COST_PRICE;
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.PhInfo.BUDGET_PHARMACY_INN;
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.PhInfo.OFFICE_NUMBER;
-import static ru.budgetapteka.pharmacyecosystem.service.parser.DataExtractor.convertToLocalDate;
+import static ru.budgetapteka.pharmacyecosystem.util.Util.Path.*;
+import static ru.budgetapteka.pharmacyecosystem.util.Util.PhInfo.BUDGET_PHARMACY_INN;
+import static ru.budgetapteka.pharmacyecosystem.util.Util.PhInfo.OFFICE_NUMBER;
 
 /**
  * Сервис, который занимается только парсингом

@@ -12,10 +12,11 @@ import ru.budgetapteka.pharmacyecosystem.rest.headers.HeadersMaker;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.AbstractJson;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.OneCJson;
 import ru.budgetapteka.pharmacyecosystem.rest.webclient.WebClientBuilderImpl;
+import ru.budgetapteka.pharmacyecosystem.util.Status;
 
 import java.time.Duration;
 
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.Url.*;
+import static ru.budgetapteka.pharmacyecosystem.util.Util.Url.*;
 
 /**
  * Данный класс отправляет запрос в базу 1С и возвращает JsonNode

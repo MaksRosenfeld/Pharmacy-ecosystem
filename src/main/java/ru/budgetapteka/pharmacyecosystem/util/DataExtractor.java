@@ -1,11 +1,7 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.poi.ss.usermodel.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 
 import java.time.LocalDate;
@@ -17,19 +13,18 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Component
+
 public class DataExtractor {
 
 
     private static final Logger log = LoggerFactory.getLogger(DataExtractor.class);
 
-    static LocalDate convertToLocalDate(String date) {
+    public static LocalDate convertToLocalDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
     }
 
-    static List<Integer> extractPharmacyNumbers(String purpose) {
+    public static List<Integer> extractPharmacyNumbers(String purpose) {
         Pattern pattern = Pattern.compile("!!.+!!");
         Matcher matcher = pattern.matcher(purpose);
         if (matcher.find()) {

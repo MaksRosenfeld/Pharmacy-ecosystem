@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.rest.util;
+package ru.budgetapteka.pharmacyecosystem.util;
 
 public class Util {
 
@@ -25,6 +25,7 @@ public class Util {
         public static final String ONE_C_TURN_OVER = "/Выручка";
         public static final String ONE_C_GROSS_PROFIT = "/Прибыль";
         public static final String ONE_C_COST_PRICE = "/Себестоимость";
+        public static final String MAN_PHOTO_PATH = "src/main/resources/photos/man.png";
 
 
 

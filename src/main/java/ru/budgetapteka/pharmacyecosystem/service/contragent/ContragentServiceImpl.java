@@ -3,24 +3,19 @@ package ru.budgetapteka.pharmacyecosystem.service.contragent;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
+import ru.budgetapteka.pharmacyecosystem.database.entity.CostCategory;
+import ru.budgetapteka.pharmacyecosystem.database.entity.Contragent;
 import ru.budgetapteka.pharmacyecosystem.database.repository.ContragentRepository;
-import ru.budgetapteka.pharmacyecosystem.service.parser.RawCost;
-import ru.budgetapteka.pharmacyecosystem.service.parser.CostType;
-import ru.budgetapteka.pharmacyecosystem.service.parser.ParsingService;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.RawCost;
+import ru.budgetapteka.pharmacyecosystem.util.CostType;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.ParsingService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 @Service
@@ -52,33 +47,33 @@ public class ContragentServiceImpl implements ContragentService {
 
     @Override
     @Transactional
-    public ContragentNew createNewContragent(Long inn, String name, CategoryNew id, Boolean exclude) {
+    public Contragent createNewContragent(Long inn, String name, CostCategory id, Boolean exclude) {
         log.info("Создаю нового контрагента. ИНН: {}, Имя: {}, Категория: {}, Исключить: {} ",
                 inn, name, id.getCategory(), exclude);
-        return new ContragentNew(inn, name, id, exclude);
+        return new Contragent(inn, name, id, exclude);
     }
 
     @Override
-    public List<ContragentNew> getAllContragents() {
+    public List<Contragent> getAllContragents() {
         return contragentRepository.findAll();
     }
 
 
     @Override
     @Transactional
-    public void saveNewContragent(ContragentNew contragent) {
+    public void saveNewContragent(Contragent contragent) {
         log.info("Сохраняю контрагента");
         contragentRepository.save(contragent);
     }
 
     @Override
-    public CostType getType(ContragentNew contragent) {
+    public CostType getType(Contragent contragent) {
         String costType = contragent.getCategoryId().getType();
         return CostType.FIXED.getName().equals(costType)? CostType.FIXED : CostType.VARIABLE;
     }
 
     @Override
-    public Optional<ContragentNew> findByInn(Long inn) {
+    public Optional<Contragent> findByInn(Long inn) {
         return contragentRepository.findByInn(inn);
     }
 

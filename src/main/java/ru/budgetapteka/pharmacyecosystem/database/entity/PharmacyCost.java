@@ -33,7 +33,7 @@ public class PharmacyCost {
     private Date date;
     @OneToOne
     @JoinColumn(name = "category_id")
-    private CategoryNew categoryId;
+    private CostCategory categoryId;
     @Basic
     @Column(name = "amount")
     private BigDecimal amount;

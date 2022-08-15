@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.rest;
+package ru.budgetapteka.pharmacyecosystem.util;
 
 public enum Status {
     NOT_ORDERED,

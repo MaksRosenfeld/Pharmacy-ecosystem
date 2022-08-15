@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.fincounter;
 
 import lombok.Data;
 import org.slf4j.Logger;
@@ -7,12 +7,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyCostService;
+import ru.budgetapteka.pharmacyecosystem.util.CostType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.PhInfo.OFFICE_NUMBER;
+import static ru.budgetapteka.pharmacyecosystem.util.Util.PhInfo.OFFICE_NUMBER;
 
 @Data
 @Service

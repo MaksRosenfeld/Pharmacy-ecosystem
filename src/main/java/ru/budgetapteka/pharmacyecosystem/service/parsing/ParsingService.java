@@ -1,10 +1,8 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.parsing;
 
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.AbstractJson;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface ParsingService {
 

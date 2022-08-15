@@ -1,14 +1,17 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.head;
 
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyResult;
 import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
-import ru.budgetapteka.pharmacyecosystem.rest.Status;
+import ru.budgetapteka.pharmacyecosystem.util.Status;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.AbstractJson;
+import ru.budgetapteka.pharmacyecosystem.service.fincounter.FinCounterService;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.*;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyCostService;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyResultService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static ru.budgetapteka.pharmacyecosystem.service.parser.DataExtractor.convertToLocalDate;
+import static ru.budgetapteka.pharmacyecosystem.util.DataExtractor.convertToLocalDate;
 
 @Data
 @Service

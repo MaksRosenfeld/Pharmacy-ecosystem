@@ -1,15 +1,16 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.service.pharmacy;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
-import ru.budgetapteka.pharmacyecosystem.database.entity.ContragentNew;
+import ru.budgetapteka.pharmacyecosystem.database.entity.CostCategory;
+import ru.budgetapteka.pharmacyecosystem.database.entity.Contragent;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.PharmacyCost;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.RawAbstract;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.RawCost;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,8 +19,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.PhInfo.OFFICE_NUMBER;
-import static ru.budgetapteka.pharmacyecosystem.service.parser.DataExtractor.extractPharmacyNumbers;
+import static ru.budgetapteka.pharmacyecosystem.util.Util.PhInfo.OFFICE_NUMBER;
+import static ru.budgetapteka.pharmacyecosystem.util.DataExtractor.extractPharmacyNumbers;
 
 /**
  * Класс обрабатывает RawCost, проверяет наличие
@@ -43,7 +44,7 @@ public class PharmacyCostServiceImpl implements PharmacyCostService {
     public Set<RawCost> findMissedInn(List<RawAbstract> rawAbstracts) {
         log.info("Ищем недостающие ИНН");
         List<RawCost> rawCosts = rawAbstracts.stream().map(ra -> (RawCost) ra).toList();
-        List<ContragentNew> allContragents = contragentService.getAllContragents();
+        List<Contragent> allContragents = contragentService.getAllContragents();
         Set<RawCost> missedInns = rawCosts.stream()
                 .filter(rawCost ->
                         allContragents.stream().noneMatch(
@@ -62,7 +63,7 @@ public class PharmacyCostServiceImpl implements PharmacyCostService {
     public List<PharmacyCost> convertToPharmacyCosts(List<RawAbstract> rawAbstract, LocalDate date) {
         log.info("Создаем PharmacyCosts");
         List<Pharmacy> allPharmacies = pharmacyService.getAllPharmacies();
-        List<ContragentNew> allContragents = contragentService.getAllContragents();
+        List<Contragent> allContragents = contragentService.getAllContragents();
         List<RawCost> rawCosts = rawAbstract.stream().map(ra -> (RawCost) ra).toList();
         List<PharmacyCost> pharmacyCosts = new ArrayList<>();
         rawCosts.forEach(rawCost -> {
@@ -108,12 +109,12 @@ public class PharmacyCostServiceImpl implements PharmacyCostService {
     }
 
     private void setMainDataFromRawCost(RawCost rawCost, List<PharmacyCost> pharmacyCosts,
-                                        List<ContragentNew> allContragents, LocalDate date) {
+                                        List<Contragent> allContragents, LocalDate date) {
 
         pharmacyCosts.forEach(phCost -> {
-            CategoryNew category = allContragents.stream()
+            CostCategory category = allContragents.stream()
                     .filter(contragent -> rawCost.getInn().equals(contragent.getInn()))
-                    .map(ContragentNew::getCategoryId)
+                    .map(Contragent::getCategoryId)
                     .findFirst().orElseThrow();
             phCost.setDate(Date.valueOf(date));
             phCost.setInn(rawCost.getInn());
@@ -127,7 +128,7 @@ public class PharmacyCostServiceImpl implements PharmacyCostService {
    Проверяем, есть ли данный ИНН в базе и нужно ли его исключать из
    подсчета
     */
-    private boolean possibleToHandel(RawCost rawCost, List<ContragentNew> allContragents) {
+    private boolean possibleToHandel(RawCost rawCost, List<Contragent> allContragents) {
         return allContragents
                 .stream()
                 .anyMatch(contragent -> contragent.getInn().equals(rawCost.getInn())

@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.service.parser;
+package ru.budgetapteka.pharmacyecosystem.util;
 
 public enum CostType {
     VARIABLE("переменные"),

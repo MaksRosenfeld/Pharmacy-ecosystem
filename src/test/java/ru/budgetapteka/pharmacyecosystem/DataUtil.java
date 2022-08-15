@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import ru.budgetapteka.pharmacyecosystem.database.entity.CategoryNew;
+import ru.budgetapteka.pharmacyecosystem.database.entity.CostCategory;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
-import ru.budgetapteka.pharmacyecosystem.service.parser.PharmacyCostService;
-import ru.budgetapteka.pharmacyecosystem.service.parser.PharmacyService;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyCostService;
+import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -34,11 +34,11 @@ public class DataUtil {
         return pharmacyService.getAllPharmacies();
     }
 
-    public static CategoryNew getNewCategory() {
-        CategoryNew categoryNew = new CategoryNew();
-        categoryNew.setCategory("Тест");
-        categoryNew.setType("Постоянные");
-        return categoryNew;
+    public static CostCategory getNewCategory() {
+        CostCategory costCategory = new CostCategory();
+        costCategory.setCategory("Тест");
+        costCategory.setType("Постоянные");
+        return costCategory;
     }
 
 

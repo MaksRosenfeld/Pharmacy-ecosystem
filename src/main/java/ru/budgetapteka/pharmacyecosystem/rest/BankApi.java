@@ -12,15 +12,14 @@ import reactor.util.retry.Retry;
 import ru.budgetapteka.pharmacyecosystem.rest.headers.HeadersMaker;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.AbstractJson;
 import ru.budgetapteka.pharmacyecosystem.rest.jsonnodes.BankJson;
-import ru.budgetapteka.pharmacyecosystem.rest.util.Util;
+import ru.budgetapteka.pharmacyecosystem.util.Status;
+import ru.budgetapteka.pharmacyecosystem.util.Util;
 import ru.budgetapteka.pharmacyecosystem.rest.webclient.WebClientBuilderImpl;
 
 import java.time.Duration;
-import java.time.LocalTime;
-import java.util.concurrent.atomic.AtomicReference;
 
 
-import static ru.budgetapteka.pharmacyecosystem.rest.util.Util.Url.*;
+import static ru.budgetapteka.pharmacyecosystem.util.Util.Url.*;
 
 /**
  * Данный класс заказывает выписку из банка, а также ее получает. Проверка статуса готовности
