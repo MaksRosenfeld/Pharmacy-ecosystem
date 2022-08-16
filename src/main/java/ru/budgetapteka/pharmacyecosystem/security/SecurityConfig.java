@@ -3,6 +3,8 @@ package ru.budgetapteka.pharmacyecosystem.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -20,10 +22,6 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .antMatchers("/salary").hasRole(Roles.ADMIN.name())
                         .anyRequest().authenticated())
-                .requiresChannel()
-                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
-                .requiresSecure()
-                .and()
                 .formLogin().loginPage("/login").permitAll()
                 .and()
                 .logout()
@@ -33,17 +31,17 @@ public class SecurityConfig {
 
     }
 
-    @Bean
-    protected JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
+//    @Bean
+//    protected JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
 //        UserDetails user = User.builder()
 //                .username("guest")
 //                .password(getPwEncoder().encode("iamtheguest"))
 //                .roles(Roles.GUEST.name())
 //                .build();
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+//        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 //        userDetailsManager.createUser(user);
-        return userDetailsManager;
-    }
+//        return userDetailsManager;
+//    }
 
     @Bean
     protected PasswordEncoder getPwEncoder() {
