@@ -1,0 +1,1 @@
+web: java -jar target/Pharmacy-ecosystem-1.0.jar
