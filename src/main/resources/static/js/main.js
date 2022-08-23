@@ -3,9 +3,24 @@ import {buildChart} from "./charts.js"
 $(document).ready(function () {
 
     let table;
+    let principal;
 
 
-    window.addEventListener('load', getTheInfo)
+    window.addEventListener('load', checkPrincipal)
+
+
+    function checkPrincipal() {
+        $.getJSON("data/api/check_principal", function (data) {
+            principal = data["user"];
+            if (principal === "guest") {
+                setTimeout(() => {
+                    $("#guestModal").modal("show");
+                }, 1000);
+            } else getTheInfo(false);
+        });
+
+
+    }
 
 
     function getTheInfo(newDates = false) {
@@ -168,6 +183,37 @@ $(document).ready(function () {
             retrieve: true,
             autoWidth: false,
             ajax: {url: "data/api/all_costs", dataSrc: ""},
+            columns: [
+                {data: "inn"},
+                {data: "name", width: "40%"},
+                {data: "categoryId.category"},
+                {data: "amount", render: $.fn.dataTable.render.number(' ', ',', 2, null, " р.")},
+                {data: "pharmacy.pharmacyNumber"}
+
+            ],
+            language: {
+                lengthMenu: "Показать по _MENU_",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "След.",
+                    previous: "Пред."
+                },
+                info: "Кол-во записей: _START_ - _END_ из _TOTAL_",
+                search: "Фильтр:",
+
+            }
+
+        })
+
+
+    }
+
+    function ableToShowMockCosts() {
+        table = $("#table-costs").DataTable({
+            retrieve: true,
+            autoWidth: false,
+            ajax: {url: "mock/api/all_costs", dataSrc: ""},
             columns: [
                 {data: "inn"},
                 {data: "name", width: "40%"},
@@ -358,17 +404,31 @@ $(document).ready(function () {
         }, function (start, end, label) {
             removeNewlyCreatedAndThButtons();
             $("#inn-in-table").empty();
-            $.post("/data/api/order_bank_statements", {
-                from: start.format('YYYY-MM-DD'),
-                to: end.format('YYYY-MM-DD')
-            })
-            $(".choose-date-range").remove();
-            createLoadings();
-            deleteCookie("costs");
-            deleteCookie("check-costs");
-            // if (table !== null) table.destroy();
-            getTheInfo(true);
-            console.log('Выбранные даты: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            if (principal === "guest") {
+                $.post("/mock/api/order_bank_statements", {
+                    from: start.format('YYYY-MM-DD'),
+                    to: end.format('YYYY-MM-DD')
+                })
+                createLoadings();
+                setTimeout(() => {
+                    removeNewlyCreatedAndThButtons();
+                    createButtonsReadyAndChooseDate();
+                    ableToShowMockCosts();
+                    buildMockGraphs();
+                    }, 3700)
+            } else {
+                $.post("/data/api/order_bank_statements", {
+                    from: start.format('YYYY-MM-DD'),
+                    to: end.format('YYYY-MM-DD')
+                })
+                $(".choose-date-range").remove();
+                createLoadings();
+                deleteCookie("costs");
+                deleteCookie("check-costs");
+                // if (table !== null) table.destroy();
+                getTheInfo(true);
+                console.log('Выбранные даты: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            }
         });
     }
 
@@ -412,6 +472,45 @@ $(document).ready(function () {
         })
 
     }
+
+    function buildMockGraphs() {
+        $.getJSON("/data/api/all_pharmacies", function (allPharmacies) {
+            $.each(allPharmacies, function (idx, pharmacy) {
+                let phNum = pharmacy["pharmacyNumber"];
+                let id = `phChart${phNum}`
+                $("#pharmacy-results").append(`
+                <div class="d-flex shadow-on-hover rounded p-1 position-relative col-lg-6 col-md-12 col-sm-12 my-2">
+                <div class="d-flex align-items-center justify-content-center col-1 rounded side-shadow bg-danger">
+                <div class="text-white"><h4>${phNum}</h4></div>
+               </div>
+                <div class="col-11">
+                <canvas class="chartable" id="${id}"></canvas>
+                </div>
+                </div>
+                `)
+                let element = document.getElementById(`${id}`).getContext('2d');
+
+                if (phNum === 0) {
+                    buildChart(element, "Данные по офису", roundRandom(1337),
+                        roundRandom(1111),
+                        roundRandom(777));
+
+                } else {
+                    buildChart(element, `Данные аптеки №${phNum}`, roundRandom(999),
+                        roundRandom(888), roundRandom(666));
+
+
+                }
+
+
+            })
+        })
+
+        $("#pharmacy-results").css("display", "flex").hide().fadeIn(3000);
+
+
+    }
+    function roundRandom(x) {return Math.round(Math.random() * x)}
 
 });
 

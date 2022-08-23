@@ -49,9 +49,10 @@ public class BankApi implements Requestable {
     }
 
 
-    // заказывает выписку, возвращает id выписки
+    // заказывает выписку
     private void orderBankJsonNode(String dateFrom, String dateTo) {
         log.info("Заказываем выписку от {} до {}", dateFrom, dateTo);
+        this.status = Status.IN_PROGRESS;
         webClient
                 .post()
                 .uri(BANK_POST_STATEMENT_REQUEST, dateFrom, dateTo)
@@ -64,7 +65,6 @@ public class BankApi implements Requestable {
                     log.info("Номер выписки: {}", statementId);
                     getBankJsonNode(statementId);
                 });
-        this.status = Status.IN_PROGRESS;
     }
 
     // возвращает json файл готовой выписки

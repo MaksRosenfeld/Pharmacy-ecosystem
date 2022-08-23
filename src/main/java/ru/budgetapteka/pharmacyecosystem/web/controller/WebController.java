@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.budgetapteka.pharmacyecosystem.rest.ApiService;
 import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
@@ -16,6 +18,7 @@ import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.util.Util;
 
 import java.net.MalformedURLException;
+import java.security.Principal;
 import java.util.*;
 
 @Data
@@ -58,8 +61,10 @@ public class WebController {
         return "login-page";
     }
 
+
     @GetMapping("/")
-    public String goToMainPage() {
+    public String goToMainPage(Principal principal, Model model) {
+        model.addAttribute("user", principal.getName());
         return "home-page";
     }
 

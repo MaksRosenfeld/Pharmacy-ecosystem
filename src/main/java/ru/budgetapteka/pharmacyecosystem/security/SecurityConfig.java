@@ -1,6 +1,7 @@
 package ru.budgetapteka.pharmacyecosystem.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,10 +21,13 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .antMatchers("/salary").hasRole(Roles.ADMIN.name())
                         .anyRequest().authenticated())
-                .formLogin().loginPage("/login").permitAll()
+                .formLogin()
+                .loginPage("/login").permitAll()
                 .and()
                 .logout()
-                .deleteCookies("check-costs", "order-statement", "costs");
+                .logoutSuccessUrl("/login")
+                .deleteCookies("JSESSIONID", "check-costs", "order-statement", "costs");
+
         return http.build();
 
 

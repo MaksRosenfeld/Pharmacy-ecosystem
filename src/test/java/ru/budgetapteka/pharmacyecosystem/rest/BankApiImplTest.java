@@ -5,12 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.function.Function;
+
 @Slf4j
 @SpringBootTest
 class BankApiTest {
 
     @Autowired
     private BankApi bankApi;
+
 
 
 //    @Test
@@ -22,8 +25,4 @@ class BankApiTest {
 //
 //
 //    }
-
-    @Test
-    void getOpenJsonNode() {
-    }
 }

@@ -36,6 +36,7 @@
                     <button class="btn btn-danger">Выйти</button>
                 </a>
 
+
             </div>
         </div>
         <div class="row g-4 py-5 row-cols-1 row-cols-md-2 row-cols-lg-3">
@@ -96,7 +97,7 @@
                 <p>Здесь находится вся статистика, собранная после формирования прошлых отчетов и сохраненная в
                     базу.</p>
                 <div class="d-flex flex-row-reverse me-2" id="buttons-for-data">
-                    <button class="btn btn-outline-danger" type="button">Смотреть</button>
+                    <button th:classappend="${user.equals('guest')? 'disabled': ''}" class="btn btn-outline-danger" type="button">Смотреть</button>
                     <button th:if="${bankStatement.equals('SUCCESS') && amountOfMissedInns == 0}"
                             class="th-button btn btn-warning shadow me-2"
                             type="button" data-bs-toggle="modal" data-bs-target="#listOfCosts">
@@ -116,7 +117,7 @@
                 <p>Измените данные в базе данных или параметры аккаунта.</p><br>
                 <div class="d-flex flex-row-reverse me-2">
                     <div class="dropdown">
-                        <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        <button th:classappend="${user.equals('guest')? 'disabled': ''}" class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                             Выбрать
                         </button>
@@ -194,6 +195,25 @@
         </div>
     </div>
 </div>
+<!--Modal for guest-->
+<div class="modal fade" id="guestModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добро пожаловать, гость!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы сейчас находитесь в демо-режиме. Вместо данных по API используется демо БД</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 <!-- JavaScript Bundle with Popper -->

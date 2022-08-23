@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Data
 @Table(name = "category_new")

@@ -18,7 +18,9 @@ import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.*;
+import java.util.function.Function;
 
 @Data
 @Slf4j
@@ -34,6 +36,13 @@ public class DataRestController {
     private final ContragentService contragentService;
     private final PharmacyService pharmacyService;
     private final DataView dataView;
+
+
+    @ResponseBody
+    @GetMapping("/check_principal")
+    public Map<String, String> getPrincipal(Principal principal) {
+        return Map.of("user", principal.getName());
+    }
 
 
     @ResponseStatus(HttpStatus.CREATED)
