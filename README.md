@@ -1,6 +1,11 @@
 # Pharmacy-ecosystem
 ENG/RU
 
+**Demo**
+https://budget-pharmacy-statistic.herokuapp.com/
+
+**login**:guest **pw**:iamtheguest
+
 **[ENG]**
 
 This is my first project and not everything is finished. Trying to add smthg or refactor every day. 
