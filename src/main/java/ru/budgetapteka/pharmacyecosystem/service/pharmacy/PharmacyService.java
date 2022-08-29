@@ -8,5 +8,6 @@ import java.util.List;
 public interface PharmacyService {
     List<Pharmacy> getAllPharmacies();
     Resource getPhoto(String photoName);
+    Pharmacy findByNumber(Integer number);
     Pharmacy findByNumber(Integer number, List<Pharmacy> allPharmacies);
 }

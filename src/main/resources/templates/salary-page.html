@@ -7,53 +7,171 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/features.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css"
+          rel="stylesheet">
 </head>
 <body>
-<div class="d-flex mx-5 bg-dark bg-gradient mt-2 mb-5 justify-content-start align-items-center rounded myshadow"
-     style="height: 100px">
-    <a href="/" class="btn btn-outline-warning m-5 text-center py-2" role="button" data-bs-toggle="button">На
-        главную</a>
-</div>
+<div class="container px-4 py-3" id="featured-3">
+    <div class="d-flex flex-row justify-content-between picture-in-div border-bottom">
+        <div class="d-flex flex-row">
+            <div id="logo-man"><img src="https://i.postimg.cc/gjJBNQD2/man.png" height="100px"/></div>
+            <div class="ms-3 align-self-center"><h2>Зарплаты <span class="shadow fs-2 badge bg-danger">Бюджетной Аптеки</span>
+            </h2></div>
+        </div>
+        <div class="d-flex flex-row">
+            <div class="align-self-center">
+                <h4><span th:text="${user}" class="constant-move shadow badge bg-warning"></span></h4>
+            </div>
+            <div class="shadow align-self-center ms-2">
+                <a href="/logout">
+                    <button class="btn btn-danger">Выйти</button>
+                </a>
+            </div>
+        </div>
+    </div>
 
-<!--Форма-->
-<div class="col-6 ms-5 border rounded p-5 shadow">
-    <form method="post">
+    <!--        Форма заполнения-->
+    <div class="mt-2 col-9 mx-auto border rounded p-5 shadow">
+        <div class="d-flex justify-content-between">
+            <button id="new-employee-button" type="button" class="mb-3 btn btn-outline-danger btn-sm">Добавить
+                сотрудника
+            </button>
+            <button id="close-add-new-employee" type="button" class="d-none btn-close"></button>
+        </div>
+        <div id="new-employee-inputs" style="display: none"></div>
+        <!--            Выбор аптеки-->
         <div class="input-group mb-3">
-            <label class="input-group-text" for="change-test">Выберите аптеку</label>
-            <select name="ph_number" class="form-select" id="change-test">
-                <option selected disabled>Номер аптеки...</option>
-                <option th:each="pharmacie : ${pharmacies}"
-                        th:if="${pharmacie.pharmacyNumber != 0}"
-                        th:text="${pharmacie.pharmacy}" th:value="${pharmacie.pharmacyNumber}">One
-                </option>
+            <label class="input-group-text" for="choose-pharmacy">Аптека</label>
+            <select name="ph_number" class="form-select" id="choose-pharmacy">
+                <option selected disabled class="text-center">выбрать...</option>
             </select>
         </div>
-        <div class="input-group">
-            <label class="input-group-text" for="select_name">Выберите аптеку</label>
-            <select name="ph_number" class="form-select" id="select_name">
-                <option selected disabled>Номер аптеки...</option>
-                <option th:each="pharmacie : ${pharmacies}"
-                        th:if="${pharmacie.pharmacyNumber != 0}"
-                        th:text="${pharmacie.pharmacy}" th:value="${pharmacie.pharmacyNumber}">One
-                </option>
+        <!--            Выбор фармацевта-->
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="choose-employee">Фармацевт</label>
+            <select disabled name="employee" class="form-select" id="choose-employee">
             </select>
+            <!-- Кнопка изменить аптеку -->
+            <button type="button" disabled id="change-ph-button"
+                    class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePhModal">
+                Изменить аптеку
+            </button>
         </div>
-    </form>
+
+        <!--Дата-->
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="datepicker">Выберите дату</label>
+            <input disabled required type="text" class="form-control" name="datepicker" id="datepicker"/>
+        </div>
+
+        <!--Количество часов-->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="hours-text">Кол-во часов</span>
+            <input disabled required type="number" id="hours" name="hours"
+                   class="form-control" placeholder="Введите кол-во отработанных часов"
+                   aria-describedby="hours-text">
+        </div>
+        <div class="d-flex justify-content-center">
+            <button id="send-button" type="button" class="btn btn-warning d-none btn-lg shadow" data-bs-toggle="modal"
+                    data-bs-target="#approveModal">
+                Подтвердить
+            </button>
+        </div>
+    </div>
+
 </div>
-<div class="d-flex" id="my-div">
-    <input id="tags" type="text">
-    <p>+</p>
-    <input id="amount2" type="text">
-    <p>=</p>
-    <p id="total"></p>
+
+<!-- Modal для изменения аптеки -->
+<div class="modal fade" id="changePhModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Изменить аптеку</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label class="input-group-text" for="change-ph">Выберите аптеку</label>
+                    <select required name="changeOn" class="form-select" id="change-ph">
+                    </select>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button id="save-pharmacy" type="submit" data-bs-dismiss="modal" class="btn btn-success">Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
-<button class="btn">Push me</button>
 
+<!-- Modal для подтверждения корректности данных -->
+<div class="modal fade" id="approveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Подтвердите данные</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
 
-
-<div class="example" id="pgbr">
-
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th class="text-end">Аптека №:</th>
+                        <td><span id="approve-pharmacy" class="badge shadow fs-6 bg-danger"></span></td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Сотрудник:</th>
+                        <td><span id="approve-employee" class="badge shadow fs-6 bg-danger"></span></td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Должность:</th>
+                        <td><span id="approve-position" class="badge shadow fs-6 bg-danger"></span></td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Дата:</th>
+                        <td><span id="approve-date" class="badge shadow fs-6 bg-danger"></span></td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Кол-во часов:</th>
+                        <td><span id="approve-hours" class="badge shadow fs-6 bg-danger"></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <span id="approve-checkmark-span" class="form-check ms-5">
+                    <input class="form-check-input" type="checkbox" required id="approve-checkmark">
+                    <label class="form-check-label" for="approve-checkmark">
+                        Я подтверждаю корректность данных
+                    </label>
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button id="approve-send-data" type="submit" class="btn btn-success">Отправить</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<!--Уведомления внизу-->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <img src="https://i.postimg.cc/SxYdZ0rQ/image.png" width="80px" height="22px" class="me-2" alt="...">
+            <strong class="me-auto"></strong>
+            <small>1 сек. назад</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div id="toast-body" class="toast-body">
+        </div>
+    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
@@ -62,5 +180,7 @@
         crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <script src="js/salary.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ru.min.js"></script>
 </body>
 </html>

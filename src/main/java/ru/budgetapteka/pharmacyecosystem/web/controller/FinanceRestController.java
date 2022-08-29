@@ -20,14 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
-import java.util.function.Function;
 
 @Data
 @Slf4j
 @RestController
 @RequestMapping("/data/api")
 @Scope("session")
-public class DataRestController {
+public class FinanceRestController {
 
 
     private final HeadService headService;
@@ -153,6 +152,8 @@ public class DataRestController {
     public List<Pharmacy> getPharmacies() {
         return pharmacyService.getAllPharmacies();
     }
+
+
 
 
 }

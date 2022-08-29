@@ -3,10 +3,9 @@ package ru.budgetapteka.pharmacyecosystem.web.controller;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +14,7 @@ import ru.budgetapteka.pharmacyecosystem.service.category.CategoryService;
 import ru.budgetapteka.pharmacyecosystem.service.contragent.ContragentService;
 import ru.budgetapteka.pharmacyecosystem.service.parsing.*;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
-import ru.budgetapteka.pharmacyecosystem.util.Util;
 
-import java.net.MalformedURLException;
 import java.security.Principal;
 import java.util.*;
 
@@ -35,6 +32,12 @@ public class WebController {
     private final CategoryService categoryService;
     private final PharmacyService pharmacyService;
     private final ApiService apiService;
+
+    @Value("${my.vars.admin}")
+    private String admin;
+
+    @ModelAttribute("admin")
+    private String getAdmin() {return admin;}
 
 
     @ModelAttribute("bankStatement")
@@ -55,6 +58,12 @@ public class WebController {
         } else return missedInns.size();
     }
 
+    @ModelAttribute("user")
+    private String getUserName(Principal user) {
+        if (user != null) return user.getName();
+        else return "no_user";
+    }
+
 
     @GetMapping("/login")
     public String goToLoginPage() {
@@ -63,8 +72,7 @@ public class WebController {
 
 
     @GetMapping("/")
-    public String goToMainPage(Principal principal, Model model) {
-        model.addAttribute("user", principal.getName());
+    public String goToMainPage() {
         return "home-page";
     }
 
@@ -77,7 +85,12 @@ public class WebController {
 
     @GetMapping("/salary")
     public String goToSalary() {
-        return "salary-test";
+        return "salary-page";
+    }
+
+    @GetMapping("/accountant")
+    public String goToAccountant() {
+        return "accountant-page";
     }
 
 

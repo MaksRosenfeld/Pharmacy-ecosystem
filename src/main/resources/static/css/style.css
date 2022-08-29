@@ -47,3 +47,39 @@
     box-shadow: 0px 0px 16px 5px rgba(34, 60, 80, 0.2);
 }
 
+.accordion-button:not(.collapsed) {
+    background-color: #DC3545;
+    color: #fff;
+}
+
+
+
+.accordion-button {
+    background-color: #ffffff;
+    color: #292b2c;
+}
+
+.accordion-button::after {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !important;
+}
+
+.form-control:focus {
+    border-color: #FF0000;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 4px rgba(255, 0, 0, 0.6);
+}
+
+.form-select:focus {
+    border-color: #FF0000;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 4px rgba(255, 0, 0, 0.6);
+}
+
+.accordion-button:hover {
+    border-color: #FF0000;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
+}
+
+.accordion-button:focus {
+    border-color: transparent;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 4px rgba(255, 0, 0, 0.6);
+}
+

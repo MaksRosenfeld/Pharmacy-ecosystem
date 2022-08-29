@@ -4,9 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
-    PH("фармацевт"),
-    ZAV("заведующая"),
-    RAZB("разборка");
+    PH("Фармацевт"),
+    ZAV("Заведующая"),
+    RAZB("Разборка"),
+    PROV("Провизор");
 
     private final String fieldName;
 

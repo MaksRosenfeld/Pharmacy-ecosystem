@@ -4,10 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,6 +27,14 @@ public class DataExtractor {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
     }
+
+    public static Date convertToDateFromYearMonth(String monthYear) {
+        YearMonth ym = YearMonth.parse(monthYear, DateTimeFormatter.ofPattern("MM-yyyy"));
+        LocalDate localDate = ym.atDay(1);
+        return Date.valueOf(localDate);
+
+    }
+
 
     public static List<Integer> extractPharmacyNumbers(String purpose) {
         Pattern pattern = Pattern.compile("!!.+!!");
@@ -40,5 +52,17 @@ public class DataExtractor {
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();
+    }
+
+    public static String extractMonth(String date) {
+        YearMonth yearMonth = YearMonth.parse(date, DateTimeFormatter.ofPattern("MM-yyyy"));
+        LocalDate localDate = yearMonth.atDay(1);
+        return localDate.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru"));
+    }
+
+    public static int extractYear(String date) {
+        YearMonth yearMonth = YearMonth.parse(date, DateTimeFormatter.ofPattern("MM-yyyy"));
+        LocalDate localDate = yearMonth.atDay(1);
+        return localDate.getYear();
     }
 }

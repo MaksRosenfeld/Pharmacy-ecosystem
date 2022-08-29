@@ -62,6 +62,11 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
+    public Pharmacy findByNumber(Integer number) {
+        return pharmacyRepository.findById(number).orElseThrow();
+    }
+
+    @Override
     public Pharmacy findByNumber(Integer number, List<Pharmacy> allPharmacies) {
         return allPharmacies.stream()
                 .filter(ph -> number.equals(ph.getPharmacyNumber()))
