@@ -1,5 +1,6 @@
 package ru.budgetapteka.pharmacyecosystem.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,9 @@ public class Contragent {
     @Basic
     @Column(name = "name", nullable = false, length = -1)
     private String name;
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "category_id", nullable = false)
-    private CostCategory categoryId;
+    private CostCategory category;
     @Basic
     @Column(name = "exclude", nullable = false)
     private Boolean exclude;

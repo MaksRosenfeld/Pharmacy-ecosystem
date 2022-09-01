@@ -68,7 +68,7 @@ public class ContragentServiceImpl implements ContragentService {
 
     @Override
     public CostType getType(Contragent contragent) {
-        String costType = contragent.getCategoryId().getType();
+        String costType = contragent.getCategory().getType();
         return CostType.FIXED.getName().equals(costType)? CostType.FIXED : CostType.VARIABLE;
     }
 

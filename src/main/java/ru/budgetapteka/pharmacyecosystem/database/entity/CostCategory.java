@@ -1,8 +1,10 @@
 package ru.budgetapteka.pharmacyecosystem.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -18,8 +20,8 @@ public class CostCategory {
     @Basic
     @Column(name = "category", nullable = false, length = -1)
     private String category;
-
     @Column(name = "type", nullable = false, length = -1)
     private String type;
+
 
 }

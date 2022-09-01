@@ -1,10 +1,13 @@
 package ru.budgetapteka.pharmacyecosystem.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -14,8 +17,8 @@ import javax.persistence.*;
 @Table(name = "pharmacy")
 public class Pharmacy {
     @Basic
-    @Column(name = "pharmacy", length = -1)
-    private String pharmacy;
+    @Column(name = "pharmacy_street", length = -1)
+    private String pharmacyStreet;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "pharmacy_number", nullable = false)

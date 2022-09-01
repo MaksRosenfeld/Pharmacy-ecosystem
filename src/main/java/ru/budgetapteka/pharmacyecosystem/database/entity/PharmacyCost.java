@@ -1,5 +1,7 @@
 package ru.budgetapteka.pharmacyecosystem.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,13 +27,13 @@ public class PharmacyCost {
     private Long inn;
     @Column(name = "name", nullable = false)
     private String name;
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "pharmacy")
     private Pharmacy pharmacy;
     @Basic
     @Column(name = "date", nullable = false)
     private Date date;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private CostCategory categoryId;
     @Basic

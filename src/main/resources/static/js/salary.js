@@ -28,7 +28,7 @@ $(document).ready(function () {
             $.each(pharmacies, function (idx, ph) {
                 if (ph["pharmacyNumber"] !== 0) {
                     allPharmacies.push(ph)
-                    $pharmacyField.append(`<option value="${ph["pharmacyNumber"]}">${ph["pharmacy"]}</option>`)
+                    $pharmacyField.append(`<option value="${ph["pharmacyNumber"]}" data-street="${ph["pharmacyStreet"]}">${ph["pharmacyNumber"]}</option>`)
                 }
             })
         })
@@ -37,7 +37,7 @@ $(document).ready(function () {
     $pharmacyField.change(() => {
         $employeeField.empty()
         phNum = $pharmacyField.val()
-        phName = $("#choose-pharmacy option:selected").text();
+        phName = $("#choose-pharmacy option:selected").attr("data-street");
         $.get("salary/api/get_employees", {
             phNum: phNum
         }, function (employees) {
@@ -56,7 +56,7 @@ $(document).ready(function () {
 
     function insertEmployees(employees) {
         $.each(employees, function (idx, emp) {
-            $employeeField.append(`<option value="${emp["id"]}" data-role="${emp["role"]}">${emp["name"]} ${emp["surname"]}</option>`)
+            $employeeField.append(`<option value="${emp["id"]}" data-role="${emp["role"]["roleName"]}">${emp["name"]} ${emp["surname"]}</option>`)
         })
     }
 
@@ -66,7 +66,7 @@ $(document).ready(function () {
         $("#change-ph").empty()
         $.each(allPharmacies, function (idx, ph) {
             if (ph["pharmacyNumber"] !== parseInt(phNum)) {
-                $("#change-ph").append(`<option value="${ph["pharmacyNumber"]}">${ph["pharmacy"]}</option>`)
+                $("#change-ph").append(`<option value="${ph["pharmacyNumber"]}">${ph["pharmacyNumber"]}</option>`)
             }
         })
     })
@@ -119,20 +119,7 @@ $(document).ready(function () {
     $("#send-button").click(() => {
         let $employeeSelected = $("#choose-employee option:selected");
         let position = $employeeSelected.attr("data-role")
-        switch (position) {
-            case "PH":
-                position = "Фармацевт"
-                break;
-            case "ZAV":
-                position = "Заведующая"
-                break;
-            case "RAZB":
-                position = "Разборка"
-                break;
-            default:
-                position = "Провизор"
-        }
-        $("#approve-pharmacy").text(`${phNum}, ${phName}`)
+        $("#approve-pharmacy").text(phNum)
         $("#approve-employee").text($employeeSelected.text())
         $("#approve-position").text(position)
         $("#approve-date").text($dateField.val())
@@ -151,7 +138,8 @@ $(document).ready(function () {
                 hours: $hoursField.val()
             })
             $("#approveModal").modal("hide")
-            showNotification(`Часы по ${$employeeSelected.text()} отправлены`)
+            showNotification(`<b>Сотрудник: </b>${$employeeSelected.text()}<br><b>Кол-во часов:</b> ${$hoursField.val()}<br>
+<img src="https://i.ibb.co/PxRqT7V/galochka.png" height="15px" alt="galochka"> Отправлено`)
             $checkbox.prop("checked", false)
         } else {
             if (!$(".invalid-feedback").length) {
@@ -159,6 +147,7 @@ $(document).ready(function () {
                 $approveCheckmark.append('<div class="invalid-feedback">Необходимо подтвердить</div>')
             }
         }
+
 
 
     })
@@ -232,7 +221,7 @@ $(document).ready(function () {
     }
 
     function addPharmaciesToChoose(idx, ph) {
-        $("#new-employee-pharmacy").append(`<option value="${ph["pharmacyNumber"]}">${ph["pharmacy"]}</option>`)
+        $("#new-employee-pharmacy").append(`<option value="${ph["pharmacyNumber"]}">${ph["pharmacyNumber"]}</option>`)
     }
 
     function showNotification(text) {

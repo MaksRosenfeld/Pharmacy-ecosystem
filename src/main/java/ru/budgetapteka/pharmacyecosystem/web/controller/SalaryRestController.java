@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Employee;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
+import ru.budgetapteka.pharmacyecosystem.database.entity.Role;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Salary;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
+import ru.budgetapteka.pharmacyecosystem.service.salary.RoleService;
 import ru.budgetapteka.pharmacyecosystem.service.salary.SalaryService;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class SalaryRestController {
     private final EmployeeService employeeService;
     private final PharmacyService pharmacyService;
     private final SalaryService salaryService;
+    private final RoleService roleService;
 
 
     @ResponseBody
@@ -58,11 +61,17 @@ public class SalaryRestController {
                                     @RequestParam("role") String role,
                                     @RequestParam("pharmacy") int pharmacyNumber) {
         Pharmacy pharmacy = pharmacyService.findByNumber(pharmacyNumber);
-        Employee newEmployee = new Employee(name, surname, role, pharmacy);
+        Role employeeRole = roleService.findByRole(role);
+        Employee newEmployee = new Employee(name, surname, employeeRole, pharmacy);
         employeeService.save(newEmployee);
         return newEmployee;
 
+    }
 
+    @ResponseBody
+    @GetMapping("/get_all_salaries")
+    public List<Salary> getAllSalaries() {
+        return salaryService.findAll();
     }
 
 

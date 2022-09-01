@@ -1,7 +1,6 @@
 package ru.budgetapteka.pharmacyecosystem.security;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +20,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/salary").hasAnyRole(Roles.ADMIN.name(), Roles.PHARMACY.name())
+                        .antMatchers("/salary").hasAnyRole(UserRoles.ADMIN.name(), UserRoles.PHARMACY.name())
                         .anyRequest().authenticated())
                 .formLogin()
                 .loginPage("/login").permitAll()
@@ -40,7 +39,7 @@ public class SecurityConfig {
         UserDetails user = User.builder()
                 .username("salary")
                 .password(getPwEncoder().encode("salaryapteka1"))
-                .roles(Roles.PHARMACY.name())
+                .roles(UserRoles.PHARMACY.name())
                 .build();
         JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 //        userDetailsManager.createUser(user);

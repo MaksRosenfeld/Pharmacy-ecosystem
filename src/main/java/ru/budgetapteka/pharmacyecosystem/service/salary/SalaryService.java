@@ -5,9 +5,11 @@ import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Salary;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface SalaryService {
 
     Salary countSalary(int employeeId, int pharmacyId, String date, int hours);
     void saveSalary(Salary salary);
+    List<Salary> findAll();
 }

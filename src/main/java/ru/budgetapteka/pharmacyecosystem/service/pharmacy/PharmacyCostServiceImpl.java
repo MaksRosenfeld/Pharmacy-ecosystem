@@ -114,7 +114,7 @@ public class PharmacyCostServiceImpl implements PharmacyCostService {
         pharmacyCosts.forEach(phCost -> {
             CostCategory category = allContragents.stream()
                     .filter(contragent -> rawCost.getInn().equals(contragent.getInn()))
-                    .map(Contragent::getCategoryId)
+                    .map(Contragent::getCategory)
                     .findFirst().orElseThrow();
             phCost.setDate(Date.valueOf(date));
             phCost.setInn(rawCost.getInn());

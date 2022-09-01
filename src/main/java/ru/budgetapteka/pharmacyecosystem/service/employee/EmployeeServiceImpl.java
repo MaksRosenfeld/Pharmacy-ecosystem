@@ -1,8 +1,6 @@
 package ru.budgetapteka.pharmacyecosystem.service.employee;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +10,6 @@ import ru.budgetapteka.pharmacyecosystem.database.repository.EmployeeRepository;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,7 +36,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Set<Employee> findByPhNumber(int phNum) {
         return employeeRepository.findAll()
                 .stream()
-                .filter(emp -> phNum == emp.getPharmacyNumber().getPharmacyNumber())
+                .filter(emp -> phNum == emp.getPharmacy().getPharmacyNumber())
                 .collect(Collectors.toSet());
     }
 
@@ -49,7 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow();
         Pharmacy pharmacy = pharmacyService.findByNumber(pharmacyToChangeOn);
         log.info("Изменяю аптеку: {} переходит в {}-ую аптеку", employee.getSurname(), pharmacy.getPharmacyNumber());
-        employee.setPharmacyNumber(pharmacy);
+        employee.setPharmacy(pharmacy);
 
     }
 

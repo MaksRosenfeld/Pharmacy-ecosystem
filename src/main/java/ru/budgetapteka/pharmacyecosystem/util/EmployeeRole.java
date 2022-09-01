@@ -3,7 +3,7 @@ package ru.budgetapteka.pharmacyecosystem.util;
 import lombok.Getter;
 
 @Getter
-public enum Role {
+public enum EmployeeRole {
     PH("Фармацевт"),
     ZAV("Заведующая"),
     RAZB("Разборка"),
@@ -11,7 +11,7 @@ public enum Role {
 
     private final String fieldName;
 
-    Role(String fieldName) {
+    EmployeeRole(String fieldName) {
         this.fieldName = fieldName;
     }
 }

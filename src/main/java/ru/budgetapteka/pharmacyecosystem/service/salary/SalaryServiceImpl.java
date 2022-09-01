@@ -9,15 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Employee;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Salary;
+import ru.budgetapteka.pharmacyecosystem.database.repository.RoleRepository;
 import ru.budgetapteka.pharmacyecosystem.database.repository.SalaryRepository;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.util.DataExtractor;
-import ru.budgetapteka.pharmacyecosystem.util.Role;
+import ru.budgetapteka.pharmacyecosystem.util.EmployeeRole;
 import ru.budgetapteka.pharmacyecosystem.util.WorkingDaysParser;
 
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 @Slf4j
@@ -30,6 +32,10 @@ public class SalaryServiceImpl implements SalaryService {
     private final SalaryRepository salaryRepository;
     @Value("${my.vars.working.hours.RAZB}")
     private int workingHoursAmountForRAZB;
+    @Value("${my.vars.zav.bonus}")
+    private int zavBonus;
+    @Value("${my.vars.ndfl.rate}")
+    private double ndflRate;
 
 
     @Override
@@ -46,31 +52,71 @@ public class SalaryServiceImpl implements SalaryService {
                 month);
         log.info("Считаю зарплату для {} {}", employee.getName(),
                 employee.getSurname());
-        if (employee.getRole().equalsIgnoreCase(Role.PH.name()) ||
-                employee.getRole().equalsIgnoreCase(Role.PROV.name())) {
-            return countForPH(employee, pharmacy, salaryDate, salarySumPH, salaryHours, actualHours);
-        } else if (employee.getRole().equalsIgnoreCase(Role.RAZB.name())) {
-            return countForRAZB(employee, pharmacy, salaryDate, salarySumRAZB, workingDays, actualHours);
+        if (employee.getRole().getRole().equals(EmployeeRole.PH.name()) ||
+                employee.getRole().getRole().equals(EmployeeRole.PROV.name())) {
+            Salary salaryPH = countForPH(employee, pharmacy, salaryDate, salarySumPH, salaryHours, actualHours);
+            salaryPH.setWorkingDays(workingDays);
+            return salaryPH;
+        } else if (employee.getRole().getRole().equals(EmployeeRole.RAZB.name())) {
+            Salary salaryRAZB = countForRAZB(employee, pharmacy, salaryDate, salarySumRAZB, workingDays, actualHours);
+            salaryRAZB.setWorkingDays(workingDays);
+            return salaryRAZB;
+        } else {
+            Salary salaryZAV = countForZAV(employee, pharmacy, salaryDate, salarySumPH, salaryHours, actualHours);
+            salaryZAV.setWorkingDays(workingDays);
+            salaryZAV.setManagerPayment(true);
+            return salaryZAV;
+
+
         }
 
-        return null;}
+    }
 
     @Override
     @Transactional
     public void saveSalary(Salary salary) {
-//        log.info("Сохраняю зарплату для {} {}", salary.getEmployee().getName(), salary.getEmployee().getSurname());
+        log.info("Сохраняю зарплату для {} {} [{}]", salary.getEmployee().getName(),
+                salary.getEmployee().getSurname(), salary.getDate());
         salaryRepository.save(salary);
+    }
+
+    @Override
+    public List<Salary> findAll() {
+        return salaryRepository.findAll();
     }
 
     private Salary countForPH(Employee employee, Pharmacy pharmacy, Date date, double salarySumForPH, int salaryHours, int actualHours) {
         double payed = (salarySumForPH / salaryHours) * actualHours;
-        log.info("Сумма к оплате фармацевту: {}", payed);
-        return new Salary(pharmacy, date, actualHours, payed, employee);
+        double roundedPayed = round(payed);
+        log.info("Сумма к оплате фармацевту: {}", roundedPayed);
+        Salary salary = new Salary(pharmacy, date, actualHours, roundedPayed, employee);
+        salary.setNdfl(countNdfl(employee));
+        return salary;
     }
 
     private Salary countForRAZB(Employee employee, Pharmacy pharmacy, Date date, double salarySumForRAZB, long workingDaysInMonth, int actualHours) {
         double payed = (salarySumForRAZB / workingDaysInMonth) * (actualHours / (double) workingHoursAmountForRAZB);
-        log.info("Сумма к оплате разборщику: {}", payed);
-        return new Salary(pharmacy, date, actualHours, payed, employee);
+        double roundedPayed = round(payed);
+        log.info("Сумма к оплате разборщику: {}", roundedPayed);
+        Salary salary = new Salary(pharmacy, date, actualHours, roundedPayed, employee);
+        salary.setNdfl(countNdfl(employee));
+        return salary;
+    }
+
+    private Salary countForZAV(Employee employee, Pharmacy pharmacy, Date date, double salarySumForPH, int salaryHours, int actualHours) {
+        double payed = (salarySumForPH / salaryHours) * actualHours + zavBonus;
+        double roundedPayed = round(payed);
+        log.info("Сумма к оплате заведующей: {}", roundedPayed);
+        Salary salary = new Salary(pharmacy, date, actualHours, roundedPayed, employee);
+        salary.setNdfl(countNdfl(employee));
+        return salary;
+    }
+
+    private double round(double payed) {
+        return (double) Math.round(payed * 100) / 100;
+    }
+
+    private double countNdfl(Employee employee) {
+        return employee.getRole().getBaseSalary() * ndflRate;
     }
 }

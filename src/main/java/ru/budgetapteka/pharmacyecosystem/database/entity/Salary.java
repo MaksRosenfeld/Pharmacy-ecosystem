@@ -1,5 +1,6 @@
 package ru.budgetapteka.pharmacyecosystem.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,7 @@ public class Salary {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "pharmacy")
-    private Pharmacy pharmacyNumber;
+    private Pharmacy pharmacy;
     @Basic
     @Column(name = "date", nullable = false)
     private Date date;
@@ -27,14 +28,22 @@ public class Salary {
     private Integer hours;
     @Column(name = "payed")
     private double payed;
-    @Column(name = "employee")
-    private Integer employee;
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "employee")
+    private Employee employee;
+    @Column(name = "working_days")
+    private Long workingDays;
+    @Column(name = "manager_payment")
+    private boolean managerPayment;
+    @Column(name = "ndfl")
+    private double ndfl;
 
     public Salary(Pharmacy pharmacy, Date date, Integer hours, Double payed, Employee employee) {
-        this.pharmacyNumber = pharmacy;
+        this.pharmacy = pharmacy;
         this.date = date;
         this.hours = hours;
         this.payed = payed;
-        this.employee = employee.getId();
+        this.employee = employee;
     }
 }

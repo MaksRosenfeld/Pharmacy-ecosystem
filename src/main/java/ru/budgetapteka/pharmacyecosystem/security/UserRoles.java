@@ -1,6 +1,6 @@
 package ru.budgetapteka.pharmacyecosystem.security;
 
-public enum Roles {
+public enum UserRoles {
     ADMIN,
     ACCOUNTANT,
     GUEST,
