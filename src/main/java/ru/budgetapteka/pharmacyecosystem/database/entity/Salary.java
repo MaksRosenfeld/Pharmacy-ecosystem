@@ -38,6 +38,10 @@ public class Salary {
     private boolean managerPayment;
     @Column(name = "ndfl")
     private double ndfl;
+    @Column(name = "pharmacy_revenue")
+    private double pharmacyRevenue;
+    @Column(name = "efficiency")
+    private double efficiency;
 
     public Salary(Pharmacy pharmacy, Date date, Integer hours, Double payed, Employee employee) {
         this.pharmacy = pharmacy;

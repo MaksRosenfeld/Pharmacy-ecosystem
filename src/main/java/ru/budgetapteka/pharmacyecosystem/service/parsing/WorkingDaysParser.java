@@ -1,4 +1,4 @@
-package ru.budgetapteka.pharmacyecosystem.util;
+package ru.budgetapteka.pharmacyecosystem.service.parsing;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

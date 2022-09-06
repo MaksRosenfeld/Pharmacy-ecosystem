@@ -8,6 +8,9 @@ import org.jsoup.select.NodeFilter;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class JsoupParser {
 
@@ -24,6 +27,15 @@ public class JsoupParser {
         System.out.println(count);
 
 
+    }
+
+    @Test
+    public void testDate() {
+
+
+        LocalDate date = LocalDate.of(2022, 9, 1);
+
+        System.out.println(date.getMonth().length(date.isLeapYear()));
     }
 
 

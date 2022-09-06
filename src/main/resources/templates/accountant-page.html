@@ -22,7 +22,7 @@
         <div class="d-flex flex-row">
             <a href="/"><div id="logo-man"><img src="https://i.postimg.cc/gjJBNQD2/man.png" height="100px"/></div></a>
             <div class="ms-3 align-self-center"><h2>Зарплаты <span
-                    class="shadow fs-2 badge bg-danger">Бюджетной Аптеки</span>
+                    class="salary shadow fs-2 badge bg-danger" data-bs-toggle="tooltip" data-bs-html="true" title="hello">Бюджетной Аптеки</span>
             </h2></div>
         </div>
         <div class="d-flex flex-row">
@@ -46,15 +46,16 @@
             </select>
 
         </div>
-        <table id="table_id" class="table table-striped table-hover">
+        <table id="table_id" class="table">
             <thead>
             <tr>
                 <th></th>
                 <th>Имя, Фамилия</th>
                 <th>№ аптеки</th>
                 <th>Дата</th>
-                <th>Сумма к оплате</th>
+                <th>Ставка</th>
                 <th>Кол-во часов</th>
+                <th>Сумма к оплате</th>
                 <th>НДФЛ</th>
 
             </tr>
@@ -64,6 +65,7 @@
             </tbody>
         </table>
     </div>
+
 
 
     <!--Уведомления внизу-->
@@ -80,6 +82,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>

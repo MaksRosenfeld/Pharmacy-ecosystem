@@ -9,13 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Employee;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Pharmacy;
 import ru.budgetapteka.pharmacyecosystem.database.entity.Salary;
-import ru.budgetapteka.pharmacyecosystem.database.repository.RoleRepository;
 import ru.budgetapteka.pharmacyecosystem.database.repository.SalaryRepository;
 import ru.budgetapteka.pharmacyecosystem.service.employee.EmployeeService;
 import ru.budgetapteka.pharmacyecosystem.service.pharmacy.PharmacyService;
 import ru.budgetapteka.pharmacyecosystem.util.DataExtractor;
 import ru.budgetapteka.pharmacyecosystem.util.EmployeeRole;
-import ru.budgetapteka.pharmacyecosystem.util.WorkingDaysParser;
+import ru.budgetapteka.pharmacyecosystem.service.parsing.WorkingDaysParser;
 
 
 import java.sql.Date;
@@ -46,6 +45,7 @@ public class SalaryServiceImpl implements SalaryService {
         Integer salarySumPH = pharmacy.getSalarySumPH();
         Integer salarySumRAZB = pharmacy.getSalarySumRAZB();
         Date salaryDate = DataExtractor.convertToDateFromYearMonth(date);
+
         int year = DataExtractor.extractYear(date);
         String month = DataExtractor.extractMonth(date);
         long workingDays = WorkingDaysParser.getWorkingDays(year,
@@ -56,15 +56,21 @@ public class SalaryServiceImpl implements SalaryService {
                 employee.getRole().getRole().equals(EmployeeRole.PROV.name())) {
             Salary salaryPH = countForPH(employee, pharmacy, salaryDate, salarySumPH, salaryHours, actualHours);
             salaryPH.setWorkingDays(workingDays);
+            salaryPH.setPharmacyRevenue(5000000);
+            salaryPH.setEfficiency(round(salaryPH.getPharmacyRevenue() / salaryPH.getHours()));
             return salaryPH;
         } else if (employee.getRole().getRole().equals(EmployeeRole.RAZB.name())) {
             Salary salaryRAZB = countForRAZB(employee, pharmacy, salaryDate, salarySumRAZB, workingDays, actualHours);
             salaryRAZB.setWorkingDays(workingDays);
+            salaryRAZB.setPharmacyRevenue(5000000);
+            salaryRAZB.setEfficiency(0);
             return salaryRAZB;
         } else {
             Salary salaryZAV = countForZAV(employee, pharmacy, salaryDate, salarySumPH, salaryHours, actualHours);
             salaryZAV.setWorkingDays(workingDays);
             salaryZAV.setManagerPayment(true);
+            salaryZAV.setPharmacyRevenue(5000000);
+            salaryZAV.setEfficiency(round(salaryZAV.getPharmacyRevenue() / salaryZAV.getHours()));
             return salaryZAV;
 
 

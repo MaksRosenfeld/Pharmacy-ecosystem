@@ -83,3 +83,16 @@
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 4px rgba(255, 0, 0, 0.6);
 }
 
+th.dt-center, td.dt-center { text-align: center; }
+
+.pastel-red {
+    background-color: #92A9BD;
+    color: #ffffff;
+}
+
+.pastel-wave {
+    background-color: #7C99AC;
+    color: white;
+}
+
+
